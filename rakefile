@@ -1,0 +1,19 @@
+#--
+# Copyright 2009 Suraj N. Kurapati
+# See the LICENSE file for details.
+#++
+
+require 'inochi'
+
+Inochi.init :Dfect,
+  :version => '0.0.0',
+  :release => '2009-04-13',
+  :website => 'http://snk.tuxfamily.org/lib/dfect',
+  :tagline => 'Assertion testing library for Ruby'
+
+Inochi.rake :Dfect,
+  :test_with         => :dfect,
+  :rubyforge_project => 'sunaku',
+  :upload_target     => File.expand_path('~/www/lib/dfect/'),
+  :upload_delete     => true,
+  :inochi_consumer   => false

@@ -1,0 +1,78 @@
+%|chapter "Introduction"
+  %|project_summary
+    **<%= $project %>** is an assertion testing library for Ruby that emphasizes a simple assertion vocabulary, instant debuggability of failures, and flexibility in composing tests.
+
+  **<%= $project %>** is exciting because:
+  * It has only 5 methods to remember: D F E C T.
+  * It lets you debug assertion failures interactively.
+  * It keeps a detailed report of assertion failures.
+  * It lets you nest tests and execution hooks.
+  * It is implemented in a mere <%= `sloccount lib`[/^\d+/] %> lines of code.
+
+  These features distinguish **<%= $project %>** from the competition:
+  * [assert{ 2.0 }](http://assert2.rubyforge.org)
+  * [Verify](http://www.ruby-forum.com/topic/183354)
+  * [Testy](http://www.ruby-forum.com/topic/182798)
+
+  %|paragraph "Etymology"
+    **<%= $project %>** is named after the 5 methods it provides: D F E C T.
+
+    The name is also play on the word "defect", whereby the intentional misspelling of "defect" as "dfect" is a defect in itself!  <tt>;-)</tt>
+
+    This wordplay is similar to [Mnesia](http://www.erlang.org/doc/apps/mnesia/index.html)'s play on the word "amnesia", whereby the intentional omission of the letter "A" indicates forgetfulness---the key characteristic of having amnesia.  Clever!
+
+  %|section "Logistics"
+    * <%= xref "History", "Release notes" %> --- history of project releases.
+    * [Source code](http://github.com/sun/<%= $program %>) --- obtain via [Git](http://git.or.cz) or browse online.
+    * [API reference](api/index.html) --- documentation for source code.
+
+    To get help or provide feedback, simply
+    <%= xref "License", "contact the author(s)" %>.
+
+    %|paragraph "Version numbers"
+      **<%= $project %>** releases are numbered in *major.minor.patch*
+      form according to the [RubyGems rational versioning
+      policy](http://www.rubygems.org/read/chapter/7), which
+      can be summarized thus:
+
+      <table markdown="1">
+        <thead>
+          <tr>
+            <td rowspan="2">What increased in the version number?</td>
+            <td colspan="3">The increase indicates that the release:</td>
+          </tr>
+          <tr>
+            <th>Is backward compatible?</th>
+            <th>Has new features?</th>
+            <th>Has bug fixes?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>major</th>
+            <td style="background-color: #FFE4E1;">No</td>
+            <td>Yes</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <th>minor</th>
+            <td>Yes</td>
+            <td>Yes</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <th>patch</th>
+            <td>Yes</td>
+            <td style="background-color: #FFE4E1;">No</td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
+
+  %|section "License"
+    %< "../LICENSE"
+
+  %|section "Credits"
+    **<%= $project %>** is made possible by
+    <%= xref "History", "contributions" %>
+    from users like you.

@@ -1,0 +1,186 @@
+% dfect_api = 'api/classes/Dfect.html'
+
+%|chapter "Usage"
+  Begin by loading **<%= $project %>** into your program:
+
+  <code>
+  require 'rubygems'
+  require 'dfect'
+  </code>
+
+  Now you have access to the [`Dfect` module](<%= dfect_api %>), which provides mixin-able instance methods which are also directly-callable as module functions (class methods):
+
+  <code>
+  Dfect.D "hello" do
+    puts "world"
+  end
+
+  # the above is same as:
+
+  include Dfect
+
+  D "hello" do
+    puts "world"
+  end
+  </code>
+
+  The following sections explain these methods in detail.
+
+  %|section "Assertions"
+    The following methods take a block parameter and assert something about the result of executing that block.  Follow the links into the API documentation for examples.
+
+    * [`T()`](<%= dfect_api %>) --- assert true (not nil and not false)
+    * [`F()`](<%= dfect_api %>) --- assert not true (nil or false)
+    * [`E()`](<%= dfect_api %>) --- assert that an execption is raised
+    * [`C()`](<%= dfect_api %>) --- assert that a symbol is caught
+
+    %|section "Failures"
+      When an assertion fails, the details about the failure will be shown like this:
+
+      <pre>
+      - a complex test:
+        - with more nested tests:
+          - fail: block must yield true (!nil && !false)
+            code: |-
+              [12..22] in test/simple.rb
+                 12
+                 13     D "with more nested tests" do
+                 14       x = 5
+                 15
+                 16       T { x > 2 }   # passes
+              => 17       F { x > 2 }   # fails
+                 18       E { x.hello } # fails
+                 19     end
+                 20   end
+                 21
+                 22   # equivalent of before(:each) or setup()
+            vars:
+              x: 5
+              y: 83
+            call:
+            - test/simple.rb:17
+            - test/simple.rb:3
+      </pre>
+
+      If the `:debug` option is enabled in [`Dfect.options`](<%= dfect_api %>), you will then be placed into a debugger to investigate the failure.
+
+      Details about all assertion failures and a trace of all tests executed are stored by **<%= $project %>** and provided by the [`Dfect.report`](<%= dfect_api %>) method.
+
+  %|section "Tests"
+    The [`D()` method](<%= dfect_api %>) defines a new **test**, which is analagous to the `describe()` environment provided by BDD frameworks like RSpec.
+
+    A test may also contain nested tests.
+
+    <code>
+    D "outer test" do
+      # assertions and logic here
+
+      D "inner test" do
+        # more assertions and logic here
+      end
+    end
+    </code>
+
+    %|section "Hooks"
+      The [`D()` method](<%= dfect_api %>) provides several entry points (hooks) into the test execution process:
+
+      <code>
+      D "outer test" do
+        D .<  { puts "before each nested test" }
+        D .>  { puts "after  each nested test" }
+        D .<< { puts "before all nested tests" }
+        D .>> { puts "after  all nested tests" }
+
+        D "inner test" do
+          # assertions and logic here
+        end
+      end
+      </code>
+
+      A hook method may be called multiple times.  Each call registers additional logic to execute during the hook:
+
+      <code>
+      D .< { puts "do something" }
+      D .< { puts "do something more!" }
+      </code>
+
+  %|section "Execution"
+    You can configure test execution using:
+
+    <code>
+    Dfect.options = your_options
+    </code>
+
+    You can execute all tests defined thus far using:
+
+    <code>
+    Dfect.run
+    </code>
+
+    You can stop this execution at any time using:
+
+    <code>
+    Dfect.stop
+    </code>
+
+    You can view the results of execution using:
+
+    <code>
+    puts Dfect.report.to_yaml
+    </code>
+
+    See the [API documentation](<%= dfect_api %>) for details and examples.
+
+    %|section "Automatic test execution"
+      <code>
+      require 'rubygems'
+      require 'dfect/auto'   # <== notice the "auto"
+      </code>
+
+      The above code will mix-in the `Dfect` module into your program and will execute all tests defined by your program before it terminates.
+
+  %|example "A sample unit test"
+    <code>
+    require 'rubygems'
+    require 'dfect/auto'
+
+    D "a test" do
+      D "a nested test" do
+      end
+
+      D "another nested test" do
+      end
+
+      D "a complex test" do
+        y = 83
+
+        D "with more nested tests" do
+          x = 5
+
+          T { x > 2 }   # passes
+          F { x > 2 }   # fails
+          E { x.hello } # fails
+        end
+      end
+
+      # equivalent of before(:each) or setup()
+      D.< do
+        puts "this is executed before every test in this scope"
+      end
+
+      # equivalent of after(:each) or teardown()
+      D.> do
+        puts "this is executed after every test in this scope"
+      end
+
+      # equivalent of before(:all)
+      D.<< do
+        puts "this is executed once, before all tests in this scope"
+      end
+
+      # equivalent of after(:all)
+      D.>> do
+        puts "this is executed once, after all tests in this scope"
+      end
+    end
+    </code>
