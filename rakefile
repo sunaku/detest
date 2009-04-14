@@ -3,6 +3,8 @@
 # See the LICENSE file for details.
 #++
 
+require 'rubygems'
+gem 'inochi', '~> 1'
 require 'inochi'
 
 Inochi.init :Dfect,
