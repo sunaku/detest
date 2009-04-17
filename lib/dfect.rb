@@ -309,7 +309,8 @@ module Dfect
         debug block, [message, {'block raised' => raised}]
 
       else
-        debug block, "should have raised #{kinds.join ' or '}"
+        @exec_stats[:failed_assertions] += 1
+        debug block, message
       end
 
       raised
