@@ -307,6 +307,9 @@ module Dfect
 
         # ...in addition to debugging this assertion
         debug block, [message, {'block raised' => raised}]
+
+      else
+        debug block, "should have raised #{kinds.join ' or '}"
       end
 
       raised

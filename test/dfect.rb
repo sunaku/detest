@@ -39,6 +39,14 @@ D 'E()' do
     raise SyntaxError
   end
 
+  D "that doesn't raise fails" do
+    E { }
+  end
+
+  D "that raises something else fails" do
+    E(ArgumentError) { raise SyntaxError }
+  end
+
   D 'allows nested rescue' do
     klass = Class.new(Exception)
 
