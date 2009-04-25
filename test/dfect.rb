@@ -148,6 +148,16 @@ D 'D()' do
   end
 end
 
+D 'D.<() must allow inheritance checking when called without a block' do
+  F { D < Kernel }
+  F { D < Object }
+  F { D < Module }
+  T { D.class == Module }
+
+  c = Class.new { include D }
+  T { c < D }
+end
+
 D 'stoping #run' do
   Dfect.stop
   raise 'this must not be reached!'

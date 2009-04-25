@@ -110,6 +110,8 @@ module Dfect
     end
 
     ##
+    # :call-seq: <(&block)
+    #
     # Registers the given block to be executed
     # before each nested test inside this test.
     #
@@ -121,9 +123,14 @@ module Dfect
     #     puts "before each nested test"
     #   end
     #
-    def < &block
-      raise ArgumentError, 'block must be given' unless block
-      @curr_suite.before_each << block
+    def <(*args, &block)
+      if args.empty?
+        raise ArgumentError, 'block must be given' unless block
+        @curr_suite.before_each << block
+      else
+        # the < method is being used as a check for inheritance
+        super
+      end
     end
 
     ##
