@@ -537,9 +537,16 @@ module Dfect
 
         # variable values
         'vars' => (
-          locals = eval('::Kernel.local_variables.map {|v| [v.to_s, ::Kernel.eval(v.to_s)] }', context, __FILE__, __LINE__)
+          names = eval('::Kernel.local_variables', context, __FILE__, __LINE__)
 
-          Hash[*locals.flatten]
+          pairs = names.inject([]) do |pair, name|
+            variable = name.to_s
+            value    = eval(variable, context, __FILE__, __LINE__)
+
+            pair.push variable, value
+          end
+
+          Hash[*pairs]
         ),
 
         # stack trace
