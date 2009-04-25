@@ -126,6 +126,49 @@
       D .< { puts "do something more!" }
       </code>
 
+    %|section "Insulation"
+      Use the singleton class of a temporary object to shield your test logic from Ruby's global environment, the code being tested, and from other tests:
+
+      <code>
+      class << Object.new
+        # your test logic here
+      end
+      </code>
+
+      Inside this insulated environment, you are free to:
+      * mix-in any modules your test logic needs
+      * define your own constants, methods, and classes
+
+      For example:
+
+      <code>
+      class << Object.new
+        include SomeModule
+        extend AnotherModule
+
+        YOUR_CONSTANT = 123
+
+        D "your tests here" do
+          # your test logic here
+
+          your_helper_method
+        end
+
+        def self.your_helper_method
+          # your helper logic here
+
+          helper = YourHelperClass.new
+          helper.do_something_helpful
+
+          T { 2 + 2 != 5 }
+        end
+
+        class YourHelperClass
+          # your helper logic here
+        end
+      end
+      </code>
+
   %|section "Execution"
     You can configure test execution using:
 
