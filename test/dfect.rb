@@ -158,6 +158,10 @@ D 'D.<() must allow inheritance checking when called without a block' do
   T { c < D }
 end
 
+D 'YAML must be able to serialize a class' do
+  T { SyntaxError.to_yaml == "--- SyntaxError\n" }
+end
+
 D 'stoping #run' do
   Dfect.stop
   raise 'this must not be reached!'

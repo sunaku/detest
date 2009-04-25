@@ -4,6 +4,18 @@
 #++
 
 require 'yaml'
+#
+# YAML raises this error when we try to serialize a class:
+#
+#   TypeError: can't dump anonymous class Class
+#
+# Work around this by representing a class by its name.
+#
+class Class #:nodoc: all
+  def to_yaml opts = {}
+    name.to_yaml opts
+  end
+end
 
 # load interactive debugger
 begin
