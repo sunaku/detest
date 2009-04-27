@@ -6,64 +6,158 @@
 require 'dfect/auto'
 
 D 'T()' do
-  T { true }
+  T { true   }
   T { !false }
-  T { !nil }
+  T { !nil   }
 
-  T { 0 }
+  T { 0 } # zero is true in Ruby! :)
   T { 1 }
 
   D 'must return block value' do
     inner = rand()
     outer = T { inner }
 
-    T { inner == outer }
+    T { outer == inner }
+  end
+end
+
+D 'T!()' do
+  T! { !true }
+  T! { false }
+  T! { nil   }
+
+  D 'must be same as F()' do
+    T { D.method(:T!) == D.method(:F) }
+  end
+end
+
+D 'T?()' do
+  T { T? { true  } }
+  F { T? { false } }
+  F { T? { nil   } }
+
+  D 'must not return block value' do
+    inner = rand()
+    outer = T? { inner }
+
+    F { outer == inner }
+    T { outer == true }
   end
 end
 
 D 'F()' do
   F { !true }
   F { false }
-  F { nil }
+  F { nil   }
 
   D 'must return block value' do
-    inner = false
+    inner = nil
     outer = F { inner }
 
-    T { inner == outer }
+    T { outer == inner }
+  end
+end
+
+D 'F!()' do
+  T! { !true }
+  T! { false }
+  T! { nil   }
+
+  D 'must be same as T()' do
+    T { D.method(:F!) == D.method(:T) }
+  end
+end
+
+D 'F?()' do
+  T { T? { true  } }
+  F { T? { false } }
+  F { T? { nil   } }
+
+  D 'must not return block value' do
+    inner = rand()
+    outer = F? { inner }
+
+    F { outer == inner }
+    T { outer == false }
   end
 end
 
 D 'E()' do
-  E SyntaxError do
-    raise SyntaxError
+  E(SyntaxError) { raise SyntaxError }
+
+  D 'forbids block to not raise anything' do
+    F { E? {} }
   end
 
-  D "that doesn't raise fails" do
-    E { }
+  D 'forbids block to raise something unexpected' do
+    F { E?(ArgumentError) { raise SyntaxError } }
   end
 
-  D "that raises something else fails" do
-    E(ArgumentError) { raise SyntaxError }
+  D 'defaults to StandardError when no kinds specified' do
+    E { raise StandardError }
+    E { raise }
+  end
+
+  D 'does not default to StandardError when kinds are specified' do
+    F { E?(SyntaxError) { raise } }
   end
 
   D 'allows nested rescue' do
-    klass = Class.new(Exception)
-
     E SyntaxError do
       begin
-        raise ArgumentError
-      rescue
+        raise LoadError
+      rescue LoadError
       end
+
+      raise rescue nil
 
       raise SyntaxError
     end
   end
 end
 
+D 'E!()' do
+  E!(SyntaxError) { raise ArgumentError }
+
+  D 'allows block to not raise anything' do
+    E!(SyntaxError) {}
+  end
+
+  D 'allows block to raise something unexpected' do
+    T { not E?(ArgumentError) { raise SyntaxError } }
+  end
+
+  D 'defaults to StandardError when no kinds specified' do
+    E! { raise LoadError }
+  end
+
+  D 'does not default to StandardError when kinds are specified' do
+    T { not E?(SyntaxError) { raise } }
+  end
+
+  D 'allows nested rescue' do
+    E! SyntaxError do
+      begin
+        raise LoadError
+      rescue LoadError
+      end
+
+      raise rescue nil
+
+      raise ArgumentError
+    end
+  end
+end
+
 D 'C()' do
-  C :foo do
-    throw :foo
+  C(:foo) { throw :foo }
+
+  D 'forbids block to not throw anything' do
+    F { C?(:bar) {} }
+  end
+
+  D 'forbids block to throw something unexpected' do
+    F { C?(:bar) { throw :foo } }
   end
 
   D 'allows nested catch' do
@@ -74,6 +168,43 @@ D 'C()' do
 
       throw :foo
     end
+  end
+
+  D 'returns the value thrown along with symbol' do
+    inner = rand()
+    outer = C(:foo) { throw :foo, inner }
+
+    T { outer == inner }
+  end
+end
+
+D 'C!()' do
+  C!(:bar) { throw :foo }
+
+  D 'allows block to not throw anything' do
+    C!(:bar) {}
+  end
+
+  D 'allows block to throw something unexpected' do
+    T { not C?(:bar) { throw :foo } }
+  end
+
+  D 'allows nested catch' do
+    C! :bar do
+      catch :moz do
+        throw :moz
+      end
+
+      throw :foo
+    end
+  end
+
+  D 'does not return the value thrown along with symbol' do
+    inner = rand()
+    outer = C!(:foo) { throw :bar, inner }
+
+    F { outer == inner }
+    T { outer == nil   }
   end
 end
 

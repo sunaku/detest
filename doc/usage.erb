@@ -29,10 +29,32 @@
   %|section "Assertions"
     The following methods take a block parameter and assert something about the result of executing that block.  Follow the links into the API documentation for examples.
 
-    * [`T()`](<%= dfect_api %>) --- assert true (not nil and not false)
-    * [`F()`](<%= dfect_api %>) --- assert not true (nil or false)
-    * [`E()`](<%= dfect_api %>) --- assert that an execption is raised
-    * [`C()`](<%= dfect_api %>) --- assert that a symbol is caught
+    | Method | Description                             |
+    | ------ | -----------                             |
+    | F      | assert not true (`nil` or `false`)      |
+    | E      | assert that an execption is raised      |
+    | C      | assert that a symbol is thrown          |
+    | T      | assert true (not `nil` and not `false`) |
+
+    %|paragraph "Negation"
+      These methods are the *opposite* of <%= xref "Assertions", "normal assertions" %>.
+
+      | Method | Description                              |
+      | ------ | -----------                              |
+      | F!     | same as T                                |
+      | E!     | assert that an execption is *not* raised |
+      | C!     | assert that a symbol is *not* thrown     |
+      | T!     | same as F                                |
+
+    %|paragraph "Sampling"
+      These methods allow you to *check the outcome* of an <%= xref "Assertions", "assertion" %> without the penalty of pass or failure.
+
+      | Method | Description                                   |
+      | ------ | -----------                                   |
+      | F?     | returns `true` if F passes; `false` otherwise |
+      | E?     | returns `true` if E passes; `false` otherwise |
+      | C?     | returns `true` if C passes; `false` otherwise |
+      | T?     | returns `true` if T passes; `false` otherwise |
 
     %|section "Failures"
       When an assertion fails, the details about the failure will be shown like this:

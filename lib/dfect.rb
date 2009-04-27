@@ -211,7 +211,6 @@ module Dfect
     #   # no message specified:
     #
     #   T { true }  # passes
-    #
     #   T { false } # fails
     #   T { nil }   # fails
     #
@@ -219,17 +218,8 @@ module Dfect
     #
     #   T( "computers do not doublethink" ) { 2 + 2 != 5 } # passes
     #
-    def T message = 'block must yield true (!nil && !false)', &block
-      raise ArgumentError, 'block must be given' unless block
-
-      if result = call(block)
-        @exec_stats[:passed_assertions] += 1
-      else
-        @exec_stats[:failed_assertions] += 1
-        debug block, message
-      end
-
-      result
+    def T message = nil, &block
+      assert_block :assert, message, &block
     end
 
     ##
@@ -246,31 +236,81 @@ module Dfect
     #
     #   # no message specified:
     #
-    #   F { true }  # fails
-    #
-    #   F { false } # passes
-    #   F { nil }   # passes
+    #   T! { true }  # fails
+    #   T! { false } # passes
+    #   T! { nil }   # passes
     #
     #   # message specified:
     #
-    #   F( "computers do not doublethink" ) { 2 + 2 == 5 } # passes
+    #   T!( "computers do not doublethink" ) { 2 + 2 == 5 } # passes
     #
-    def F message = 'block must yield false (nil || false)', &block
-      raise ArgumentError, 'block must be given' unless block
-
-      if result = call(block)
-        @exec_stats[:failed_assertions] += 1
-        debug block, message
-      else
-        @exec_stats[:passed_assertions] += 1
-      end
-
-      result
+    def T! message = nil, &block
+      assert_block :negate, message, &block
     end
 
     ##
-    # Asserts that one of the given kinds of exceptions is raised when the
-    # given block is executed, and returns the exception that was raised.
+    # Returns true if the result of the given block is
+    # neither nil nor false.  Otherwise, returns false.
+    #
+    # ==== Parameters
+    #
+    # [message]
+    #   This parameter is optional and completely ignored.
+    #
+    # ==== Examples
+    #
+    #   # no message specified:
+    #
+    #   T? { true }  # => true
+    #   T? { false } # => false
+    #   T? { nil }   # => false
+    #
+    #   # message specified:
+    #
+    #   T?( "computers do not doublethink" ) { 2 + 2 != 5 } # => true
+    #
+    def T? message = nil, &block
+      assert_block :sample, message, &block
+    end
+
+    alias F T!
+
+    alias F! T
+
+    ##
+    # Returns true if the result of the given block is
+    # either nil or false.  Otherwise, returns false.
+    #
+    # ==== Parameters
+    #
+    # [message]
+    #   This parameter is optional and completely ignored.
+    #
+    # ==== Examples
+    #
+    #   # no message specified:
+    #
+    #   F? { true }  # => false
+    #   F? { false } # => true
+    #   F? { nil }   # => true
+    #
+    #   # message specified:
+    #
+    #   F?( "computers do not doublethink" ) { 2 + 2 == 5 } # => true
+    #
+    def F? message = nil, &block
+      not T? message, &block
+    end
+
+    ##
+    # Asserts that one of the given
+    # kinds of exceptions is raised
+    # when the given block is executed.
+    #
+    # If the block raises an exception,
+    # then that exception is returned.
+    #
+    # Otherwise, nil is returned.
     #
     # ==== Parameters
     #
@@ -302,43 +342,95 @@ module Dfect
     #   E( "string must compile", SyntaxError, NameError ) { eval "..." }
     #
     def E message = nil, *kinds, &block
-      raise ArgumentError, 'block must be given' unless block
-
-      if message.is_a? Class
-        kinds.unshift message
-        message = nil
-      end
-
-      kinds << StandardError if kinds.empty?
-      message ||= "block must raise #{kinds.join ' or '}"
-
-      begin
-        block.call
-
-      rescue *kinds => raised
-        @exec_stats[:passed_assertions] += 1
-
-      rescue Exception => raised
-        @exec_stats[:failed_assertions] += 1
-
-        # debug the uncaught exception...
-        debug_uncaught_exception block, raised
-
-        # ...in addition to debugging this assertion
-        debug block, [message, {'block raised' => raised}]
-
-      else
-        @exec_stats[:failed_assertions] += 1
-        debug block, message
-      end
-
-      raised
+      assert_raise :assert, message, *kinds, &block
     end
 
     ##
-    # Asserts that the given symbol is thrown when
-    # the given block is executed, and returns the
-    # value that was thrown along with the symbol.
+    # Asserts that one of the given kinds of exceptions
+    # is not raised when the given block is executed.
+    #
+    # If the block raises an exception,
+    # then that exception is returned.
+    #
+    # Otherwise, nil is returned.
+    #
+    # ==== Parameters
+    #
+    # [message]
+    #   Optional message to show in the
+    #   report if this assertion fails.
+    #
+    # [kinds]
+    #   Exception classes that must not be raised by the given block.
+    #
+    #   If none are given, then StandardError is assumed (similar to how a
+    #   plain 'rescue' statement without any arguments catches StandardError).
+    #
+    # ==== Examples
+    #
+    #   # no exceptions specified:
+    #
+    #   E! { }       # passes
+    #   E! { raise } # fails
+    #
+    #   # single exception specified:
+    #
+    #   E!( ArgumentError ) { raise ArgumentError } # fails
+    #   E!( "argument must be invalid", ArgumentError ) { raise ArgumentError }
+    #
+    #   # multiple exceptions specified:
+    #
+    #   E!( SyntaxError, NameError ) { eval "..." }
+    #   E!( "string must compile", SyntaxError, NameError ) { eval "..." }
+    #
+    def E! message = nil, *kinds, &block
+      assert_raise :negate, message, *kinds, &block
+    end
+
+    ##
+    # Returns true if one of the given kinds of
+    # exceptions is raised when the given block
+    # is executed.  Otherwise, returns false.
+    #
+    # ==== Parameters
+    #
+    # [message]
+    #   This parameter is optional and completely ignored.
+    #
+    # [kinds]
+    #   Exception classes that must be raised by the given block.
+    #
+    #   If none are given, then StandardError is assumed (similar to how a
+    #   plain 'rescue' statement without any arguments catches StandardError).
+    #
+    # ==== Examples
+    #
+    #   # no exceptions specified:
+    #
+    #   E? { }       # => false
+    #   E? { raise } # => true
+    #
+    #   # single exception specified:
+    #
+    #   E?( ArgumentError ) { raise ArgumentError } # => true
+    #
+    #   # multiple exceptions specified:
+    #
+    #   E?( SyntaxError, NameError ) { eval "..." } # => true
+    #
+    def E? message = nil, *kinds, &block
+      assert_raise :sample, message, *kinds, &block
+    end
+
+    ##
+    # Asserts that the given symbol is thrown
+    # when the given block is executed.
+    #
+    # If a value is thrown along
+    # with the expected symbol,
+    # then that value is returned.
+    #
+    # Otherwise, nil is returned.
     #
     # ==== Parameters
     #
@@ -353,39 +445,75 @@ module Dfect
     #
     #   # no message specified:
     #
-    #   C(:foo) { throw :foo } # passes
-    #
-    #   C(:foo) { throw :bar } # fails
-    #   C(:foo) { }            # fails
+    #   C(:foo) { throw :foo, 123 } # passes, => 123
+    #   C(:foo) { throw :bar, 456 } # fails,  => 456
+    #   C(:foo) { }                 # fails,  => nil
     #
     #   # message specified:
     #
-    #   C( ":foo must be thrown", :foo ) { throw :bar } # fails
+    #   C( ":foo must be thrown", :foo ) { throw :bar, 789 } # fails, => nil
     #
     def C message = nil, symbol = nil, &block
-      raise ArgumentError, 'block must be given' unless block
+      assert_catch :assert, message, symbol, &block
+    end
 
-      if message.is_a? Symbol and not symbol
-        symbol = message
-        message = nil
-      end
+    ##
+    # Asserts that the given symbol is not
+    # thrown when the given block is executed.
+    #
+    # Returns nil, always.
+    #
+    # ==== Parameters
+    #
+    # [message]
+    #   Optional message to show in the
+    #   report if this assertion fails.
+    #
+    # [symbol]
+    #   Symbol that must not be thrown by the given block.
+    #
+    # ==== Examples
+    #
+    #   # no message specified:
+    #
+    #   C!(:foo) { throw :foo, 123 } # fails,  => nil
+    #   C!(:foo) { throw :bar, 456 } # passes, => nil
+    #   C!(:foo) { }                 # passes, => nil
+    #
+    #   # message specified:
+    #
+    #   C!( ":foo must be thrown", :foo ) { throw :bar, 789 } # passes, => nil
+    #
+    def C! message = nil, symbol = nil, &block
+      assert_catch :negate, message, symbol, &block
+    end
 
-      raise ArgumentError, 'symbol must be given' unless symbol
-
-      symbol = symbol.to_sym
-      message ||= "block must throw #{symbol.inspect}"
-
-      # if nothing was thrown, the result of catch()
-      # is simply the result of executing the block
-      result = catch(symbol) { call block; self }
-
-      if result == self
-        @exec_stats[:failed_assertions] += 1
-        debug block, message
-      else
-        @exec_stats[:passed_assertions] += 1
-        result
-      end
+    ##
+    # Returns true if the given symbol is thrown when the
+    # given block is executed.  Otherwise, returns false.
+    #
+    # ==== Parameters
+    #
+    # [message]
+    #   This parameter is optional and completely ignored.
+    #
+    # [symbol]
+    #   Symbol that must be thrown by the given block.
+    #
+    # ==== Examples
+    #
+    #   # no message specified:
+    #
+    #   C?(:foo) { throw :foo, 123 } # => true
+    #   C?(:foo) { throw :bar, 456 } # => false
+    #   C?(:foo) { }                 # => false
+    #
+    #   # message specified:
+    #
+    #   C?( ":foo must be thrown", :foo ) { throw :bar, 789 } # => false
+    #
+    def C? message = nil, symbol = nil, &block
+      assert_catch :sample, message, symbol, &block
     end
 
     ##
@@ -415,6 +543,146 @@ module Dfect
     end
 
     private
+
+    def assert_block mode, message = nil, &block
+      raise ArgumentError, 'block must be given' unless block
+
+      message ||=
+        case mode
+        when :assert then 'block must yield true (!nil && !false)'
+        when :negate then 'block must yield false (nil || false)'
+        end
+
+      passed = lambda do
+        @exec_stats[:passed_assertions] += 1
+      end
+
+      failed = lambda do
+        @exec_stats[:failed_assertions] += 1
+        debug block, message
+      end
+
+      result = call(block)
+
+      case mode
+      when :sample then return result ? true : false
+      when :assert then result ? passed.call : failed.call
+      when :negate then result ? failed.call : passed.call
+      end
+
+      result
+    end
+
+    def assert_raise mode, message = nil, *kinds, &block
+      raise ArgumentError, 'block must be given' unless block
+
+      if message.is_a? Class
+        kinds.unshift message
+        message = nil
+      end
+
+      kinds << StandardError if kinds.empty?
+
+      message ||=
+        case mode
+        when :assert then "block must raise #{kinds.join ' or '}"
+        when :negate then "block must not raise #{kinds.join ' or '}"
+        end
+
+      passed = lambda do
+        @exec_stats[:passed_assertions] += 1
+      end
+
+      failed = lambda do |exception|
+        @exec_stats[:failed_assertions] += 1
+
+        if exception
+          # debug the uncaught exception...
+          debug_uncaught_exception block, exception
+
+          # ...in addition to debugging this assertion
+          debug block, [message, {'block raised' => exception}]
+
+        else
+          debug block, message
+        end
+      end
+
+      begin
+        block.call
+
+      rescue Exception => exception
+        expected = kinds.any? {|k| exception.kind_of? k }
+
+        case mode
+        when :sample then return expected
+        when :assert then expected ? passed.call : failed.call(exception)
+        when :negate then expected ? failed.call(exception) : passed.call
+        end
+
+      else # nothing was raised
+        case mode
+        when :sample then return false
+        when :assert then failed.call nil
+        when :negate then passed.call
+        end
+      end
+
+      exception
+    end
+
+    def assert_catch mode, message = nil, symbol = nil, &block
+      raise ArgumentError, 'block must be given' unless block
+
+      if message.is_a? Symbol and not symbol
+        symbol  = message
+        message = nil
+      end
+
+      raise ArgumentError, 'symbol must be given' unless symbol
+
+      symbol = symbol.to_sym
+      message ||= "block must throw #{symbol.inspect}"
+
+      passed = lambda do
+        @exec_stats[:passed_assertions] += 1
+      end
+
+      failed = lambda do
+        @exec_stats[:failed_assertions] += 1
+        debug block, message
+      end
+
+      # if nothing was thrown, the result of catch()
+      # is simply the result of executing the block
+      result = catch(symbol) do
+        begin
+          block.call
+
+        rescue Exception => e
+          debug_uncaught_exception block, e unless
+            # ignore error about the wrong symbol being thrown
+            #
+            # NOTE: Ruby 1.8 formats the thrown value in `quotes'
+            #       whereas Ruby 1.9 formats it like a :symbol
+            #
+            e.message =~ /\Auncaught throw (`.*?'|:.*)\z/
+        end
+
+        self # unlikely that block will throw *this* object
+      end
+
+      caught = result != self
+      result = nil unless caught
+
+      case mode
+      when :sample then return caught
+      when :assert then caught ? passed.call : failed.call
+      when :negate then caught ? failed.call : passed.call
+      end
+
+      result
+    end
 
     ##
     # Executes the current test suite recursively.
@@ -641,7 +909,7 @@ module Dfect
   D = self
 
   # provide mixin-able assertion methods
-  methods(false).grep(/^[[:upper:]]$/).each do |name|
+  methods(false).grep(/^[[:upper:]][[:punct:]]?$/).each do |name|
     #
     # XXX: using eval() on a string because Ruby 1.8's
     #      define_method() cannot take a block parameter
