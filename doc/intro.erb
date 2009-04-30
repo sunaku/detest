@@ -1,6 +1,28 @@
 % api_url = './api/index.html'
 % src_url = 'http://github.com/sunaku/' + $program
 % git_url = 'http://git-scm.com'
+<%
+  competitors = {
+    'assert{ 2.0 }' => 'http://assert2.rubyforge.org',
+    'Verify'        => 'http://www.ruby-forum.com/topic/183354',
+    'Testy'         => 'http://github.com/ahoward/testy/tree/master',
+    'minitest'      => 'http://blog.zenspider.com/minitest',
+    'Context'       => 'http://github.com/jeremymcanally/context',
+    'Shoulda'       => 'http://thoughtbot.com/projects/shoulda',
+    'Bacon'         => 'http://chneukirchen.org/repos/bacon/README',
+    'test-spec'     => 'http://test-spec.rubyforge.org/test-spec',
+    'RSpec'         => 'http://rspec.info',
+    'Test::Unit'    => 'http://www.ruby-doc.org/stdlib/libdoc/test/unit/rdoc/index.html',
+  }
+
+  def competitors.link_for key
+    if val = self[key]
+      "[#{key}](#{val})"
+    else
+      raise key
+    end
+  end
+%>
 
 %|chapter "Introduction"
   %|project
@@ -14,16 +36,9 @@
     * It is implemented in a mere <%= `sloccount lib`[/^\d+/] %> lines of code.
 
   These features distinguish <%= $project %> from the competition:
-  * [assert{ 2.0 }](http://assert2.rubyforge.org)
-  * [Verify](http://www.ruby-forum.com/topic/183354)
-  * [Testy](http://www.ruby-forum.com/topic/182798)
-  * [minitest](http://blog.zenspider.com/minitest)
-  * [Context](http://github.com/jeremymcanally/context)
-  * [Shoulda](http://thoughtbot.com/projects/shoulda)
-  * [Bacon](http://chneukirchen.org/repos/bacon/README)
-  * [test-spec](http://test-spec.rubyforge.org/test-spec)
-  * [RSpec](http://rspec.info)
-  * [Test::Unit](http://www.ruby-doc.org/stdlib/libdoc/test/unit/rdoc/index.html)
+
+  %|competitors.keys.sort_by {|name| name.downcase }.each do |name|
+    * <%= competitors.link_for name %>
 
   %|section "Motivation"
     The basic premise of <%= $project %> is that, when a failure occurs, I want to be put inside an interactive debugger where I have the freedom to properly scrutinize the state of my program and determine the root cause of the failure.

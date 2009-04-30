@@ -1,5 +1,20 @@
 %|chapter "History"
+  % sean_ohalpin_musing = "[Sean O'Halpin's musing](http://www.ruby-forum.com/topic/183354#801895)"
+
   %|history
+    For the longest time, I took <%= competitors.link_for 'Test::Unit' %> and <%= competitors.link_for 'RSpec' %> for granted.  They were the epitomy of modern Ruby practice; the insurmountable status quo; immortalized in books, conferences, and blogs alike.
+
+    Why would *anyone* think of using anything remotely different, let alone be foolish enough to write an alternative testing library when these are clearly *good enough*?
+
+    Recent experiments in assertion testing libraries smashed my world view:
+    * <%= competitors.link_for 'assert{ 2.0 }' %>
+    * <%= competitors.link_for 'Testy' %>
+    * <%= competitors.link_for 'Verify' %>
+
+    The status quo was certainly *not* "good enough", as I had so blindly believed all these years.  In fact, they were *verbose* behemoths that chose to encode endless permutations of conjecture into methods.
+
+    Empowered by this revelation and inspired by <%= sean_ohalpin_musing %> on alternative names for assertion methods, I rose to challenge the status quo.
+
     %|section "Version 0.1.0 (2009-04-28)"
       This release adds new variations to assertion methods, fixes several bugs, and improves test coverage.
 
@@ -30,4 +45,4 @@
         * Filled the big holes in test coverage.  Everything except the runtime debugging logic is now covered by the unit tests.
 
     %|section "Version 0.0.0 (2009-04-13)"
-      This is the first public release of <%= $project %>.  It was inspired by [Sean O'Halpin's musing](http://www.ruby-forum.com/topic/183354#801895) on alternative names for assertion methods.
+      This is the first public release of <%= $project %>.  It was inspired by <%= sean_ohalpin_musing %> on alternative names for assertion methods.
