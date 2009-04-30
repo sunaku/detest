@@ -26,8 +26,11 @@ D 'T!()' do
   T! { false }
   T! { nil   }
 
-  D 'must be same as F()' do
-    T { D.method(:T!) == D.method(:F) }
+  D 'must return block value' do
+    inner = nil
+    outer = T! { inner }
+
+    T { outer == inner }
   end
 end
 
@@ -45,27 +48,12 @@ D 'T?()' do
   end
 end
 
-D 'F()' do
-  F { !true }
-  F { false }
-  F { nil   }
-
-  D 'must return block value' do
-    inner = nil
-    outer = F { inner }
-
-    T { outer == inner }
-  end
+D 'F() must be same as T!()' do
+  T { D.method(:F) == D.method(:T!) }
 end
 
-D 'F!()' do
-  T! { !true }
-  T! { false }
-  T! { nil   }
-
-  D 'must be same as T()' do
-    T { D.method(:F!) == D.method(:T) }
-  end
+D 'F!() must be same as T()' do
+  T { D.method(:F!) == D.method(:T) }
 end
 
 D 'F?()' do
