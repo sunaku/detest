@@ -219,7 +219,7 @@ module Dfect
     #   T( "computers do not doublethink" ) { 2 + 2 != 5 } # passes
     #
     def T message = nil, &block
-      assert_block :assert, message, &block
+      assert_yield :assert, message, &block
     end
 
     ##
@@ -245,7 +245,7 @@ module Dfect
     #   T!( "computers do not doublethink" ) { 2 + 2 == 5 } # passes
     #
     def T! message = nil, &block
-      assert_block :negate, message, &block
+      assert_yield :negate, message, &block
     end
 
     ##
@@ -270,7 +270,7 @@ module Dfect
     #   T?( "computers do not doublethink" ) { 2 + 2 != 5 } # => true
     #
     def T? message = nil, &block
-      assert_block :sample, message, &block
+      assert_yield :sample, message, &block
     end
 
     alias F T!
@@ -544,7 +544,7 @@ module Dfect
 
     private
 
-    def assert_block mode, message = nil, &block
+    def assert_yield mode, message = nil, &block
       raise ArgumentError, 'block must be given' unless block
 
       message ||=
