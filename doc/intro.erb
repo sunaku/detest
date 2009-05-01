@@ -40,6 +40,13 @@
   %|competitors.keys.sort_by {|name| name.downcase }.each do |name|
     * <%= competitors.link_for name %>
 
+  %|paragraph "Etymology"
+    <%= $project %> is named after the D F E C T methods it provides.
+
+    The name is also play on the word "defect", whereby the intentional misspelling of "defect" as "dfect" is a defect in itself!  <tt>;-)</tt>
+
+    This wordplay is similar to [Mnesia](http://www.erlang.org/doc/apps/mnesia/index.html)'s play on the word "amnesia", whereby the intentional omission of the letter "A" indicates forgetfulness---the key characteristic of having amnesia.  Clever!
+
   %|section "Motivation"
     The basic premise of <%= $project %> is that, when a failure occurs, I want to be put inside an interactive debugger where I have the freedom to properly scrutinize the state of my program and determine the root cause of the failure.
 
@@ -54,13 +61,6 @@
     I exaggerate, for the sake of entertainment, of course.  But my point is that the Ruby testing libraries of today have (thus far) limited our productivity by orphaning us from the nurturing environment of IRB and shooing us off to a barren desert of antiquated techniques.  How cruel!
 
     And that, I say, is why <%= $project %> is essential to Ruby developers today.  It reunites us with our playful, interactive, *real-time* IRB roots and, with unwavering tenacity, enables us to investigate failures *productively*!
-
-  %|section "Etymology"
-    <%= $project %> is named after the D F E C T methods it provides.
-
-    The name is also play on the word "defect", whereby the intentional misspelling of "defect" as "dfect" is a defect in itself!  <tt>;-)</tt>
-
-    This wordplay is similar to [Mnesia](http://www.erlang.org/doc/apps/mnesia/index.html)'s play on the word "amnesia", whereby the intentional omission of the letter "A" indicates forgetfulness---the key characteristic of having amnesia.  Clever!
 
   %|section "Logistics"
     * <%= xref "History", "Release notes" %> --- history of project releases.
@@ -110,8 +110,8 @@
         </tbody>
       </table>
 
-  %|section "License"
-    %< "../LICENSE"
+    %|paragraph "License"
+      %< "../LICENSE"
 
   %|section "Credits"
     <%= $project %> is made possible by
