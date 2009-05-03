@@ -519,16 +519,21 @@ module Dfect
     ##
     # Executes all tests defined thus far and stores the results in #report.
     #
-    def run
+    # ==== Parameters
+    #
+    # [continue]
+    #   If true, results from previous executions will not be cleared.
+    #
+    def run continue = true
       # clear previous results
-      @exec_stats.clear
-      @exec_trace.clear
-      @test_stack.clear
+      unless continue
+        @exec_stats.clear
+        @exec_trace.clear
+        @test_stack.clear
+      end
 
       # make new results
-      catch :stop_dfect_execution do
-        execute
-      end
+      catch(:stop_dfect_execution) { execute }
 
       # print new results
       puts @report.to_yaml unless @options[:quiet]
