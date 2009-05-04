@@ -13,22 +13,6 @@
 
         gem install <%= $program %>
 
-  %|section "Manifest"
-    You will see the following items inside <%= $project %>'s installation
-    directory:
+    If you want to develop <%= $project %>, run this command:
 
-    * <tt>lib/</tt>
-
-      * <tt><%= $program %>.rb</tt> --- the main <%= $project %> library.
-
-      * <tt><%= $program %>/</tt>
-
-        * <tt>auto.rb</tt> --- automates test execution.
-
-    * <tt>doc/</tt>
-
-      * <tt>api/</tt> --- API reference documentation.
-
-      * <tt>index.erb</tt> --- source of this user manual.
-
-    * <tt>LICENSE</tt> --- copyright notice and legal conditions.
+        gem install <%= $program %> --development
