@@ -12,8 +12,16 @@ require 'yaml'
 # Work around this by representing a class by its name.
 #
 class Class #:nodoc: all
+  alias __to_yaml__ to_yaml
+  undef to_yaml
+
   def to_yaml opts = {}
-    name.to_yaml opts
+    begin
+      __to_yaml__
+    rescue TypeError => e
+      warn e
+      self.name.to_yaml opts
+    end
   end
 end
 
