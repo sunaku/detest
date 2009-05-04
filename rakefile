@@ -8,8 +8,8 @@ gem 'inochi', '~> 1'
 require 'inochi'
 
 Inochi.init :Dfect,
-  :version => '0.1.0',
-  :release => '2009-04-28',
+  :version => '1.0.0',
+  :release => '2009-05-03',
   :website => 'http://snk.tuxfamily.org/lib/dfect/',
   :tagline => 'Assertion testing library for Ruby'
 

@@ -20,6 +20,34 @@
 
     Empowered by this revelation and inspired by <%= sean_ohalpin_musing %> on alternative names for assertion methods, I rose to challenge the status quo.
 
+    %|section "Version 1.0.0 (2009-05-03)"
+      This release improves default choices, adds emulation layers to mimic other testing libraries, and fixes some bugs.
+
+      %|paragraph "Incompatible changes"
+        * The `:debug` option is now enabled by default and is no longer linked to the value of `$DEBUG`.
+
+        * `Dfect.run()` now appends to previous results by default.
+
+          This behavior can be disabled by passing `false` to the method.
+
+      %|paragraph "New features"
+        * Add emulation layers to mimic other testing libraries:
+          * <tt>dfect/unit</tt> --- Test::Unit
+          * <tt>dfect/mini</tt> --- Minitest
+          * <tt>dfect/spec</tt> --- RSpec
+
+      %|paragraph "Bug fixes"
+        * Do not blindly replace `Class#to_yaml`; it might be fixed someday.
+
+      %|paragraph "Housekeeping"
+        * Add <%= xref "Motivation" %> section in user manual to promote interactive debugging.
+
+        * Add brief <%= xref "History" %> of this project's inception.
+
+        * Remove redundant assertions for F!() and T!() methods in test suite.
+
+        * Add copyright notice at the top of every file.
+
     %|section "Version 0.1.0 (2009-04-28)"
       This release adds new variations to assertion methods, fixes several bugs, and improves test coverage.
 
