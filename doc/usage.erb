@@ -5,7 +5,9 @@
 
 % dfect_api = 'api/classes/Dfect.html'
 
+
 %|chapter "Usage"
+
   Begin by loading <%= $project %> into your program:
 
   <code>
@@ -16,22 +18,24 @@
   You now have access to the [`Dfect` module](<%= dfect_api %>), which provides mixin-able instance methods that are also directly-callable as class methods:
 
   <code>
-  Dfect.D "hello" do  # D() is a not-mixed-in class method
+  Dfect.D "hello" do  # D() is a class method
     puts "world"
   end
 
   # the above is same as:
 
-  include Dfect
+  include Dfect       # mix-in the Dfect API
 
-  D "hello" do        # D() is a mixed-in instance method
+  D "hello" do        # D() is an instance method
     puts "world"
   end
   </code>
 
   The following sections explain these provided methods in detail.
 
+
   %|section "Assertions"
+
     The following methods take a block parameter and assert something about the result of executing that block.  See the [API documentation](<%= dfect_api %>) for examples.
 
     | Method | Description                             |
@@ -41,7 +45,9 @@
     | C      | assert that a symbol is thrown          |
     | T      | assert true (not `nil` and not `false`) |
 
+
     %|paragraph "Negation"
+
       These methods are the *opposite* of <%= xref "Assertions", "normal assertions" %>.
 
       | Method | Description                              |
@@ -51,7 +57,9 @@
       | C!     | assert that a symbol is *not* thrown     |
       | T!     | same as F                                |
 
+
     %|paragraph "Sampling"
+
       These methods allow you to *check the outcome* of an <%= xref "Assertions", "assertion" %> without the penalty of pass or failure.
 
       | Method | Description                                   |
@@ -61,7 +69,9 @@
       | C?     | returns `true` if C passes; `false` otherwise |
       | T?     | returns `true` if T passes; `false` otherwise |
 
+
     %|section "Failures"
+
       When an assertion fails, details about the failure will be shown:
 
       <pre>
@@ -91,7 +101,9 @@
 
       Details about all assertion failures and a trace of all tests executed are stored by <%= $project %> and provided by the [`Dfect.report`](<%= dfect_api %>) method.
 
+
   %|section "Tests"
+
     The [`D()` method](<%= dfect_api %>) defines a new **test**, which is analagous to the `describe()` environment provided by BDD frameworks like RSpec.
 
     A test may also contain nested tests.
@@ -106,7 +118,9 @@
     end
     </code>
 
+
     %|section "Hooks"
+
       The [`D()` method](<%= dfect_api %>) provides several entry points (hooks) into the test execution process:
 
       <code>
@@ -129,7 +143,9 @@
       D .< { puts "do something more!" }
       </code>
 
+
     %|section "Insulation"
+
       Use the singleton class of a temporary object to shield your test logic from Ruby's global environment, the code being tested, and from other tests:
 
       <code>
@@ -172,7 +188,9 @@
       end
       </code>
 
+
   %|section "Execution"
+
     You can configure test execution using:
 
     <code>
@@ -199,7 +217,9 @@
 
     See the [API documentation](<%= dfect_api %>) for details and examples.
 
+
     %|section "Automatic test execution"
+
       <code>
       require 'rubygems'
       require 'dfect/auto'   # <== notice the "auto"
@@ -207,7 +227,9 @@
 
       The above code will mix-in the `Dfect` module into your program and will execute all tests defined by your program before it terminates.
 
+
   %|example "A sample unit test"
+
     <code>
     require 'rubygems'
     require 'dfect/auto'
@@ -248,3 +270,4 @@
       end
     end
     </code>
+

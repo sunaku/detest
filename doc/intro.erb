@@ -6,6 +6,7 @@
 % api_url = './api/index.html'
 % src_url = 'http://github.com/sunaku/' + $program
 % git_url = 'http://git-scm.com'
+
 <%
   competitors = {
     'assert{ 2.0 }' => 'http://assert2.rubyforge.org',
@@ -29,9 +30,25 @@
   end
 %>
 
+
 %|chapter "Introduction"
+
+
   %|project
+
     <%= $project %> is an assertion testing library for Ruby that emphasizes a simple assertion vocabulary, instant debuggability of failures, and flexibility in composing tests.
+
+
+  * <%= xref "History", "What's new?" %> --- history of project releases.
+  * [Source code](<%= src_url %>) --- obtain via [Git](<%= git_url %>) or browse online.
+  * [API reference](<%= api_url %>) --- documentation for source code.
+  * [Project home](<%= $website %>) --- the <%= $project %> project home page.
+
+  To get help or provide feedback, simply
+  <%= xref "License", "contact the author(s)" %>.
+
+
+  %|section "Features"
 
     <%= $project %> is exciting because:
     * It has only 5 methods to remember: D F E C T.
@@ -40,17 +57,10 @@
     * It lets you nest tests and execution hooks.
     * It is implemented in a mere <%= `sloccount lib`[/^\d+/] %> lines of code.
 
-  These features distinguish <%= $project %> from the competition:
+    These features distinguish <%= $project %> from the competition:
+    %|competitors.keys.sort_by {|name| name.downcase }.each do |name|
+      * <%= competitors.link_for name %>
 
-  %|competitors.keys.sort_by {|name| name.downcase }.each do |name|
-    * <%= competitors.link_for name %>
-
-  %|paragraph "Etymology"
-    <%= $project %> is named after the D F E C T methods it provides.
-
-    The name is also play on the word "defect", whereby the intentional misspelling of "defect" as "dfect" is a defect in itself!  <tt>;-)</tt>
-
-    This wordplay is similar to [Mnesia](http://www.erlang.org/doc/apps/mnesia/index.html)'s play on the word "amnesia", whereby the intentional omission of the letter "A" indicates forgetfulness---the key characteristic of having amnesia.  Clever!
 
   %|section "Motivation"
     The basic premise of <%= $project %> is that, when a failure occurs, I want to be put inside an interactive debugger where I have the freedom to properly scrutinize the state of my program and determine the root cause of the failure.
@@ -67,61 +77,26 @@
 
     And that, I say, is why <%= $project %> is essential to Ruby developers today.  It reunites us with our playful, interactive, *real-time* IRB roots and, with unwavering tenacity, enables us to investigate failures *productively*!
 
-  %|section "Logistics"
-    * <%= xref "History", "Release notes" %> --- history of project releases.
-    * [Source code](<%= src_url %>) --- obtain via [Git](<%= git_url %>) or browse online.
-    * [API reference](<%= api_url %>) --- documentation for source code.
-    * [Project home](<%= $website %>) --- the <%= $project %> project home page.
 
-    To get help or provide feedback, simply
-    <%= xref "License", "contact the author(s)" %>.
+  %|section "Etymology"
 
-    %|paragraph "Version numbers"
-      <%= $project %> releases are numbered in *major.minor.patch*
-      form according to the [RubyGems rational versioning
-      policy](http://www.rubygems.org/read/chapter/7), which
-      can be summarized thus:
+    <%= $project %> is named after the D F E C T methods it provides.
 
-      <table markdown="1">
-        <thead>
-          <tr>
-            <td rowspan="2">What increased in the version number?</td>
-            <td colspan="3">The increase indicates that the release:</td>
-          </tr>
-          <tr>
-            <th>Is backward compatible?</th>
-            <th>Has new features?</th>
-            <th>Has bug fixes?</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>major</th>
-            <td style="background-color: #FFE4E1;">No</td>
-            <td>Yes</td>
-            <td>Yes</td>
-          </tr>
-          <tr>
-            <th>minor</th>
-            <td>Yes</td>
-            <td>Yes</td>
-            <td>Yes</td>
-          </tr>
-          <tr>
-            <th>patch</th>
-            <td>Yes</td>
-            <td style="background-color: #FFE4E1;">No</td>
-            <td>Yes</td>
-          </tr>
-        </tbody>
-      </table>
+    The name is also play on the word "defect", whereby the intentional misspelling of "defect" as "dfect" is a defect in itself!  <tt>;-)</tt>
 
-    %|paragraph "License"
-      %< "../LICENSE"
+    This wordplay is similar to [Mnesia](http://www.erlang.org/doc/apps/mnesia/index.html)'s play on the word "amnesia", whereby the intentional omission of the letter "A" indicates forgetfulness---the key characteristic of having amnesia.  Clever!
+
+
+  %|section "License"
+
+    %< "../LICENSE"
+
 
   %|section "Credits"
+
     <%= $project %> is made possible by
-    <%= xref "History", "contributions" %>
+    %= xref "History", "contributions"
     from users like you:
 
     %< "../CREDITS"
+
