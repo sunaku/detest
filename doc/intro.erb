@@ -8,7 +8,7 @@
 % git_url = 'http://git-scm.com'
 
 <%
-  competitors = {
+  related_works = {
     'assert{ 2.0 }' => 'http://assert2.rubyforge.org',
     'Verify'        => 'http://www.ruby-forum.com/topic/183354',
     'Testy'         => 'http://github.com/ahoward/testy/tree/master',
@@ -21,7 +21,7 @@
     'Test::Unit'    => 'http://www.ruby-doc.org/stdlib/libdoc/test/unit/rdoc/index.html',
   }
 
-  def competitors.link_for key
+  def related_works.link_for key
     if val = self[key]
       "[#{key}](#{val})"
     else
@@ -56,10 +56,6 @@
     * It keeps a detailed report of assertion failures.
     * It lets you nest tests and execution hooks.
     * It is implemented in a mere <%= `sloccount lib`[/^\d+/] %> lines of code.
-
-    These features distinguish <%= $project %> from the competition:
-    %|competitors.keys.sort_by {|name| name.downcase }.each do |name|
-      * <%= competitors.link_for name %>
 
 
   %|section "Motivation"
@@ -99,4 +95,10 @@
     from users like you:
 
     %< "../CREDITS"
+
+
+  %|section "Related works"
+
+    %|related_works.keys.sort_by {|name| name.downcase }.each do |name|
+      * <%= related_works.link_for name %>
 
