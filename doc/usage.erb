@@ -10,26 +10,26 @@
 
   Begin by loading <%= $project %> into your program:
 
-  <code>
-  require 'rubygems'
-  require 'dfect'
-  </code>
+      require 'rubygems'
+      require 'dfect'
+
+  {:lang=ruby}
 
   You now have access to the [`Dfect` module](<%= dfect_api %>), which provides mixin-able instance methods that are also directly-callable as class methods:
 
-  <code>
-  Dfect.D "hello" do  # D() is a class method
-    puts "world"
-  end
+      Dfect.D "hello" do  # D() is a class method
+        puts "world"
+      end
 
-  # the above is same as:
+      # the above is same as:
 
-  include Dfect       # mix-in the Dfect API
+      include Dfect       # mix-in the Dfect API
 
-  D "hello" do        # D() is an instance method
-    puts "world"
-  end
-  </code>
+      D "hello" do        # D() is an instance method
+        puts "world"
+      end
+
+  {:lang=ruby}
 
   The following sections explain these provided methods in detail.
 
@@ -74,28 +74,26 @@
 
       When an assertion fails, details about the failure will be shown:
 
-      <pre>
-      - fail: block must yield true (!nil && !false)
-        code: |-
-          [12..22] in test/simple.rb
-             12
-             13     D "with more nested tests" do
-             14       x = 5
-             15
-             16       T { x > 2 }   # passes
-          => 17       F { x > 2 }   # fails
-             18       E { x.hello } # passes
-             19     end
-             20   end
-             21
-             22   # equivalent of before(:each) or setup()
-        vars:
-          x: 5
-          y: 83
-        call:
-        - test/simple.rb:17
-        - test/simple.rb:3
-      </pre>
+          - fail: block must yield true (!nil && !false)
+            code: |-
+              [12..22] in test/simple.rb
+                 12
+                 13     D "with more nested tests" do
+                 14       x = 5
+                 15
+                 16       T { x > 2 }   # passes
+              => 17       F { x > 2 }   # fails
+                 18       E { x.hello } # passes
+                 19     end
+                 20   end
+                 21
+                 22   # equivalent of before(:each) or setup()
+            vars:
+              x: 5
+              y: 83
+            call:
+            - test/simple.rb:17
+            - test/simple.rb:3
 
       You will then be placed into a debugger to investigate the failure if the `:debug` option is enabled in [`Dfect.options`](<%= dfect_api %>).
 
@@ -108,51 +106,51 @@
 
     A test may also contain nested tests.
 
-    <code>
-    D "outer test" do
-      # assertions and logic here
+        D "outer test" do
+          # assertions and logic here
 
-      D "inner test" do
-        # more assertions and logic here
-      end
-    end
-    </code>
+          D "inner test" do
+            # more assertions and logic here
+          end
+        end
+
+    {:lang=ruby}
 
 
     %|section "Hooks"
 
       The [`D()` method](<%= dfect_api %>) provides several entry points (hooks) into the test execution process:
 
-      <code>
-      D "outer test" do
-        D .<  { puts "before each nested test" }
-        D .>  { puts "after  each nested test" }
-        D .<< { puts "before all nested tests" }
-        D .>> { puts "after  all nested tests" }
+          D "outer test" do
+            D .<  { puts "before each nested test" }
+            D .>  { puts "after  each nested test" }
+            D .<< { puts "before all nested tests" }
+            D .>> { puts "after  all nested tests" }
 
-        D "inner test" do
-          # assertions and logic here
-        end
-      end
-      </code>
+            D "inner test" do
+              # assertions and logic here
+            end
+          end
+
+      {:lang=ruby}
 
       A hook method may be called multiple times.  Each call registers additional logic to execute during the hook:
 
-      <code>
-      D .< { puts "do something" }
-      D .< { puts "do something more!" }
-      </code>
+          D .< { puts "do something" }
+          D .< { puts "do something more!" }
+
+      {:lang=ruby}
 
 
     %|section "Insulation"
 
       Use the singleton class of a temporary object to shield your test logic from Ruby's global environment, the code being tested, and from other tests:
 
-      <code>
-      class << Object.new
-        # your test logic here
-      end
-      </code>
+          class << Object.new
+            # your test logic here
+          end
+
+      {:lang=ruby}
 
       Inside this insulated environment, you are free to:
       * mix-in any modules your test logic needs
@@ -160,114 +158,117 @@
 
       For example:
 
-      <code>
-      class << Object.new
-        include SomeModule
-        extend AnotherModule
+          class << Object.new
+            include SomeModule
+            extend AnotherModule
 
-        YOUR_CONSTANT = 123
+            YOUR_CONSTANT = 123
 
-        D "your tests here" do
-          # your test logic here
+            D "your tests here" do
+              # your test logic here
 
-          your_helper_method
-        end
+              your_helper_method
+            end
 
-        def self.your_helper_method
-          # your helper logic here
+            def self.your_helper_method
+              # your helper logic here
 
-          helper = YourHelperClass.new
-          helper.do_something_helpful
+              helper = YourHelperClass.new
+              helper.do_something_helpful
 
-          T { 2 + 2 != 5 }
-        end
+              T { 2 + 2 != 5 }
+            end
 
-        class YourHelperClass
-          # your helper logic here
-        end
-      end
-      </code>
+            class YourHelperClass
+              # your helper logic here
+            end
+          end
+
+      {:lang=ruby}
 
 
   %|section "Execution"
 
     You can configure test execution using:
 
-    <code>
-    Dfect.options = your_options_hash
-    </code>
+        Dfect.options = your_options_hash
+
+    {:lang=ruby}
 
     You can execute all tests defined thus far using:
 
-    <code>
-    Dfect.run
-    </code>
+        Dfect.run
+
+    {:lang=ruby}
 
     You can stop this execution at any time using:
 
-    <code>
-    Dfect.stop
-    </code>
+        Dfect.stop
+
+    {:lang=ruby}
 
     You can view the results of execution using:
 
-    <code>
-    puts Dfect.report.to_yaml
-    </code>
+        puts Dfect.report.to_yaml
+
+    {:lang=ruby}
 
     See the [API documentation](<%= dfect_api %>) for details and examples.
 
 
     %|section "Automatic test execution"
 
-      <code>
-      require 'rubygems'
-      require 'dfect/auto'   # <== notice the "auto"
-      </code>
+      %
+          require 'rubygems'
+          require 'dfect/auto'   # <== notice the "auto"
+
+      {:lang=ruby}
 
       The above code will mix-in the `Dfect` module into your program and will execute all tests defined by your program before it terminates.
 
 
   %|example "A sample unit test"
 
-    <code>
-    require 'rubygems'
-    require 'dfect/auto'
+    %
 
-    D "a test" do
-      D "a nested test" do
-      end
+        require 'rubygems'
+        require 'dfect/auto'
 
-      D "another nested test" do
-      end
+        D "a test" do
+          D "a nested test" do
+          end
 
-      D "a complex test" do
-        y = 83
+          D "another nested test" do
+          end
 
-        D "with more nested tests" do
-          x = 5
+          D "a complex test" do
+            y = 83
 
-          T { x > 2 }   # passes
-          F { x > 2 }   # fails
-          E { x.hello } # passes
+            D "with more nested tests" do
+              x = 5
+
+              T { x > 2 }   # passes
+              F { x > 2 }   # fails
+              E { x.hello } # passes
+            end
+          end
+
+          D .< do
+            puts "this is executed before every test in this scope"
+          end
+
+          D .> do
+            puts "this is executed after every test in this scope"
+          end
+
+          D .<< do
+            puts "this is executed once, before all tests in this scope"
+          end
+
+          D .>> do
+            puts "this is executed once, after all tests in this scope"
+          end
         end
-      end
 
-      D .< do
-        puts "this is executed before every test in this scope"
-      end
-
-      D .> do
-        puts "this is executed after every test in this scope"
-      end
-
-      D .<< do
-        puts "this is executed once, before all tests in this scope"
-      end
-
-      D .>> do
-        puts "this is executed once, after all tests in this scope"
-      end
-    end
-    </code>
+    {:lang=ruby}
 
