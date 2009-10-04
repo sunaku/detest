@@ -21,6 +21,11 @@ end
   :wont => :refute,
 }.
 each do |outer, inner|
+  #
+  # XXX: using eval() because Ruby 1.8 does
+  #      not support default values and
+  #      block parameters in define_method()
+  #
   file, line = __FILE__, __LINE__ ; eval %{
     class Object
       def #{outer}_be_close_to other, message = nil

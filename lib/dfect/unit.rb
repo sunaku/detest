@@ -20,6 +20,11 @@ module Kernel
     [:assert_not, '!',  'not '],
   ].
   each do |prefix, polarity, action|
+    #
+    # XXX: using eval() because Ruby 1.8 does
+    #      not support default values and
+    #      block parameters in define_method()
+    #
     file, line = __FILE__, __LINE__ ; eval %{
       def #{prefix} boolean, message = nil
         Dfect.T#{polarity}(message) { boolean }
