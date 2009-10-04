@@ -34,7 +34,7 @@ module Kernel
         Dfect.T#{polarity}(message) { collection.empty? }
       end
 
-      def #{prefix}_equal actual, expected, message = nil
+      def #{prefix}_equal expected, actual, message = nil
         message ||= 'actual must #{action}equal expected'
         Dfect.T#{polarity}(message) { actual == expected }
       end
