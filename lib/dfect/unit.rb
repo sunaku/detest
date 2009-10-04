@@ -48,7 +48,9 @@ module Kernel
         message ||= 'actual must #{action}be within delta of expected'
         delta   ||= 0.001
 
-        Dfect.T#{polarity}(message) { Math.abs(expected - actual) <= Math.abs(delta) }
+        Dfect.T#{polarity}(message) do
+          Math.abs(expected - actual) <= Math.abs(delta)
+        end
       end
 
       alias #{prefix}_in_epsilon #{prefix}_in_delta
