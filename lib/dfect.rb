@@ -525,6 +525,27 @@ module Dfect
     end
 
     ##
+    # Adds the given message to the report inside
+    # the section of the currently running test.
+    #
+    # You can think of "S" as "say" or "status".
+    #
+    # ==== Parameters
+    #
+    # [message]
+    #   Objects to be added to the report.
+    #
+    # ==== Examples
+    #
+    #   S "establishing connection..."
+    #
+    #   S "beginning calculation...", Math::PI, [1, 2, 3, ['a', 'b', 'c']]
+    #
+    def S *message
+      @exec_trace.concat message
+    end
+
+    ##
     # Executes all tests defined thus far and stores the results in #report.
     #
     # ==== Parameters
