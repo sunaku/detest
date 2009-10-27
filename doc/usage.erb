@@ -289,6 +289,19 @@
     See the [API documentation](<%= dfect_api %>) for details and examples.
 
 
+  %|section "Emulation"
+
+    Dfect provides emulation layers for several popular testing libraries:
+
+    * <tt>dfect/unit</tt> --- Test::Unit
+    * <tt>dfect/mini</tt> --- Minitest
+    * <tt>dfect/spec</tt> --- RSpec
+
+    Simply `require()` one of these emulation layers into your test suite and you can write your tests using the familiar syntax of that testing library.
+
+    See the [API documentation](<%= api_url %>) for details and examples.
+
+
   %|example! "A sample unit test"
 
     The following code is from Dfect's very own test suite.
