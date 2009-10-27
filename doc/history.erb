@@ -10,6 +10,34 @@
   %|history
 
 
+    %|section "Version 1.1.0 (2009-10-27)"
+
+      This release adds a new method for emitting status messages and does some internal housekeeping.
+
+
+      %|paragraph "Thank you"
+
+        * Iñaki Baz Castillo used Dfect and suggested new features.
+
+
+      %|paragraph "New features"
+
+        * Add `Dfect::S()` method for <%= xref "Reporting", "adding status messages" %> to the execution report.  This feature was [requested by](http://github.com/sunaku/dfect/issues/closed#issue/1) Iñaki Baz Castillo.
+
+
+      %|paragraph "Housekeeping"
+
+        * Remove unused require of 'delegate' standard library in 'dfect/spec' RSpec emulation layer.
+
+        * Mention <%= xref "Emulation" %> layers for popular testing libraries.
+
+        * Mention that assertions take an optional message parameter.
+
+        * Replace sample unit test with Dfect test suite.
+
+        * Upgrade user manual to ERBook 9.0.0.
+
+
     %|section "Version 1.0.1 (2009-10-07)"
 
       This release fixes a bug in the Test::Unit emulation library and revises the user manual.
