@@ -29,7 +29,7 @@
       puts "world"
     end
 
-  The following sections explain these provided methods in detail.
+  The following sections explain these provided methods in detail.  If you are impatient, you can skip to <%= xref "A sample unit test" %> for an illustrative example.
 
 
   %|section "Assertions"
@@ -282,42 +282,7 @@
 
   %|example! "A sample unit test"
 
+    The following code is from Dfect's very own test suite.
+
     %|code :ruby
-      require 'rubygems'
-      require 'dfect/auto'
-
-      D "a test" do
-        D "a nested test" do
-        end
-
-        D "another nested test" do
-        end
-
-        D "a complex test" do
-          y = 83
-
-          D "with more nested tests" do
-            x = 5
-
-            T { x > 2 }   # passes
-            F { x > 2 }   # fails
-            E { x.hello } # passes
-          end
-        end
-
-        D .< do
-          puts "this is executed before every test in this scope"
-        end
-
-        D .> do
-          puts "this is executed after every test in this scope"
-        end
-
-        D .<< do
-          puts "this is executed once, before all tests in this scope"
-        end
-
-        D .>> do
-          puts "this is executed once, after all tests in this scope"
-        end
-      end
+      %< "../test/dfect.rb"
