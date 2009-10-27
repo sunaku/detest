@@ -5,7 +5,6 @@
 #++
 
 require 'dfect'
-require 'delegate'
 
 module Kernel
   def describe *args, &block
