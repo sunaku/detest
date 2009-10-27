@@ -935,9 +935,9 @@ module Dfect
   # Allows before and after hooks to be specified via
   # the D() method syntax when this module is mixed-in:
   #
+  #   D .<< { puts "before all nested tests" }
   #   D .<  { puts "before each nested test" }
   #   D .>  { puts "after  each nested test" }
-  #   D .<< { puts "before all nested tests" }
   #   D .>> { puts "after  all nested tests" }
   #
   D = self

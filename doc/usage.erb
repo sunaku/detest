@@ -11,10 +11,10 @@
   Begin by loading <%= $project %> into your program:
 
   %|code :ruby
-    require 'rubygems'
+    require 'rubygems' # only necessary if you are using Ruby 1.8
     require 'dfect'
 
-  You now have access to the [`Dfect` module](<%= dfect_api %>), which provides mixin-able instance methods that are also directly-callable as class methods:
+  You now have access to the [`Dfect` module](<%= dfect_api %>), which provides methods that can be mixed-in or called directly, according to your preference:
 
   %|code :ruby
     Dfect.D "hello" do  # D() is a class method
@@ -36,7 +36,7 @@
 
     The following methods accept a block parameter and assert something about the result of executing that block.  They also accept an optional message, which is shown in <%= xref "Failures", "failure reports" %> if they fail.
 
-    See the [API documentation](<%= dfect_api %>) for examples.
+    See the [API documentation](<%= api_url %>) for details and examples.
 
     %|table
       %|thead
@@ -46,6 +46,11 @@
           %|th
             Description
       %|tbody
+        %|tr
+          %|td
+            T
+          %|td
+            assert true (not `nil` and not `false`)
         %|tr
           %|td
             F
@@ -61,11 +66,6 @@
             C
           %|td
             assert that a symbol is thrown
-        %|tr
-          %|td
-            T
-          %|td
-            assert true (not `nil` and not `false`)
 
 
     %|paragraph "Negation"
@@ -82,6 +82,11 @@
         %|tbody
           %|tr
             %|td
+              T!
+            %|td
+              same as F
+          %|tr
+            %|td
               F!
             %|td
               same as T
@@ -89,22 +94,17 @@
             %|td
               E!
             %|td
-              assert that an execption is *not* raised
+              assert that an exception is *not* raised
           %|tr
             %|td
               C!
             %|td
               assert that a symbol is *not* thrown
-          %|tr
-            %|td
-              T!
-            %|td
-              same as F
 
 
     %|paragraph "Sampling"
 
-      These methods allow you to *check the outcome* of an <%= xref "Assertions", "assertion" %> without the penalty of pass or failure.
+      These methods allow you to *check the outcome* of an <%= xref "Assertions", "assertion" %> without including the assertion in the execution report.
 
       %|table
         %|thead
@@ -114,6 +114,11 @@
             %|th
               Description
         %|tbody
+          %|tr
+            %|td
+              T?
+            %|td
+              returns `true` if T passes; `false` otherwise
           %|tr
             %|td
               F?
@@ -129,11 +134,6 @@
               C?
             %|td
               returns `true` if C passes; `false` otherwise
-          %|tr
-            %|td
-              T?
-            %|td
-              returns `true` if T passes; `false` otherwise
 
 
     %|section "Failures"
@@ -270,13 +270,13 @@
     %|code :ruby
       puts Dfect.report.to_yaml
 
-    See the [API documentation](<%= dfect_api %>) for details and examples.
+    See the [API documentation](<%= api_url %>) for details and examples.
 
 
     %|section "Automatic test execution"
 
       %|code :ruby
-        require 'rubygems'
+        require 'rubygems'     # only necessary if you are using Ruby 1.8
         require 'dfect/auto'   # <== notice the "auto"
 
       The above code will mix-in the `Dfect` module into your program and will execute all tests defined by your program before it terminates.
@@ -286,7 +286,7 @@
 
     You can insert status messages, which can be arbitrary Ruby objects, into the execution report using the `Dfect::S()` method.
 
-    See the [API documentation](<%= dfect_api %>) for details and examples.
+    See the [API documentation](<%= api_url %>) for details and examples.
 
 
   %|section "Emulation"
