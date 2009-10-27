@@ -10,26 +10,24 @@
 
   Begin by loading <%= $project %> into your program:
 
-      require 'rubygems'
-      require 'dfect'
-
-  {:lang=ruby}
+  %|code :ruby
+    require 'rubygems'
+    require 'dfect'
 
   You now have access to the [`Dfect` module](<%= dfect_api %>), which provides mixin-able instance methods that are also directly-callable as class methods:
 
-      Dfect.D "hello" do  # D() is a class method
-        puts "world"
-      end
+  %|code :ruby
+    Dfect.D "hello" do  # D() is a class method
+      puts "world"
+    end
 
-      # the above is same as:
+    # the above is same as:
 
-      include Dfect       # mix-in the Dfect API
+    include Dfect       # mix-in the Dfect API
 
-      D "hello" do        # D() is an instance method
-        puts "world"
-      end
-
-  {:lang=ruby}
+    D "hello" do        # D() is an instance method
+      puts "world"
+    end
 
   The following sections explain these provided methods in detail.
 
@@ -38,36 +36,102 @@
 
     The following methods take a block parameter and assert something about the result of executing that block.  See the [API documentation](<%= dfect_api %>) for examples.
 
-    | Method | Description                             |
-    | ------ | -----------                             |
-    | F      | assert not true (`nil` or `false`)      |
-    | E      | assert that an execption is raised      |
-    | C      | assert that a symbol is thrown          |
-    | T      | assert true (not `nil` and not `false`) |
+    %|table
+      %|thead
+        %|tr
+          %|th
+            Method
+          %|th
+            Description
+      %|tbody
+        %|tr
+          %|td
+            F
+          %|td
+            assert not true (`nil` or `false`)
+        %|tr
+          %|td
+            E
+          %|td
+            assert that an execption is raised
+        %|tr
+          %|td
+            C
+          %|td
+            assert that a symbol is thrown
+        %|tr
+          %|td
+            T
+          %|td
+            assert true (not `nil` and not `false`)
 
 
     %|paragraph "Negation"
 
       These methods are the *opposite* of <%= xref "Assertions", "normal assertions" %>.
 
-      | Method | Description                              |
-      | ------ | -----------                              |
-      | F!     | same as T                                |
-      | E!     | assert that an execption is *not* raised |
-      | C!     | assert that a symbol is *not* thrown     |
-      | T!     | same as F                                |
+      %|table
+        %|thead
+          %|tr
+            %|th
+              Method
+            %|th
+              Description
+        %|tbody
+          %|tr
+            %|td
+              F!
+            %|td
+              same as T
+          %|tr
+            %|td
+              E!
+            %|td
+              assert that an execption is *not* raised
+          %|tr
+            %|td
+              C!
+            %|td
+              assert that a symbol is *not* thrown
+          %|tr
+            %|td
+              T!
+            %|td
+              same as F
 
 
     %|paragraph "Sampling"
 
       These methods allow you to *check the outcome* of an <%= xref "Assertions", "assertion" %> without the penalty of pass or failure.
 
-      | Method | Description                                   |
-      | ------ | -----------                                   |
-      | F?     | returns `true` if F passes; `false` otherwise |
-      | E?     | returns `true` if E passes; `false` otherwise |
-      | C?     | returns `true` if C passes; `false` otherwise |
-      | T?     | returns `true` if T passes; `false` otherwise |
+      %|table
+        %|thead
+          %|tr
+            %|th
+              Method
+            %|th
+              Description
+        %|tbody
+          %|tr
+            %|td
+              F?
+            %|td
+              returns `true` if F passes; `false` otherwise
+          %|tr
+            %|td
+              E?
+            %|td
+              returns `true` if E passes; `false` otherwise
+          %|tr
+            %|td
+              C?
+            %|td
+              returns `true` if C passes; `false` otherwise
+          %|tr
+            %|td
+              T?
+            %|td
+              returns `true` if T passes; `false` otherwise
 
 
     %|section "Failures"
@@ -106,51 +170,47 @@
 
     A test may also contain nested tests.
 
-        D "outer test" do
-          # assertions and logic here
+    %|code :ruby
+      D "outer test" do
+        # assertions and logic here
 
-          D "inner test" do
-            # more assertions and logic here
-          end
+        D "inner test" do
+          # more assertions and logic here
         end
-
-    {:lang=ruby}
+      end
 
 
     %|section "Hooks"
 
       The [`D()` method](<%= dfect_api %>) provides several entry points (hooks) into the test execution process:
 
-          D "outer test" do
-            D .<  { puts "before each nested test" }
-            D .>  { puts "after  each nested test" }
-            D .<< { puts "before all nested tests" }
-            D .>> { puts "after  all nested tests" }
+      %|code :ruby
+        D "outer test" do
+          D .<  { puts "before each nested test" }
+          D .>  { puts "after  each nested test" }
+          D .<< { puts "before all nested tests" }
+          D .>> { puts "after  all nested tests" }
 
-            D "inner test" do
-              # assertions and logic here
-            end
+          D "inner test" do
+            # assertions and logic here
           end
-
-      {:lang=ruby}
+        end
 
       A hook method may be called multiple times.  Each call registers additional logic to execute during the hook:
 
-          D .< { puts "do something" }
-          D .< { puts "do something more!" }
-
-      {:lang=ruby}
+      %|code :ruby
+        D .< { puts "do something" }
+        D .< { puts "do something more!" }
 
 
     %|section "Insulation"
 
       Use the singleton class of a temporary object to shield your test logic from Ruby's global environment, the code being tested, and from other tests:
 
-          class << Object.new
-            # your test logic here
-          end
-
-      {:lang=ruby}
+      %|code :ruby
+        class << Object.new
+          # your test logic here
+        end
 
       Inside this insulated environment, you are free to:
       * mix-in any modules your test logic needs
@@ -158,117 +218,106 @@
 
       For example:
 
-          class << Object.new
-            include SomeModule
-            extend AnotherModule
+      %|code :ruby
+        class << Object.new
+          include SomeModule
+          extend AnotherModule
 
-            YOUR_CONSTANT = 123
+          YOUR_CONSTANT = 123
 
-            D "your tests here" do
-              # your test logic here
+          D "your tests here" do
+            # your test logic here
 
-              your_helper_method
-            end
-
-            def self.your_helper_method
-              # your helper logic here
-
-              helper = YourHelperClass.new
-              helper.do_something_helpful
-
-              T { 2 + 2 != 5 }
-            end
-
-            class YourHelperClass
-              # your helper logic here
-            end
+            your_helper_method
           end
 
-      {:lang=ruby}
+          def self.your_helper_method
+            # your helper logic here
+
+            helper = YourHelperClass.new
+            helper.do_something_helpful
+
+            T { 2 + 2 != 5 }
+          end
+
+          class YourHelperClass
+            # your helper logic here
+          end
+        end
 
 
   %|section "Execution"
 
     You can configure test execution using:
 
-        Dfect.options = your_options_hash
-
-    {:lang=ruby}
+    %|code :ruby
+      Dfect.options = your_options_hash
 
     You can execute all tests defined thus far using:
 
-        Dfect.run
-
-    {:lang=ruby}
+    %|code :ruby
+      Dfect.run
 
     You can stop this execution at any time using:
 
-        Dfect.stop
-
-    {:lang=ruby}
+    %|code :ruby
+      Dfect.stop
 
     You can view the results of execution using:
 
-        puts Dfect.report.to_yaml
-
-    {:lang=ruby}
+    %|code :ruby
+      puts Dfect.report.to_yaml
 
     See the [API documentation](<%= dfect_api %>) for details and examples.
 
 
     %|section "Automatic test execution"
 
-      %
-          require 'rubygems'
-          require 'dfect/auto'   # <== notice the "auto"
-
-      {:lang=ruby}
+      %|code :ruby
+        require 'rubygems'
+        require 'dfect/auto'   # <== notice the "auto"
 
       The above code will mix-in the `Dfect` module into your program and will execute all tests defined by your program before it terminates.
 
 
-  %|example "A sample unit test"
+  %|example! "A sample unit test"
 
-    %
+    %|code :ruby
+      require 'rubygems'
+      require 'dfect/auto'
 
-        require 'rubygems'
-        require 'dfect/auto'
+      D "a test" do
+        D "a nested test" do
+        end
 
-        D "a test" do
-          D "a nested test" do
-          end
+        D "another nested test" do
+        end
 
-          D "another nested test" do
-          end
+        D "a complex test" do
+          y = 83
 
-          D "a complex test" do
-            y = 83
+          D "with more nested tests" do
+            x = 5
 
-            D "with more nested tests" do
-              x = 5
-
-              T { x > 2 }   # passes
-              F { x > 2 }   # fails
-              E { x.hello } # passes
-            end
-          end
-
-          D .< do
-            puts "this is executed before every test in this scope"
-          end
-
-          D .> do
-            puts "this is executed after every test in this scope"
-          end
-
-          D .<< do
-            puts "this is executed once, before all tests in this scope"
-          end
-
-          D .>> do
-            puts "this is executed once, after all tests in this scope"
+            T { x > 2 }   # passes
+            F { x > 2 }   # fails
+            E { x.hello } # passes
           end
         end
 
-    {:lang=ruby}
+        D .< do
+          puts "this is executed before every test in this scope"
+        end
 
+        D .> do
+          puts "this is executed after every test in this scope"
+        end
+
+        D .<< do
+          puts "this is executed once, before all tests in this scope"
+        end
+
+        D .>> do
+          puts "this is executed once, after all tests in this scope"
+        end
+      end
