@@ -281,6 +281,77 @@ D 'YAML must be able to serialize a class' do
   T { SyntaxError.to_yaml == "--- SyntaxError\n" }
 end
 
+D 'insulated root-level describe' do
+  @insulated = :insulated
+  non_closured = :non_closured
+end
+
+closured = :closured
+
+D 'another insulated root-level describe' do
+  # without insulation, instance variables
+  # from previous root-level describe
+  # environments will spill into this one
+  F { defined? @insulated }
+  F { @insulated == :insulated }
+
+  # however, this insulation must
+  # not prevent closure access to
+  # surrounding local variables
+  T { defined? closured }
+  T { closured == :closured }
+
+  # except local variables defined
+  # within another insulated environment
+  F { defined? non_closured }
+  E(NameError) { non_closured }
+
+  @insulated_again = :insulated_again
+
+  D 'non-insulated nested describe' do
+    D 'inherits instance variables' do
+      T { defined? @insulated_again }
+      T { @insulated_again == :insulated_again }
+    end
+
+    D 'inherits instance methods' do
+      E!(NoMethodError) { instance_level_helper_method }
+      T { instance_level_helper_method == :instance_level_helper_method }
+    end
+
+    D 'inherits class methods' do
+      E!(NoMethodError) { self.class_level_helper_method }
+      T { self.class_level_helper_method == :class_level_helper_method }
+
+      E!(NoMethodError) { class_level_helper_method }
+      T { class_level_helper_method == self.class_level_helper_method }
+    end
+
+    @non_insulated_from_nested = :non_insulated_from_nested
+  end
+
+  D 'another non-insulated nested describe' do
+    T { defined? @non_insulated_from_nested }
+    T { @non_insulated_from_nested == :non_insulated_from_nested }
+  end
+
+  def instance_level_helper_method
+    :instance_level_helper_method
+  end
+
+  def self.class_level_helper_method
+    :class_level_helper_method
+  end
+end
+
+D 'yet another insulated root-level describe' do
+  F { defined? @insulated_again }
+  F { @insulated_again == :insulated_again }
+
+  F { defined? @non_insulated_from_nested }
+  F { @non_insulated_from_nested == :non_insulated_from_nested }
+end
+
 D 'stoping #run' do
   Dfect.stop
   raise 'this must not be reached!'

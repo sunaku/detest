@@ -752,7 +752,7 @@ module Dfect
           @exec_trace = []
 
           # populate nested suite
-          call test.block
+          call test.block, @test_stack.length == 1
 
           # execute nested suite
           execute
@@ -777,9 +777,13 @@ module Dfect
     # Invokes the given block and debugs any
     # exceptions that may arise as a result.
     #
-    def call block
+    def call block, insulate = false
       begin
-        block.call
+        if insulate
+          Object.new.instance_eval(&block)
+        else
+          block.call
+        end
       rescue Exception => e
         debug_uncaught_exception block, e
       end
