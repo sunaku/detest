@@ -44,7 +44,7 @@ module Dfect
     ##
     # Hash of test results, assembled by #run.
     #
-    # [:execution]
+    # [:trace]
     #   Hierarchical trace of all tests executed, where each test is
     #   represented by its description, is mapped to an Array of
     #   nested tests, and may contain zero or more assertion failures.
@@ -63,16 +63,16 @@ module Dfect
     #   ["call"]
     #     Stack trace leading to the point of failure.
     #
-    # [:statistics]
+    # [:stats]
     #   Hash of counts of major events in test execution:
     #
-    #   [:passed_assertions]
+    #   [:pass]
     #     Number of assertions that held true.
     #
-    #   [:failed_assertions]
+    #   [:fail]
     #     Number of assertions that did not hold true.
     #
-    #   [:uncaught_exceptions]
+    #   [:raise]
     #     Number of exceptions that were not rescued.
     #
     attr_reader :report
@@ -588,11 +588,11 @@ module Dfect
         end
 
       passed = lambda do
-        @exec_stats[:passed_assertions] += 1
+        @exec_stats[:pass] += 1
       end
 
       failed = lambda do
-        @exec_stats[:failed_assertions] += 1
+        @exec_stats[:fail] += 1
         debug block, message
       end
 
@@ -624,11 +624,11 @@ module Dfect
         end
 
       passed = lambda do
-        @exec_stats[:passed_assertions] += 1
+        @exec_stats[:pass] += 1
       end
 
       failed = lambda do |exception|
-        @exec_stats[:failed_assertions] += 1
+        @exec_stats[:fail] += 1
 
         if exception
           # debug the uncaught exception...
@@ -679,11 +679,11 @@ module Dfect
       message ||= "block must throw #{symbol.inspect}"
 
       passed = lambda do
-        @exec_stats[:passed_assertions] += 1
+        @exec_stats[:pass] += 1
       end
 
       failed = lambda do
-        @exec_stats[:failed_assertions] += 1
+        @exec_stats[:fail] += 1
         debug block, message
       end
 
@@ -884,7 +884,7 @@ module Dfect
     # Debugs the given uncaught exception inside the given context.
     #
     def debug_uncaught_exception context, exception
-      @exec_stats[:uncaught_exceptions] += 1
+      @exec_stats[:raise] += 1
       debug context, exception, exception.backtrace
     end
 
@@ -933,7 +933,7 @@ module Dfect
 
   @exec_stats = Hash.new {|h,k| h[k] = 0 }
   @exec_trace = []
-  @report     = {:execution => @exec_trace, :statistics => @exec_stats}.freeze
+  @report     = {:trace => @exec_trace, :stats => @exec_stats}.freeze
 
   @curr_suite = class << self; Suite.new; end
 
