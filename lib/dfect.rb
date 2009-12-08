@@ -747,7 +747,7 @@ module Dfect
           # restore outer values
           @curr_suite = suite
 
-          trace << build_trace(@exec_trace)
+          trace << build_exec_trace(@exec_trace)
           @exec_trace = trace
         end
 
@@ -857,12 +857,11 @@ module Dfect
 
       @exec_trace << details
 
+      # show the failure to the user
+      puts build_fail_trace(details).to_yaml unless @options[:quiet]
+
       # allow user to investigate the failure
       if @options[:debug]
-        # show the failure to the user
-        puts build_trace(details).to_yaml
-
-        # start the investigation
         if Kernel.respond_to? :debugger
           eval '::Kernel.debugger', context, __FILE__, __LINE__
         else
@@ -893,11 +892,21 @@ module Dfect
     # Returns a report that associates the given
     # failure details with the currently running test.
     #
-    def build_trace details
+    def build_exec_trace details
       if @test_stack.empty?
         details
       else
         { @test_stack.last.desc => details }
+      end
+    end
+
+    ##
+    # Returns a report that qualifies the given
+    # failure details with the current test stack.
+    #
+    def build_fail_trace details
+      @test_stack.reverse.inject(details) do |inner, outer|
+        { outer.desc => inner }
       end
     end
 
