@@ -66,6 +66,9 @@ module Dfect
     # [:stats]
     #   Hash of counts of major events in test execution:
     #
+    #   [:time]
+    #     Number of seconds elapsed for test execution.
+    #
     #   [:pass]
     #     Number of assertions that held true.
     #
@@ -562,7 +565,10 @@ module Dfect
       end
 
       # make new results
+      start = Time.now
       catch(:stop_dfect_execution) { execute }
+      finish = Time.now
+      @exec_stats[:time] = finish - start
 
       # print new results
       puts @report.to_yaml unless @options[:quiet]
