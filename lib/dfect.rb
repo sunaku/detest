@@ -51,16 +51,16 @@ module Dfect
     #
     #   Assertion failures are represented as a Hash:
     #
-    #   ["fail"]
+    #   [:fail]
     #     Description of the assertion failure.
     #
-    #   ["code"]
+    #   [:code]
     #     Source code surrounding the point of failure.
     #
-    #   ["vars"]
+    #   [:vars]
     #     Local variables visible at the point of failure.
     #
-    #   ["call"]
+    #   [:call]
     #     Stack trace leading to the point of failure.
     #
     # [:stats]
@@ -571,7 +571,7 @@ module Dfect
       @exec_stats[:time] = finish - start
 
       # print new results
-      puts @report.to_yaml unless @options[:quiet]
+      display @report unless @options[:quiet]
     end
 
     ##
@@ -725,6 +725,14 @@ module Dfect
     end
 
     ##
+    # Prints the given object in YAML format.
+    #
+    def display object
+      # stringify symbols in YAML output for better readability
+      puts object.to_yaml.gsub(/^([[:blank:]]*):(?=\w+: )/, '\1')
+    end
+
+    ##
     # Executes the current test suite recursively.
     #
     def execute
@@ -813,10 +821,10 @@ module Dfect
       #
       details = {
         # user message
-        'fail' => message,
+        :fail => message,
 
         # code snippet
-        'code' => (
+        :code => (
           if frame = backtrace.first
             file, line = frame.scan(/(.+?):(\d+(?=:|\z))/).first
 
@@ -844,7 +852,7 @@ module Dfect
         ),
 
         # variable values
-        'vars' => (
+        :vars => (
           names = eval('::Kernel.local_variables', context, __FILE__, __LINE__)
 
           pairs = names.inject([]) do |pair, name|
@@ -858,13 +866,13 @@ module Dfect
         ),
 
         # stack trace
-        'call' => backtrace,
+        :call => backtrace,
       }
 
       @exec_trace << details
 
       # show the failure to the user
-      puts build_fail_trace(details).to_yaml unless @options[:quiet]
+      display build_fail_trace(details) unless @options[:quiet]
 
       # allow user to investigate the failure
       if @options[:debug]
