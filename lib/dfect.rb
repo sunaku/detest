@@ -85,7 +85,7 @@ module Dfect
     #   during assertion failures so
     #   the user can investigate them.
     #
-    #   The default value is true.
+    #   The default value is $DEBUG.
     #
     # [:quiet]
     #   Do not print the report
@@ -920,7 +920,7 @@ module Dfect
     #:startdoc:
   end
 
-  @options    = {:debug => true, :quiet => false}
+  @options    = {:debug => $DEBUG, :quiet => false}
 
   @exec_stats = Hash.new {|h,k| h[k] = 0 }
   @exec_trace = []
