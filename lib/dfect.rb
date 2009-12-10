@@ -571,7 +571,16 @@ module Dfect
       @exec_stats[:time] = finish - start
 
       # print new results
-      display @report
+      unless @exec_stats.key? :fail or @exec_stats.key? :raise
+        #
+        # show execution trace only if all tests passed.
+        # otherwise, we will be repeating already printed
+        # failure details and obstructing the developer!
+        #
+        display @exec_trace
+      end
+
+      display @exec_stats
     end
 
     ##
