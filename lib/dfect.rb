@@ -739,7 +739,7 @@ module Dfect
     def display object
       unless @options[:quiet]
         # stringify symbols in YAML output for better readability
-        puts object.to_yaml.gsub(/^([[:blank:]]*):(?=\w+: )/, '\1')
+        puts object.to_yaml.gsub(/^([[:blank:]]*(- )?):(?=\w+: )/, '\1')
       end
     end
 
