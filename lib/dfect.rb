@@ -571,7 +571,7 @@ module Dfect
       @exec_stats[:time] = finish - start
 
       # print new results
-      display @report unless @options[:quiet]
+      display @report
     end
 
     ##
@@ -728,8 +728,10 @@ module Dfect
     # Prints the given object in YAML format.
     #
     def display object
-      # stringify symbols in YAML output for better readability
-      puts object.to_yaml.gsub(/^([[:blank:]]*):(?=\w+: )/, '\1')
+      unless @options[:quiet]
+        # stringify symbols in YAML output for better readability
+        puts object.to_yaml.gsub(/^([[:blank:]]*):(?=\w+: )/, '\1')
+      end
     end
 
     ##
@@ -876,7 +878,7 @@ module Dfect
       @exec_trace << details
 
       # show the failure to the user
-      display build_fail_trace(details) unless @options[:quiet]
+      display build_fail_trace(details)
 
       # allow user to investigate the failure
       if @options[:debug]
