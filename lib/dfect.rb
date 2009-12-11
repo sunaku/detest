@@ -623,22 +623,23 @@ module Dfect
     def S identifier, &block
       if block_given?
         if already_shared = @shared_code[identifier]
-          raise "A code block #{already_shared.inspect} has already been shared under the identifier #{identifier.inspect}."
+          raise ArgumentError, "A code block #{already_shared.inspect} has already been shared under the identifier #{identifier.inspect}."
         end
 
         @shared_code[identifier] = block
 
       elsif block = @shared_code[identifier]
         if @test_stack.empty?
-          raise ArgumentError, "Cannot inject shared code block #{block.inspect} for identifier #{identifier.inspect} outside of a Dfect test."
+          raise "Cannot inject code block #{block.inspect} shared under identifier #{identifier.inspect} outside of a Dfect test."
         else
           # find the closest insulated parent test; this should always
           # succeed because root-level tests are insulated by default
           test = @test_stack.reverse.find {|t| t.sandbox }
           test.sandbox.instance_eval(&block)
         end
+
       else
-        raise ArgumentError, "Cannot evaluate shared code block #{block.inspect} for identifier #{identifier.inspect}."
+        raise ArgumentError, "No code block is shared under identifier #{identifier.inspect}."
       end
     end
 

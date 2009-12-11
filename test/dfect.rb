@@ -410,7 +410,7 @@ D 'share money' do
 end
 
 D 're-sharing under a previously shared identifier' do
-  E 'must raise an error' do
+  E 'must raise an error', ArgumentError do
     S :knowledge do
       @sharing_is_fun = :overwrite_previous_share
     end
@@ -418,6 +418,16 @@ D 're-sharing under a previously shared identifier' do
 
   F { defined? @sharing_is_fun }
   F { @sharing_is_fun == :overwrite_previous_share }
+end
+
+D 'injecting an unshared code block' do
+  E 'must raise an error', ArgumentError do
+    S :foobar
+  end
+end
+
+E 'injecting shared block outside of a test' do
+  S :knowledge
 end
 
 D 'stoping #run' do
