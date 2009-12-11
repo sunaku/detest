@@ -330,6 +330,24 @@ D 'another insulated root-level describe' do
     @non_insulated_from_nested = :non_insulated_from_nested
   end
 
+  D! 'nested but explicitly insulated describe' do
+    D 'does not inherit instance variables' do
+      F { defined? @insulated_again }
+      F { @insulated_again == :insulated_again }
+    end
+
+    D 'does not inherit instance methods' do
+      E(NameError) { instance_level_helper_method }
+    end
+
+    D 'does not inherit class methods' do
+      E(NoMethodError) { self.class_level_helper_method }
+      E(NameError) { class_level_helper_method }
+    end
+
+    @non_insulated_from_nested = 123
+  end
+
   D 'another non-insulated nested describe' do
     T { defined? @non_insulated_from_nested }
     T { @non_insulated_from_nested == :non_insulated_from_nested }
@@ -380,6 +398,13 @@ D 'share money' do
   S :power
   T { defined? @sharing_is_fun }
   T { @sharing_is_fun == :share_power }
+
+  D! 'share knowledge inside nested but explicitly insulated describe' do
+    F { defined? @sharing_is_fun }
+    S :knowledge
+    T { defined? @sharing_is_fun }
+    T { @sharing_is_fun == :share_knowledge }
+  end
 end
 
 D 'stoping #run' do

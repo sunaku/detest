@@ -102,7 +102,10 @@ module Dfect
     # Defines a new test, composed of the given
     # description and the given block to execute.
     #
-    # A test may contain nested tests.
+    # This test may contain nested tests.
+    #
+    # Tests at the outer-most level are automatically
+    # insulated from the top-level Ruby environment.
     #
     # ==== Parameters
     #
@@ -129,7 +132,46 @@ module Dfect
     #
     def D description = caller.first, &block
       raise ArgumentError, 'block must be given' unless block
-      @curr_suite.tests << Suite::Test.new(description.to_s, block)
+      sandbox = Object.new if @test_stack.empty?
+      @curr_suite.tests << Suite::Test.new(description.to_s, block, sandbox)
+    end
+
+    ##
+    # Defines a new test that is explicitly
+    # insulated from the tests that contain it
+    # and from the top-level Ruby environment.
+    #
+    # This test may contain nested tests.
+    #
+    # ==== Parameters
+    #
+    # [description]
+    #   A short summary of the test being defined.
+    #
+    # ==== Examples
+    #
+    #   D "an outer test" do
+    #     @outside = 1
+    #     T { defined? @outside }
+    #     T { @outside == 1 }
+    #
+    #     D! "an inner, insulated test" do
+    #       F { defined? @outside }
+    #       F { @outside == 1 }
+    #
+    #       @inside = 2
+    #       T { defined? @inside }
+    #       T { @inside == 2 }
+    #     end
+    #
+    #     F { defined? @inside }
+    #     F { @inside == 2 }
+    #   end
+    #
+    def D! description = caller.first, &block
+      raise ArgumentError, 'block must be given' unless block
+      sandbox = Object.new  # always create a new sandbox
+      @curr_suite.tests << Suite::Test.new(description.to_s, block, sandbox)
     end
 
     ##
@@ -590,8 +632,10 @@ module Dfect
         if @test_stack.empty?
           raise ArgumentError, "Cannot inject shared code block #{block.inspect} for identifier #{identifier.inspect} outside of a Dfect test."
         else
-          context = @test_stack.first.sandbox
-          context.instance_eval(&block)
+          # find the closest insulated parent test; this should always
+          # succeed because root-level tests are insulated by default
+          test = @test_stack.reverse.find {|t| t.sandbox }
+          test.sandbox.instance_eval(&block)
         end
       else
         raise ArgumentError, "Cannot evaluate shared code block #{block.inspect} for identifier #{identifier.inspect}."
@@ -843,9 +887,6 @@ module Dfect
           @exec_trace = []
 
           # populate nested suite
-          if @test_stack.length == 1
-            test.sandbox = Object.new
-          end
           call test.block, test.sandbox
 
           # execute nested suite
