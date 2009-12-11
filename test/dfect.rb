@@ -353,25 +353,33 @@ D 'yet another insulated root-level describe' do
 end
 
 S :knowledge do
-  @sharing_is_fun = true
+  @sharing_is_fun = :share_knowledge
 end
 
 S :money do
-  @sharing_is_fun = false
+  @sharing_is_fun = :share_money
 end
 
 D 'share knowledge' do
   F { defined? @sharing_is_fun }
   S :knowledge
   T { defined? @sharing_is_fun }
-  T { @sharing_is_fun }
+  T { @sharing_is_fun == :share_knowledge }
+
+  S! :power do
+    @sharing_is_fun = :share_power
+  end
 end
 
 D 'share money' do
   F { defined? @sharing_is_fun }
   S :money
   T { defined? @sharing_is_fun }
-  F { @sharing_is_fun }
+  T { @sharing_is_fun == :share_money }
+
+  S :power
+  T { defined? @sharing_is_fun }
+  T { @sharing_is_fun == :share_power }
 end
 
 D 'stoping #run' do

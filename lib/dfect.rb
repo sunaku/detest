@@ -599,6 +599,36 @@ module Dfect
     end
 
     ##
+    # Shares the given code block under the given
+    # identifier and then immediately injects that
+    # code block into the closest insulated Dfect
+    # test that contains the call to this method.
+    #
+    # ==== Parameters
+    #
+    # [identifier]
+    #   An object that identifies shared code.  This must be common
+    #   knowledge to all parties that want to partake in the sharing.
+    #
+    # ==== Examples
+    #
+    #   D "some test" do
+    #     S! :knowledge do
+    #       #...
+    #     end
+    #   end
+    #
+    #   D "another test" do
+    #     S :knowledge
+    #   end
+    #
+    def S! identifier, &block
+      raise 'block must be given' unless block_given?
+      S identifier, &block
+      S identifier
+    end
+
+    ##
     # Executes all tests defined thus far and stores the results in #report.
     #
     # ==== Parameters
