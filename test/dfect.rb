@@ -384,9 +384,11 @@ D 'share knowledge' do
   T { defined? @sharing_is_fun }
   T { @sharing_is_fun == :share_knowledge }
 
+  F { S? :power }
   S! :power do
     @sharing_is_fun = :share_power
   end
+  T { S? :power }
 end
 
 D 'share money' do

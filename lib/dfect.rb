@@ -673,6 +673,13 @@ module Dfect
     end
 
     ##
+    # Checks whether any code has been shared under the given identifier.
+    #
+    def S? identifier
+      @shared_code.key? identifier
+    end
+
+    ##
     # Executes all tests defined thus far and stores the results in #report.
     #
     # ==== Parameters
