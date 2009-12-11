@@ -891,7 +891,7 @@ module Dfect
     def display object
       unless @options[:quiet]
         # stringify symbols in YAML output for better readability
-        puts object.to_yaml.gsub(/^([[:blank:]]*(- )?):(?=\w+: )/, '\1')
+        puts object.to_yaml.gsub(/^([[:blank:]]*(- )?):(?=@?\w+: )/, '\1')
       end
     end
 
@@ -1030,13 +1030,13 @@ module Dfect
 
         # variable values
         :vars => if context
-          names = eval('::Kernel.local_variables', context, __FILE__, __LINE__)
+          names = eval('::Kernel.local_variables + self.instance_variables', context, __FILE__, __LINE__)
 
           pairs = names.inject([]) do |pair, name|
             variable = name.to_s
             value    = eval(variable, context, __FILE__, __LINE__)
 
-            pair.push variable, value
+            pair.push variable.to_sym, value
           end
 
           Hash[*pairs]
