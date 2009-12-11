@@ -352,6 +352,28 @@ D 'yet another insulated root-level describe' do
   F { @non_insulated_from_nested == :non_insulated_from_nested }
 end
 
+S :knowledge do
+  @sharing_is_fun = true
+end
+
+S :money do
+  @sharing_is_fun = false
+end
+
+D 'share knowledge' do
+  F { defined? @sharing_is_fun }
+  S :knowledge
+  T { defined? @sharing_is_fun }
+  T { @sharing_is_fun }
+end
+
+D 'share money' do
+  F { defined? @sharing_is_fun }
+  S :money
+  T { defined? @sharing_is_fun }
+  F { @sharing_is_fun }
+end
+
 D 'stoping #run' do
   Dfect.stop
   raise 'this must not be reached!'

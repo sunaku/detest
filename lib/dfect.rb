@@ -531,7 +531,7 @@ module Dfect
     # Adds the given message to the report inside
     # the section of the currently running test.
     #
-    # You can think of "S" as "say" or "status".
+    # You can think of "L" as "to log something".
     #
     # ==== Parameters
     #
@@ -540,12 +540,62 @@ module Dfect
     #
     # ==== Examples
     #
-    #   S "establishing connection..."
+    #   L "establishing connection..."
     #
-    #   S "beginning calculation...", Math::PI, [1, 2, 3, ['a', 'b', 'c']]
+    #   L "beginning calculation...", Math::PI, [1, 2, 3, ['a', 'b', 'c']]
     #
-    def S *message
+    def L *message
       @exec_trace.concat message
+    end
+
+    ##
+    # Mechanism for sharing code between tests.
+    #
+    # If a block is given, it is shared under
+    # the given identifier.  Otherwise, the
+    # code block that was previously shared
+    # under the given identifier is injected
+    # into the closest insulated Dfect test
+    # that contains the call to this method.
+    #
+    # ==== Parameters
+    #
+    # [identifier]
+    #   An object that identifies shared code.  This must be common
+    #   knowledge to all parties that want to partake in the sharing.
+    #
+    # ==== Examples
+    #
+    #   S :knowledge do
+    #     #...
+    #   end
+    #
+    #   D "some test" do
+    #     S :knowledge
+    #   end
+    #
+    #   D "another test" do
+    #     S :knowledge
+    #   end
+    #
+    def S identifier, &block
+      if block_given?
+        if already_shared = @shared_code[identifier]
+          warn "Overwriting previously shared code block #{already_shared.inspect} for identifier #{identifier.inspect}."
+          warn caller.join("\n")
+        end
+        @shared_code[identifier] = block
+
+      elsif block = @shared_code[identifier]
+        if @test_stack.empty?
+          raise ArgumentError, "Cannot inject shared code block #{block.inspect} for identifier #{identifier.inspect} outside of a Dfect test."
+        else
+          context = @test_stack.first.sandbox
+          context.instance_eval(&block)
+        end
+      else
+        raise ArgumentError, "Cannot evaluate shared code block #{block.inspect} for identifier #{identifier.inspect}."
+      end
     end
 
     ##
@@ -763,7 +813,10 @@ module Dfect
           @exec_trace = []
 
           # populate nested suite
-          call test.block, @test_stack.length == 1
+          if @test_stack.length == 1
+            test.sandbox = Object.new
+          end
+          call test.block, test.sandbox
 
           # execute nested suite
           execute
@@ -788,10 +841,10 @@ module Dfect
     # Invokes the given block and debugs any
     # exceptions that may arise as a result.
     #
-    def call block, insulate = false
+    def call block, sandbox = nil
       begin
-        if insulate
-          Object.new.instance_eval(&block)
+        if sandbox
+          sandbox.instance_eval(&block)
         else
           block.call
         end
@@ -952,7 +1005,7 @@ module Dfect
         @after_all   = []
       end
 
-      Test = Struct.new :desc, :block
+      Test = Struct.new :desc, :block, :sandbox
     end
 
     #:startdoc:
@@ -966,6 +1019,7 @@ module Dfect
 
   @curr_suite = class << self; Suite.new; end
 
+  @shared_code = {}
   @test_stack = []
   @file_cache = Hash.new {|h,k| h[k] = File.readlines(k) rescue nil }
 
