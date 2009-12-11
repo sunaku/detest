@@ -409,6 +409,17 @@ D 'share money' do
   end
 end
 
+D 're-sharing under a previously shared identifier' do
+  E 'must raise an error' do
+    S :knowledge do
+      @sharing_is_fun = :overwrite_previous_share
+    end
+  end
+
+  F { defined? @sharing_is_fun }
+  F { @sharing_is_fun == :overwrite_previous_share }
+end
+
 D 'stoping #run' do
   Dfect.stop
   raise 'this must not be reached!'

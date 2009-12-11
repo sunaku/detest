@@ -623,9 +623,9 @@ module Dfect
     def S identifier, &block
       if block_given?
         if already_shared = @shared_code[identifier]
-          warn "Overwriting previously shared code block #{already_shared.inspect} for identifier #{identifier.inspect}."
-          warn caller.join("\n")
+          raise "A code block #{already_shared.inspect} has already been shared under the identifier #{identifier.inspect}."
         end
+
         @shared_code[identifier] = block
 
       elsif block = @shared_code[identifier]
