@@ -75,7 +75,7 @@ module Dfect
     #   [:fail]
     #     Number of assertions that did not hold true.
     #
-    #   [:raise]
+    #   [:error]
     #     Number of exceptions that were not rescued.
     #
     attr_reader :report
@@ -703,7 +703,7 @@ module Dfect
       @exec_stats[:time] = finish - start
 
       # print new results
-      unless @exec_stats.key? :fail or @exec_stats.key? :raise
+      unless @exec_stats.key? :fail or @exec_stats.key? :error
         #
         # show execution trace only if all tests passed.
         # otherwise, we will be repeating already printed
@@ -1045,7 +1045,7 @@ module Dfect
     # Debugs the given uncaught exception inside the given context.
     #
     def debug_uncaught_exception context, exception
-      @exec_stats[:raise] += 1
+      @exec_stats[:error] += 1
       debug context, exception, exception.backtrace
     end
 
