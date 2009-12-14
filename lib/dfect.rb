@@ -19,7 +19,6 @@ class Class #:nodoc: all
     begin
       __to_yaml__
     rescue TypeError => e
-      warn e
       self.name.to_yaml opts
     end
   end
