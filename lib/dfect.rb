@@ -1132,7 +1132,7 @@ module Dfect
   D = self
 
   # provide mixin-able assertion methods
-  methods(false).grep(/^[[:upper:]][[:punct:]]?$/).each do |name|
+  methods(false).grep(/^[[:upper:]]?[[:punct:]]*$/).each do |name|
     #
     # XXX: using eval() on a string because Ruby 1.8's
     #      define_method() cannot take a block parameter
