@@ -250,10 +250,15 @@ module Dfect
     end
 
     ##
-    # Asserts that the result of the given block is
-    # neither nil nor false and returns that result.
+    # Asserts that the given condition or the
+    # result of the given block is neither
+    # nil nor false and returns that result.
     #
     # ==== Parameters
+    #
+    # [condition]
+    #   The condition to be asserted.  A block
+    #   may be given in place of this parameter.
     #
     # [message]
     #   Optional message to show in the
@@ -271,15 +276,20 @@ module Dfect
     #
     #   T( "computers do not doublethink" ) { 2 + 2 != 5 } # passes
     #
-    def T message = nil, &block
-      assert_yield :assert, message, &block
+    def T condition = nil, message = nil, &block
+      assert_yield :assert, condition, message, &block
     end
 
     ##
-    # Asserts that the result of the given block is
-    # either nil or false and returns that result.
+    # Asserts that the given condition or the
+    # result of the given block is either nil
+    # or false and returns that result.
     #
     # ==== Parameters
+    #
+    # [condition]
+    #   The condition to be asserted.  A block
+    #   may be given in place of this parameter.
     #
     # [message]
     #   Optional message to show in the
@@ -297,15 +307,20 @@ module Dfect
     #
     #   T!( "computers do not doublethink" ) { 2 + 2 == 5 } # passes
     #
-    def T! message = nil, &block
-      assert_yield :negate, message, &block
+    def T! condition = nil, message = nil, &block
+      assert_yield :negate, condition, message, &block
     end
 
     ##
-    # Returns true if the result of the given block is
-    # neither nil nor false.  Otherwise, returns false.
+    # Returns true if the given condition or
+    # the result of the given block is neither
+    # nil nor false.  Otherwise, returns false.
     #
     # ==== Parameters
+    #
+    # [condition]
+    #   The condition to be asserted.  A block
+    #   may be given in place of this parameter.
     #
     # [message]
     #   This parameter is optional and completely ignored.
@@ -322,8 +337,8 @@ module Dfect
     #
     #   T?( "computers do not doublethink" ) { 2 + 2 != 5 } # => true
     #
-    def T? message = nil, &block
-      assert_yield :sample, message, &block
+    def T? condition = nil, message = nil, &block
+      assert_yield :sample, condition, message, &block
     end
 
     alias F T!
@@ -725,14 +740,17 @@ module Dfect
 
     private
 
-    def assert_yield mode, message = nil, &block
-      raise ArgumentError, 'block must be given' unless block
+    def assert_yield mode, condition = nil, message = nil, &block
+      # first parameter is actually the message when block is given
+      message = condition if block
 
-      message ||=
+      message ||= (
+        prefix = block ? 'block must yield' : 'condition must be'
         case mode
-        when :assert then 'block must yield true (!nil && !false)'
-        when :negate then 'block must yield false (nil || false)'
+        when :assert then "#{prefix} true (!nil && !false)"
+        when :negate then "#{prefix} false (nil || false)"
         end
+      )
 
       passed = lambda do
         @exec_stats[:pass] += 1
@@ -743,7 +761,7 @@ module Dfect
         debug block, message
       end
 
-      result = call(block)
+      result = block ? call(block) : condition
 
       case mode
       when :sample then return result ? true : false
@@ -941,7 +959,8 @@ module Dfect
     #
     # [context]
     #   Binding of code being debugged.  This
-    #   can be either a Binding or Proc object.
+    #   can be either a Binding or Proc object,
+    #   or +nil+ if no binding is available.
     #
     # [message]
     #   Message describing the failure
@@ -953,7 +972,7 @@ module Dfect
     #
     def debug context, message = nil, backtrace = caller
       # allow a Proc to be passed instead of a binding
-      if context.respond_to? :binding
+      if context and context.respond_to? :binding
         context = context.binding
       end
 
@@ -999,7 +1018,7 @@ module Dfect
         ),
 
         # variable values
-        :vars => (
+        :vars => if context
           names = eval('::Kernel.local_variables', context, __FILE__, __LINE__)
 
           pairs = names.inject([]) do |pair, name|
@@ -1010,7 +1029,7 @@ module Dfect
           end
 
           Hash[*pairs]
-        ),
+        end,
 
         # stack trace
         :call => backtrace,
@@ -1022,7 +1041,7 @@ module Dfect
       display build_fail_trace(details)
 
       # allow user to investigate the failure
-      if @options[:debug]
+      if @options[:debug] and context
         if Kernel.respond_to? :debugger
           eval '::Kernel.debugger', context, __FILE__, __LINE__
         else
