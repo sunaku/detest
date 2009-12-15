@@ -109,7 +109,8 @@ module Dfect
     # ==== Parameters
     #
     # [description]
-    #   A short summary of the test being defined.
+    #   A brief title or a series of objects
+    #   that describe the test being defined.
     #
     # ==== Examples
     #
@@ -129,10 +130,11 @@ module Dfect
     #     end
     #   end
     #
-    def D description = caller.first, &block
+    def D *description, &block
       raise ArgumentError, 'block must be given' unless block
       sandbox = Object.new if @test_stack.empty?
-      @curr_suite.tests << Suite::Test.new(description.to_s, block, sandbox)
+      description = description.join(' ')
+      @curr_suite.tests << Suite::Test.new(description, block, sandbox)
     end
 
     ##
@@ -145,7 +147,8 @@ module Dfect
     # ==== Parameters
     #
     # [description]
-    #   A short summary of the test being defined.
+    #   A brief title or a series of objects
+    #   that describe the test being defined.
     #
     # ==== Examples
     #
@@ -167,9 +170,10 @@ module Dfect
     #     F { @inside == 2 }
     #   end
     #
-    def D! description = caller.first, &block
+    def D! *description, &block
       raise ArgumentError, 'block must be given' unless block
       sandbox = Object.new  # always create a new sandbox
+      description = description.join(' ')
       @curr_suite.tests << Suite::Test.new(description.to_s, block, sandbox)
     end
 

@@ -7,12 +7,9 @@
 require 'dfect'
 
 module Dfect
-  def describe *args, &block
-    Dfect.D args.join(' '), &block
-  end
-
-  alias context describe
-  alias it      describe
+  alias describe D
+  alias context  D
+  alias it       D
 
   def before what, &block
     meth =
