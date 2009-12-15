@@ -8,7 +8,9 @@ require 'dfect'
 
 module Dfect
   alias setup     <
+  alias setup!    <<
   alias teardown  >
+  alias teardown! >>
 
   [
     [:assert,     nil,  nil   ],
