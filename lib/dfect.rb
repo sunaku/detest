@@ -131,10 +131,7 @@ module Dfect
     #   end
     #
     def D *description, &block
-      raise ArgumentError, 'block must be given' unless block
-      sandbox = Object.new if @tests.empty?
-      description = description.join(' ')
-      @suite.tests << Suite::Test.new(description, block, sandbox)
+      create_test @tests.empty?, *description, &block
     end
 
     ##
@@ -171,10 +168,7 @@ module Dfect
     #   end
     #
     def D! *description, &block
-      raise ArgumentError, 'block must be given' unless block
-      sandbox = Object.new  # always create a new sandbox
-      description = description.join(' ')
-      @suite.tests << Suite::Test.new(description.to_s, block, sandbox)
+      create_test true, *description, &block
     end
 
     ##
@@ -742,6 +736,15 @@ module Dfect
     end
 
     private
+
+    def create_test insulate, *description, &block
+      raise ArgumentError, 'block must be given' unless block
+
+      description = description.join(' ')
+      sandbox = Object.new if insulate
+
+      @suite.tests << Suite::Test.new(description, block, sandbox)
+    end
 
     def assert_yield mode, condition = nil, message = nil, &block
       # first parameter is actually the message when block is given
