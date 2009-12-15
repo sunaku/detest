@@ -132,9 +132,9 @@ module Dfect
     #
     def D *description, &block
       raise ArgumentError, 'block must be given' unless block
-      sandbox = Object.new if @test_stack.empty?
+      sandbox = Object.new if @tests.empty?
       description = description.join(' ')
-      @curr_suite.tests << Suite::Test.new(description, block, sandbox)
+      @suite.tests << Suite::Test.new(description, block, sandbox)
     end
 
     ##
@@ -174,7 +174,7 @@ module Dfect
       raise ArgumentError, 'block must be given' unless block
       sandbox = Object.new  # always create a new sandbox
       description = description.join(' ')
-      @curr_suite.tests << Suite::Test.new(description.to_s, block, sandbox)
+      @suite.tests << Suite::Test.new(description.to_s, block, sandbox)
     end
 
     ##
@@ -194,7 +194,7 @@ module Dfect
     def <(*args, &block)
       if args.empty?
         raise ArgumentError, 'block must be given' unless block
-        @curr_suite.before_each << block
+        @suite.before_each << block
       else
         # the < method is being used as a check for inheritance
         super
@@ -215,7 +215,7 @@ module Dfect
     #
     def > &block
       raise ArgumentError, 'block must be given' unless block
-      @curr_suite.after_each << block
+      @suite.after_each << block
     end
 
     ##
@@ -232,7 +232,7 @@ module Dfect
     #
     def << &block
       raise ArgumentError, 'block must be given' unless block
-      @curr_suite.before_all << block
+      @suite.before_all << block
     end
 
     ##
@@ -249,7 +249,7 @@ module Dfect
     #
     def >> &block
       raise ArgumentError, 'block must be given' unless block
-      @curr_suite.after_all << block
+      @suite.after_all << block
     end
 
     ##
@@ -605,7 +605,7 @@ module Dfect
     #   L "beginning calculation...", Math::PI, [1, 2, 3, ['a', 'b', 'c']]
     #
     def L *message
-      @exec_trace.concat message
+      @trace.concat message
     end
 
     ##
@@ -640,19 +640,19 @@ module Dfect
     #
     def S identifier, &block
       if block_given?
-        if already_shared = @shared_code[identifier]
+        if already_shared = @share[identifier]
           raise ArgumentError, "A code block #{already_shared.inspect} has already been shared under the identifier #{identifier.inspect}."
         end
 
-        @shared_code[identifier] = block
+        @share[identifier] = block
 
-      elsif block = @shared_code[identifier]
-        if @test_stack.empty?
+      elsif block = @share[identifier]
+        if @tests.empty?
           raise "Cannot inject code block #{block.inspect} shared under identifier #{identifier.inspect} outside of a Dfect test."
         else
           # find the closest insulated parent test; this should always
           # succeed because root-level tests are insulated by default
-          test = @test_stack.reverse.find {|t| t.sandbox }
+          test = @tests.reverse.find {|t| t.sandbox }
           test.sandbox.instance_eval(&block)
         end
 
@@ -695,7 +695,7 @@ module Dfect
     # Checks whether any code has been shared under the given identifier.
     #
     def S? identifier
-      @shared_code.key? identifier
+      @share.key? identifier
     end
 
     ##
@@ -709,28 +709,28 @@ module Dfect
     def run continue = true
       # clear previous results
       unless continue
-        @exec_stats.clear
-        @exec_trace.clear
-        @test_stack.clear
+        @stats.clear
+        @trace.clear
+        @tests.clear
       end
 
       # make new results
       start = Time.now
       catch(:stop_dfect_execution) { execute }
       finish = Time.now
-      @exec_stats[:time] = finish - start
+      @stats[:time] = finish - start
 
       # print new results
-      unless @exec_stats.key? :fail or @exec_stats.key? :error
+      unless @stats.key? :fail or @stats.key? :error
         #
         # show execution trace only if all tests passed.
         # otherwise, we will be repeating already printed
         # failure details and obstructing the developer!
         #
-        display @exec_trace
+        display @trace
       end
 
-      display @exec_stats
+      display @stats
     end
 
     ##
@@ -756,11 +756,11 @@ module Dfect
       )
 
       passed = lambda do
-        @exec_stats[:pass] += 1
+        @stats[:pass] += 1
       end
 
       failed = lambda do
-        @exec_stats[:fail] += 1
+        @stats[:fail] += 1
         debug block, message
       end
 
@@ -792,11 +792,11 @@ module Dfect
         end
 
       passed = lambda do
-        @exec_stats[:pass] += 1
+        @stats[:pass] += 1
       end
 
       failed = lambda do |exception|
-        @exec_stats[:fail] += 1
+        @stats[:fail] += 1
 
         if exception
           # debug the uncaught exception...
@@ -847,11 +847,11 @@ module Dfect
       message ||= "block must throw #{symbol.inspect}"
 
       passed = lambda do
-        @exec_stats[:pass] += 1
+        @stats[:pass] += 1
       end
 
       failed = lambda do
-        @exec_stats[:fail] += 1
+        @stats[:fail] += 1
         debug block, message
       end
 
@@ -900,20 +900,20 @@ module Dfect
     # Executes the current test suite recursively.
     #
     def execute
-      suite = @curr_suite
-      trace = @exec_trace
+      suite = @suite
+      trace = @trace
 
       suite.before_all.each {|b| call b }
 
       suite.tests.each do |test|
         suite.before_each.each {|b| call b }
 
-        @test_stack.push test
+        @tests.push test
 
         begin
           # create nested suite
-          @curr_suite = Suite.new
-          @exec_trace = []
+          @suite = Suite.new
+          @trace = []
 
           # populate nested suite
           call test.block, test.sandbox
@@ -923,13 +923,13 @@ module Dfect
 
         ensure
           # restore outer values
-          @curr_suite = suite
+          @suite = suite
 
-          trace << build_exec_trace(@exec_trace)
-          @exec_trace = trace
+          trace << build_exec_trace(@trace)
+          @trace = trace
         end
 
-        @test_stack.pop
+        @tests.pop
 
         suite.after_each.each {|b| call b }
       end
@@ -943,7 +943,7 @@ module Dfect
     #
     def call block, sandbox = nil
       begin
-        @call_stack.push block
+        @calls.push block
 
         if sandbox
           sandbox.instance_eval(&block)
@@ -955,7 +955,7 @@ module Dfect
         debug_uncaught_exception block, e
 
       ensure
-        @call_stack.pop
+        @calls.pop
       end
     end
 
@@ -981,7 +981,7 @@ module Dfect
     #
     def debug context, message = nil, backtrace = caller
       # inherit binding of enclosing test or hook
-      context ||= @call_stack.last
+      context ||= @calls.last
 
       # allow a Proc to be passed instead of a binding
       if context and context.respond_to? :binding
@@ -1006,7 +1006,7 @@ module Dfect
           if frame = backtrace.first
             file, line = frame.scan(/(.+?):(\d+(?=:|\z))/).first
 
-            if source = @file_cache[file]
+            if source = @files[file]
               line = line.to_i
 
               radius = 5 # number of surrounding lines to show
@@ -1047,7 +1047,7 @@ module Dfect
         :call => backtrace,
       }
 
-      @exec_trace << details
+      @trace << details
 
       # show the failure to the user
       display build_fail_trace(details)
@@ -1076,7 +1076,7 @@ module Dfect
     # Debugs the given uncaught exception inside the given context.
     #
     def debug_uncaught_exception context, exception
-      @exec_stats[:error] += 1
+      @stats[:error] += 1
       debug context, exception, exception.backtrace
     end
 
@@ -1085,10 +1085,10 @@ module Dfect
     # failure details with the currently running test.
     #
     def build_exec_trace details
-      if @test_stack.empty?
+      if @tests.empty?
         details
       else
-        { @test_stack.last.desc => details }
+        { @tests.last.desc => details }
       end
     end
 
@@ -1097,7 +1097,7 @@ module Dfect
     # failure details with the current test stack.
     #
     def build_fail_trace details
-      @test_stack.reverse.inject(details) do |inner, outer|
+      @tests.reverse.inject(details) do |inner, outer|
         { outer.desc => inner }
       end
     end
@@ -1121,18 +1121,17 @@ module Dfect
     #:startdoc:
   end
 
-  @options    = {:debug => $DEBUG, :quiet => false}
+  @options = {:debug => $DEBUG, :quiet => false}
 
-  @exec_stats = Hash.new {|h,k| h[k] = 0 }
-  @exec_trace = []
-  @report     = {:trace => @exec_trace, :stats => @exec_stats}.freeze
+  @stats  = Hash.new {|h,k| h[k] = 0 }
+  @trace  = []
+  @report = {:trace => @trace, :stats => @stats}.freeze
 
-  @curr_suite = class << self; Suite.new; end
-
-  @shared_code = {}
-  @test_stack = []
-  @call_stack = []
-  @file_cache = Hash.new {|h,k| h[k] = File.readlines(k) rescue nil }
+  @suite = class << self; Suite.new; end
+  @share = {}
+  @tests = []
+  @calls = []
+  @files = Hash.new {|h,k| h[k] = File.readlines(k) rescue nil }
 
   ##
   # Allows before and after hooks to be specified via
