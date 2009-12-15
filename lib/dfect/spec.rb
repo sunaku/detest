@@ -6,7 +6,7 @@
 
 require 'dfect'
 
-module Kernel
+module Dfect
   def describe *args, &block
     Dfect.D args.join(' '), &block
   end
@@ -22,7 +22,7 @@ module Kernel
       else raise ArgumentError, what
       end
 
-    Dfect.send meth, &block
+    send meth, &block
   end
 
   def after what, &block
@@ -33,6 +33,6 @@ module Kernel
       else raise ArgumentError, what
       end
 
-    Dfect.send meth, &block
+    send meth, &block
   end
 end

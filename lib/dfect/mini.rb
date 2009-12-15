@@ -8,7 +8,7 @@ require 'dfect'
 require 'dfect/unit'
 require 'dfect/spec'
 
-module Kernel
+module Dfect
   instance_methods(false).each do |meth|
     if meth =~ /^assert_not/
       alias_method 'refute' + $', meth
