@@ -72,6 +72,7 @@ end
 
 D 'E()' do
   E(SyntaxError) { raise SyntaxError }
+  E(SyntaxError, 'must raise SyntaxError') { raise SyntaxError }
 
   D 'forbids block to not raise anything' do
     F { E? {} }
@@ -106,6 +107,7 @@ end
 
 D 'E!()' do
   E!(SyntaxError) { raise ArgumentError }
+  E!(SyntaxError, 'must not raise SyntaxError') { raise ArgumentError }
 
   D 'allows block to not raise anything' do
     E!(SyntaxError) {}
@@ -135,6 +137,13 @@ D 'E!()' do
       raise ArgumentError
     end
   end
+end
+
+D 'E?()' do
+  T E?(SyntaxError) { raise SyntaxError }
+  T E?(SyntaxError, 'must raise SyntaxError') { raise SyntaxError }
+  F E?(SyntaxError) { raise ArgumentError }
+  F E?(SyntaxError, 'must not raise SyntaxError') { raise ArgumentError }
 end
 
 D 'C()' do
@@ -419,7 +428,7 @@ D 'share money' do
 end
 
 D 're-sharing under a previously shared identifier' do
-  E 'must raise an error', ArgumentError do
+  E ArgumentError, 'must raise an error' do
     S :knowledge do
       @sharing_is_fun = :overwrite_previous_share
     end
@@ -430,7 +439,7 @@ D 're-sharing under a previously shared identifier' do
 end
 
 D 'injecting an unshared code block' do
-  E 'must raise an error', ArgumentError do
+  E ArgumentError, 'must raise an error' do
     S :foobar
   end
 end

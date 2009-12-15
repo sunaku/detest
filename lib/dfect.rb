@@ -379,15 +379,14 @@ module Dfect
     #
     # ==== Parameters
     #
-    # [message]
-    #   Optional message to show in the
-    #   report if this assertion fails.
+    # [kinds_then_message]
+    #   Exception classes that must be raised by the given block, optionally
+    #   followed by a message to show in the report if this assertion fails.
     #
-    # [kinds]
-    #   Exception classes that must be raised by the given block.
-    #
-    #   If none are given, then StandardError is assumed (similar to how a
-    #   plain 'rescue' statement without any arguments catches StandardError).
+    #   If no exception classes are given, then
+    #   StandardError is assumed (similar to
+    #   how a plain 'rescue' statement without
+    #   any arguments catches StandardError).
     #
     # ==== Examples
     #
@@ -399,15 +398,15 @@ module Dfect
     #   # single exception specified:
     #
     #   E( ArgumentError ) { raise ArgumentError }
-    #   E( "argument must be invalid", ArgumentError ) { raise ArgumentError }
+    #   E( ArgumentError, "argument must be invalid" ) { raise ArgumentError }
     #
     #   # multiple exceptions specified:
     #
     #   E( SyntaxError, NameError ) { eval "..." }
-    #   E( "string must compile", SyntaxError, NameError ) { eval "..." }
+    #   E( SyntaxError, NameError, "string must compile" ) { eval "..." }
     #
-    def E message = nil, *kinds, &block
-      assert_raise :assert, message, *kinds, &block
+    def E *kinds_then_message, &block
+      assert_raise :assert, *kinds_then_message, &block
     end
 
     ##
@@ -421,15 +420,14 @@ module Dfect
     #
     # ==== Parameters
     #
-    # [message]
-    #   Optional message to show in the
-    #   report if this assertion fails.
+    # [kinds_then_message]
+    #   Exception classes that must not be raised by the given block, optionally
+    #   followed by a message to show in the report if this assertion fails.
     #
-    # [kinds]
-    #   Exception classes that must not be raised by the given block.
-    #
-    #   If none are given, then StandardError is assumed (similar to how a
-    #   plain 'rescue' statement without any arguments catches StandardError).
+    #   If no exception classes are given, then
+    #   StandardError is assumed (similar to
+    #   how a plain 'rescue' statement without
+    #   any arguments catches StandardError).
     #
     # ==== Examples
     #
@@ -441,15 +439,15 @@ module Dfect
     #   # single exception specified:
     #
     #   E!( ArgumentError ) { raise ArgumentError } # fails
-    #   E!( "argument must be invalid", ArgumentError ) { raise ArgumentError }
+    #   E!( ArgumentError, "argument must be invalid" ) { raise ArgumentError }
     #
     #   # multiple exceptions specified:
     #
     #   E!( SyntaxError, NameError ) { eval "..." }
-    #   E!( "string must compile", SyntaxError, NameError ) { eval "..." }
+    #   E!( SyntaxError, NameError, "string must compile" ) { eval "..." }
     #
-    def E! message = nil, *kinds, &block
-      assert_raise :negate, message, *kinds, &block
+    def E! *kinds_then_message, &block
+      assert_raise :negate, *kinds_then_message, &block
     end
 
     ##
@@ -459,14 +457,15 @@ module Dfect
     #
     # ==== Parameters
     #
-    # [message]
-    #   This parameter is optional and completely ignored.
+    # [kinds_then_message]
+    #   Exception classes that must be raised by
+    #   the given block, optionally followed by
+    #   a message that is completely ignored.
     #
-    # [kinds]
-    #   Exception classes that must be raised by the given block.
-    #
-    #   If none are given, then StandardError is assumed (similar to how a
-    #   plain 'rescue' statement without any arguments catches StandardError).
+    #   If no exception classes are given, then
+    #   StandardError is assumed (similar to
+    #   how a plain 'rescue' statement without
+    #   any arguments catches StandardError).
     #
     # ==== Examples
     #
@@ -482,9 +481,10 @@ module Dfect
     #   # multiple exceptions specified:
     #
     #   E?( SyntaxError, NameError ) { eval "..." } # => true
+    #   E!( SyntaxError, NameError, "string must compile" ) { eval "..." }
     #
-    def E? message = nil, *kinds, &block
-      assert_raise :sample, message, *kinds, &block
+    def E? *kinds_then_message, &block
+      assert_raise :sample, *kinds_then_message, &block
     end
 
     ##
@@ -778,11 +778,14 @@ module Dfect
       result
     end
 
-    def assert_raise mode, message = nil, *kinds, &block
+    def assert_raise mode, *kinds_then_message, &block
       raise ArgumentError, 'block must be given' unless block
 
-      if message.is_a? Class
-        kinds.unshift message
+      message = kinds_then_message.pop
+      kinds = kinds_then_message
+
+      if message.kind_of? Class
+        kinds << message
         message = nil
       end
 
