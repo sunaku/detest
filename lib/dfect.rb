@@ -943,13 +943,19 @@ module Dfect
     #
     def call block, sandbox = nil
       begin
+        @call_stack.push block
+
         if sandbox
           sandbox.instance_eval(&block)
         else
           block.call
         end
+
       rescue Exception => e
         debug_uncaught_exception block, e
+
+      ensure
+        @call_stack.pop
       end
     end
 
@@ -961,9 +967,9 @@ module Dfect
     # ==== Parameters
     #
     # [context]
-    #   Binding of code being debugged.  This
-    #   can be either a Binding or Proc object,
-    #   or +nil+ if no binding is available.
+    #   Binding of code being debugged.  This can be either a Binding or
+    #   Proc object, or +nil+ if no binding is available---in which case,
+    #   the binding of the inner-most enclosing test or hook will be used.
     #
     # [message]
     #   Message describing the failure
@@ -974,6 +980,9 @@ module Dfect
     #   failure in the code being debugged.
     #
     def debug context, message = nil, backtrace = caller
+      # inherit binding of enclosing test or hook
+      context ||= @call_stack.last
+
       # allow a Proc to be passed instead of a binding
       if context and context.respond_to? :binding
         context = context.binding
@@ -1122,6 +1131,7 @@ module Dfect
 
   @shared_code = {}
   @test_stack = []
+  @call_stack = []
   @file_cache = Hash.new {|h,k| h[k] = File.readlines(k) rescue nil }
 
   ##
