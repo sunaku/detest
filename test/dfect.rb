@@ -139,6 +139,7 @@ end
 
 D 'C()' do
   C(:foo) { throw :foo }
+  C(:foo, 'must throw :foo') { throw :foo }
 
   D 'forbids block to not throw anything' do
     F { C?(:bar) {} }
@@ -168,6 +169,7 @@ end
 
 D 'C!()' do
   C!(:bar) { throw :foo }
+  C!(:bar, 'must not throw :bar') { throw :foo }
 
   D 'allows block to not throw anything' do
     C!(:bar) {}
@@ -194,6 +196,13 @@ D 'C!()' do
     F { outer == inner }
     T { outer == nil   }
   end
+end
+
+D 'C?()' do
+  T C?(:foo) { throw :foo }
+  T C?(:foo, 'must throw :foo') { throw :foo }
+  F C?(:bar) { throw :foo }
+  F C?(:bar, 'must not throw :bar') { throw :foo }
 end
 
 D 'D()' do

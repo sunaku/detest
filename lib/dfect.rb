@@ -499,12 +499,12 @@ module Dfect
     #
     # ==== Parameters
     #
+    # [symbol]
+    #   Symbol that must be thrown by the given block.
+    #
     # [message]
     #   Optional message to show in the
     #   report if this assertion fails.
-    #
-    # [symbol]
-    #   Symbol that must be thrown by the given block.
     #
     # ==== Examples
     #
@@ -516,10 +516,10 @@ module Dfect
     #
     #   # message specified:
     #
-    #   C( ":foo must be thrown", :foo ) { throw :bar, 789 } # fails, => nil
+    #   C( :foo, ":foo must be thrown" ) { throw :bar, 789 } # fails, => nil
     #
-    def C message = nil, symbol = nil, &block
-      assert_catch :assert, message, symbol, &block
+    def C symbol, message = nil, &block
+      assert_catch :assert, symbol, message, &block
     end
 
     ##
@@ -530,12 +530,12 @@ module Dfect
     #
     # ==== Parameters
     #
+    # [symbol]
+    #   Symbol that must not be thrown by the given block.
+    #
     # [message]
     #   Optional message to show in the
     #   report if this assertion fails.
-    #
-    # [symbol]
-    #   Symbol that must not be thrown by the given block.
     #
     # ==== Examples
     #
@@ -547,10 +547,10 @@ module Dfect
     #
     #   # message specified:
     #
-    #   C!( ":foo must be thrown", :foo ) { throw :bar, 789 } # passes, => nil
+    #   C!( :foo, ":foo must be thrown" ) { throw :bar, 789 } # passes, => nil
     #
-    def C! message = nil, symbol = nil, &block
-      assert_catch :negate, message, symbol, &block
+    def C! symbol, message = nil, &block
+      assert_catch :negate, symbol, message, &block
     end
 
     ##
@@ -559,11 +559,11 @@ module Dfect
     #
     # ==== Parameters
     #
-    # [message]
-    #   This parameter is optional and completely ignored.
-    #
     # [symbol]
     #   Symbol that must be thrown by the given block.
+    #
+    # [message]
+    #   This parameter is optional and is completely ignored.
     #
     # ==== Examples
     #
@@ -575,10 +575,10 @@ module Dfect
     #
     #   # message specified:
     #
-    #   C?( ":foo must be thrown", :foo ) { throw :bar, 789 } # => false
+    #   C?( :foo, ":foo must be thrown" ) { throw :bar, 789 } # => false
     #
-    def C? message = nil, symbol = nil, &block
-      assert_catch :sample, message, symbol, &block
+    def C? symbol, message = nil, &block
+      assert_catch :sample, symbol, message, &block
     end
 
     ##
@@ -836,15 +836,8 @@ module Dfect
       exception
     end
 
-    def assert_catch mode, message = nil, symbol = nil, &block
+    def assert_catch mode, symbol, message = nil, &block
       raise ArgumentError, 'block must be given' unless block
-
-      if message.is_a? Symbol and not symbol
-        symbol  = message
-        message = nil
-      end
-
-      raise ArgumentError, 'symbol must be given' unless symbol
 
       symbol = symbol.to_sym
       message ||= "block must throw #{symbol.inspect}"
