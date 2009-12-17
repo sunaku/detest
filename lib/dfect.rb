@@ -735,6 +735,14 @@ module Dfect
       throw :stop_dfect_execution
     end
 
+    ##
+    # Returns the details of the failure that
+    # is currently being debugged by the user.
+    #
+    def info
+      @trace.last
+    end
+
     private
 
     def create_test insulate, *description, &block
