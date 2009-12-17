@@ -1048,11 +1048,16 @@ module Dfect
 
       @trace << details
 
-      # show the failure to the user
-      display build_fail_trace(details)
-
       # allow user to investigate the failure
       if @options[:debug] and context
+        # show only the most helpful subset of the
+        # failure details, because the rest can be
+        # queried (on demand) inside the debugger
+        overview = details.dup
+        overview.delete :vars
+        overview.delete :call
+        display build_fail_trace(overview)
+
         if Kernel.respond_to? :debugger
           eval '::Kernel.debugger', context, __FILE__, __LINE__
         else
@@ -1066,6 +1071,9 @@ module Dfect
             irb.eval_input
           end
         end
+      else
+        # show all failure details to the user
+        display build_fail_trace(details)
       end
 
       nil
