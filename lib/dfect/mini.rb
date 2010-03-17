@@ -1,8 +1,4 @@
 # MiniTest emulation layer.
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
 
 require 'dfect'
 require 'dfect/unit'

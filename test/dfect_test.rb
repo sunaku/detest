@@ -1,10 +1,3 @@
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
-
-require 'dfect/auto'
-
 D 'T()' do
   T { true   }
   T { !false }

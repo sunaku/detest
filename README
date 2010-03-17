@@ -1,0 +1,130 @@
+%#                                                                          #%
+%#             You can read this document in its full glory by              #%
+%#          opening ./doc/index.html in your favorite Web browser.          #%
+%#                                                                          #%
+
+%#----------------------------------------------------------------------------
+%| project_summary
+%#----------------------------------------------------------------------------
+
+  Dfect is an assertion testing library for Ruby that emphasizes a simple
+  assertion vocabulary, instant debuggability of failures, and flexibility in
+  composing tests.
+
+%#----------------------------------------------------------------------------
+%| paragraph "Resources"
+%#----------------------------------------------------------------------------
+
+  * <%= xref "History", "What's new?" %> ---
+    release notes and project history.
+
+  * [Issue tracker](<%= issue_tracker_url %>) ---
+    report bugs, request features, or ask for help.
+
+  * [Source code](<%= source_code_url %>) ---
+    browse online or obtain using <%= source_code_tool %>
+
+  * [API reference](<%= api_reference_url %>) ---
+    documentation for source code.
+
+  * [Project home](<%= Dfect::WEBSITE %>) ---
+    the official project home page.
+
+%#----------------------------------------------------------------------------
+%| section "Features"
+%#----------------------------------------------------------------------------
+
+  Dfect is exciting because:
+
+  * It has only 5 methods to remember: D F E C T.
+  * It lets you debug assertion failures interactively.
+  * It keeps a detailed report of assertion failures.
+  * It lets you nest tests and execution hooks.
+  * Its core consists of a mere <%= `sloccount lib/dfect.rb`[/^\d+/] %> lines of code.
+
+%#----------------------------------------------------------------------------
+%| section "Motivation"
+%#----------------------------------------------------------------------------
+
+  The basic premise of Dfect is that, when a failure occurs, I want to be put
+  inside an interactive debugger where I have the freedom to properly
+  scrutinize the state of my program and determine the root cause of the
+  failure.
+
+  Other testing libraries do not fulfill this need.  Instead, they simply
+  report each failed assertion along with a stack trace (if I am lucky) and
+  abruptly terminate my program.
+
+  This deliberate separation of *fault* (my program being in an erroneous
+  state) and *cause* (the source code of my program which caused the fault)
+  reduces me to a primitive and laborious investigative technique known as
+  "[printf debugging][1]".
+
+  If you are not the least bit *unsettled* by those two words, then recall
+  your first encounter with [IRB, the interactive Ruby
+  shell](http://tryruby.hobix.com/):  remember how you would enter code
+  expressions and IRB would *instantly* evaluate them and show you the result?
+
+  What an immense productivity boost!  A *stark contrast* to the endless toil
+  of wrapping every such experiment in standard boilerplate (`public static
+  void`...), saving the result to a correctly named file, invoking the
+  C/C++/Java compiler, and finally executing the binary---only to be greeted
+  by a [segfault](http://en.wikipedia.org/wiki/Segmentation_fault). ;-)
+
+  I exaggerate, for the sake of entertainment, of course.  But my point is
+  that the Ruby testing libraries of today have (thus far) limited our
+  productivity by orphaning us from the nurturing environment of IRB and
+  shooing us off to a barren desert of antiquated techniques.  How cruel!
+
+  And that, I say, is why Dfect is essential to Ruby developers today.  It
+  reunites us with our playful, interactive, *real-time* IRB roots and, with
+  unwavering tenacity, enables us to investigate failures *productively*!
+
+  [1]: http://oopweb.com/CPP/Documents/DebugCPP/Volume/techniques.html#PRINTF
+
+%#----------------------------------------------------------------------------
+%| section "Etymology"
+%#----------------------------------------------------------------------------
+
+  Dfect is named after the D F E C T methods it provides.
+
+  The name is also play on the word "defect", whereby the intentional
+  misspelling of "defect" as "dfect" is a defect in itself!  <tt>;-)</tt>
+
+  This wordplay is similar to [Mnesia][1]'s play on the word "amnesia",
+  whereby the intentional omission of the letter "A" indicates
+  forgetfulness---the key characteristic of having amnesia.  Clever!
+
+  [1]: http://www.erlang.org/doc/apps/mnesia/index.html
+
+%#----------------------------------------------------------------------------
+%| section "License"
+%#----------------------------------------------------------------------------
+
+  %# See the file named "LICENSE" for details.
+  %< "LICENSE"
+
+%#----------------------------------------------------------------------------
+%| section "Credits"
+%#----------------------------------------------------------------------------
+
+  Dfect is made possible by <%= xref "History",
+  "contributions" %> from users like you:
+
+  %# See the file named "CREDITS" for details.
+  %< "CREDITS"
+
+%#----------------------------------------------------------------------------
+%| section "Related works"
+%#----------------------------------------------------------------------------
+
+  * [assert{ 2.0 }](http://assert2.rubyforge.org)
+  * [Bacon](http://chneukirchen.org/repos/bacon/README)
+  * [Context](http://github.com/jeremymcanally/context)
+  * [minitest](http://blog.zenspider.com/minitest)
+  * [RSpec](http://rspec.info)
+  * [Shoulda](http://thoughtbot.com/projects/shoulda)
+  * [test-spec](http://test-spec.rubyforge.org/test-spec)
+  * [Test::Unit](http://www.ruby-doc.org/stdlib/libdoc/test/unit/rdoc/)
+  * [Testy](http://github.com/ahoward/testy/tree/master)
+  * [Verify](http://www.ruby-forum.com/topic/183354)

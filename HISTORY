@@ -1,0 +1,205 @@
+%#                                                                          #%
+%#             You can read this document in its full glory by              #%
+%#          opening ./doc/index.html in your favorite Web browser.          #%
+%#                                                                          #%
+
+%#----------------------------------------------------------------------------
+%| section "Version 1.1.0 (2009-10-27)"
+%#----------------------------------------------------------------------------
+
+  This release adds a new method for emitting status messages and does some
+  internal housekeeping.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Thank you"
+  %#--------------------------------------------------------------------------
+
+    * Iñaki Baz Castillo used Dfect and suggested new features.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "New features"
+  %#--------------------------------------------------------------------------
+
+    * Add `Dfect::S()` method for <%= xref "Reporting", "adding status
+      messages" %> to the execution report. This feature was [requested
+      by](http://github.com/sunaku/dfect/issues/closed#issue/1) Iñaki Baz
+      Castillo.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Housekeeping"
+  %#--------------------------------------------------------------------------
+
+    * Remove unused require of 'delegate' standard library in 'dfect/spec'
+      RSpec emulation layer.
+
+    * Mention <%= xref "Emulation" %> layers for popular testing libraries.
+
+    * Mention that assertions take an optional message parameter.
+
+    * Replace sample unit test with Dfect test suite.
+
+    * Upgrade user manual to ERBook 9.0.0.
+
+%#----------------------------------------------------------------------------
+%| section "Version 1.0.1 (2009-10-07)"
+%#----------------------------------------------------------------------------
+
+  This release fixes a bug in the Test::Unit emulation library and revises the
+  user manual.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Bug fixes"
+  %#--------------------------------------------------------------------------
+
+    * The parameters for the `assert_equal()` method in the
+      <tt>dfect/unit</tt> library were in the wrong order.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Housekeeping"
+  %#--------------------------------------------------------------------------
+
+    * Revise user manual to better fit jQuery UI tabs.
+
+    * Justify the use of `eval()` in emulation libraries.
+
+    * Use simpler Copyright reminder at the top of every file.
+
+    * Make SLOC count in user manual reflect the *core* library only.
+
+    * Mark code spans with `{:lang=ruby}` instead of HTML `<code/>` tags.
+
+    * Open source is for fun, so [be nice][1] and speak of "related works"
+      instead of "competitors".
+
+    [1]: http://loiclemeur.com/english/2009/03/never-criticize-your-competitors.html
+
+%#----------------------------------------------------------------------------
+%| section "Version 1.0.0 (2009-05-03)"
+%#----------------------------------------------------------------------------
+
+  This release improves default choices, adds emulation layers to mimic other
+  testing libraries, and fixes some bugs.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Incompatible changes"
+  %#--------------------------------------------------------------------------
+
+    * The `:debug` option is now enabled by default and is no longer linked to
+      the value of `$DEBUG`.
+
+    * `Dfect.run()` now appends to previous results by default.
+
+      This behavior can be disabled by passing `false` to the method.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "New features"
+  %#--------------------------------------------------------------------------
+
+    * Add emulation layers to mimic other testing libraries:
+      * <tt>dfect/unit</tt> --- Test::Unit
+      * <tt>dfect/mini</tt> --- Minitest
+      * <tt>dfect/spec</tt> --- RSpec
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Bug fixes"
+  %#--------------------------------------------------------------------------
+
+    * Do not blindly replace `Class#to_yaml`; it might be fixed someday.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Housekeeping"
+  %#--------------------------------------------------------------------------
+
+    * Add <%= xref "Motivation" %> section in user manual to promote
+      interactive debugging.
+
+    * Add brief <%= xref "History" %> of this project's inception.
+
+    * Remove redundant assertions for F!() and T!() methods in test suite.
+
+    * Add copyright notice at the top of every file.
+
+%#----------------------------------------------------------------------------
+%| section "Version 0.1.0 (2009-04-28)"
+%#----------------------------------------------------------------------------
+
+  This release adds new variations to assertion methods, fixes several bugs,
+  and improves test coverage.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Thank you"
+  %#--------------------------------------------------------------------------
+
+    * François Beausoleil contributed patches for both code *and* tests! :-)
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "New features"
+  %#--------------------------------------------------------------------------
+
+      * Added <%= xref "Negation", "negation (m!)" %> and <%=
+        xref "Sampling", "sampling (m?)" %> variations to <%=
+        xref "Assertions", "assertion methods" %>.
+
+      These new methods implement assertion functionality missing so far
+      (previously we could not assert that a given exception was NOT thrown)
+      and thereby allow us to fully test Dfect using itself.
+
+    * Added documentation on <%= xref "Insulation", "how to insulate tests" %>
+      from the global Ruby namespace.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Bug fixes"
+  %#--------------------------------------------------------------------------
+
+    * The `E()` method did not consider the case where a block does not raise
+      anything as a failure. ---*François Beausoleil*
+
+    * When creating a report about an assertion failure, an exception would be
+      thrown if any local variables pointed to an empty array.
+
+    * The `Dfect::<()` method broke the inheritance-checking behavior of the <
+      class method.
+
+      Added a bypass to the originial behavior so that `RCov::XX` can properly
+      generate a report about code that uses Dfect.
+
+    * Added workaround for YAML error when serializing a class object:
+
+          TypeError: can't dump anonymous class Class
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Housekeeping"
+  %#--------------------------------------------------------------------------
+
+    * Filled the big holes in test coverage.  Everything except the runtime
+      debugging logic is now covered by the unit tests.
+
+%#----------------------------------------------------------------------------
+%| section "Version 0.0.0 (2009-04-13)"
+%#----------------------------------------------------------------------------
+
+  For the longest time, I took Test::Unit and [RSpec](http://rspec.info) for
+  granted.  They were the epitomy of modern Ruby practice; the insurmountable
+  status quo; immortalized in books, conferences, and blogs alike.
+
+  Why would *anyone* think of using anything remotely different, let alone be
+  foolish enough to write an alternative testing library when these are
+  clearly *good enough*?
+
+  Recent experiments in assertion testing libraries smashed my world view:
+
+  * [assert{ 2.0 }](http://assert2.rubyforge.org)
+  * [Testy](http://github.com/ahoward/testy/tree/master)
+  * [Verify](http://www.ruby-forum.com/topic/183354)
+
+  The status quo was certainly *not* "good enough", as I had so blindly
+  believed all these years.  In fact, they were *verbose* behemoths that chose
+  to encode endless permutations of conjecture into methods.
+
+  Empowered by this revelation and inspired by [Sean O'Halpin's musing][1] on
+  alternative names for assertion methods, I rose to challenge the status quo.
+
+  And so I present to you the first public release of "Dfect".
+
+  [1]: http://www.ruby-forum.com/topic/183354#801895
+

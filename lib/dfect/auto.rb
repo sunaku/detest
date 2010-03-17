@@ -2,10 +2,6 @@
 #
 # Simply require() this file and Dfect will be available for use anywhere
 # in your program and will execute all tests before your program exits.
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
 
 require 'dfect'
 

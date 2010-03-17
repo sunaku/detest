@@ -1,8 +1,3 @@
-#--
-# Copyright protects this work.
-# See LICENSE file for details.
-#++
-
 require 'yaml'
 #
 # YAML raises this error when we try to serialize a class:
@@ -11,7 +6,7 @@ require 'yaml'
 #
 # Work around this by representing a class by its name.
 #
-class Class #:nodoc: all
+class Class # @private
   alias __to_yaml__ to_yaml
   undef to_yaml
 
@@ -41,7 +36,7 @@ end
 module Dfect
   class << self
     ##
-    # Hash of test results, assembled by #run.
+    # Hash of test results, assembled by {Dfect.run}.
     #
     # [:trace]
     #   Hierarchical trace of all tests executed, where each test is
@@ -98,7 +93,7 @@ module Dfect
     attr_accessor :options
 
     ##
-    # Defines a new test, composed of the given
+    # Defines a new test composed of the given
     # description and the given block to execute.
     #
     # This test may contain nested tests.
@@ -106,13 +101,12 @@ module Dfect
     # Tests at the outer-most level are automatically
     # insulated from the top-level Ruby environment.
     #
-    # ==== Parameters
+    # @param [Object, Array<Object>] description
     #
-    # [description]
     #   A brief title or a series of objects
     #   that describe the test being defined.
     #
-    # ==== Examples
+    # @example
     #
     #   D "a new array" do
     #     D .< { @array = [] }
@@ -135,19 +129,14 @@ module Dfect
     end
 
     ##
-    # Defines a new test that is explicitly
-    # insulated from the tests that contain it
-    # and from the top-level Ruby environment.
+    # Defines a new test that is explicitly insulated from the tests
+    # that contain it and also from the top-level Ruby environment.
     #
     # This test may contain nested tests.
     #
-    # ==== Parameters
+    # @param description (see Dfect.D)
     #
-    # [description]
-    #   A brief title or a series of objects
-    #   that describe the test being defined.
-    #
-    # ==== Examples
+    # @example
     #
     #   D "an outer test" do
     #     @outside = 1
@@ -172,12 +161,12 @@ module Dfect
     end
 
     ##
-    # :call-seq: <(&block)
+    # @overload def <(&block)
     #
     # Registers the given block to be executed
     # before each nested test inside this test.
     #
-    # ==== Examples
+    # @example
     #
     #   D .< { puts "before each nested test" }
     #
@@ -199,7 +188,7 @@ module Dfect
     # Registers the given block to be executed
     # after each nested test inside this test.
     #
-    # ==== Examples
+    # @example
     #
     #   D .> { puts "after each nested test" }
     #
@@ -216,7 +205,7 @@ module Dfect
     # Registers the given block to be executed
     # before all nested tests inside this test.
     #
-    # ==== Examples
+    # @example
     #
     #   D .<< { puts "before all nested tests" }
     #
@@ -233,7 +222,7 @@ module Dfect
     # Registers the given block to be executed
     # after all nested tests inside this test.
     #
-    # ==== Examples
+    # @example
     #
     #   D .>> { puts "after all nested tests" }
     #
@@ -251,27 +240,25 @@ module Dfect
     # result of the given block is neither
     # nil nor false and returns that result.
     #
-    # ==== Parameters
+    # @param condition
     #
-    # [condition]
     #   The condition to be asserted.  A block
     #   may be given in place of this parameter.
     #
-    # [message]
+    # @param message
+    #
     #   Optional message to show in the
     #   report if this assertion fails.
     #
-    # ==== Examples
-    #
-    #   # no message specified:
+    # @example no message given
     #
     #   T { true }  # passes
     #   T { false } # fails
     #   T { nil }   # fails
     #
-    #   # message specified:
+    # @example message is given
     #
-    #   T( "computers do not doublethink" ) { 2 + 2 != 5 } # passes
+    #   T("computers do not doublethink") { 2 + 2 != 5 } # passes
     #
     def T condition = nil, message = nil, &block
       assert_yield :assert, condition, message, &block
@@ -282,27 +269,19 @@ module Dfect
     # result of the given block is either nil
     # or false and returns that result.
     #
-    # ==== Parameters
+    # @param condition (see Dfect.T)
     #
-    # [condition]
-    #   The condition to be asserted.  A block
-    #   may be given in place of this parameter.
+    # @param message (see Dfect.T)
     #
-    # [message]
-    #   Optional message to show in the
-    #   report if this assertion fails.
-    #
-    # ==== Examples
-    #
-    #   # no message specified:
+    # @example no message given
     #
     #   T! { true }  # fails
     #   T! { false } # passes
     #   T! { nil }   # passes
     #
-    #   # message specified:
+    # @example message is given
     #
-    #   T!( "computers do not doublethink" ) { 2 + 2 == 5 } # passes
+    #   T!("computers do not doublethink") { 2 + 2 == 5 } # passes
     #
     def T! condition = nil, message = nil, &block
       assert_yield :negate, condition, message, &block
@@ -313,26 +292,21 @@ module Dfect
     # the result of the given block is neither
     # nil nor false.  Otherwise, returns false.
     #
-    # ==== Parameters
+    # @param condition (see Dfect.T)
     #
-    # [condition]
-    #   The condition to be asserted.  A block
-    #   may be given in place of this parameter.
+    # @param message
     #
-    # [message]
     #   This parameter is optional and completely ignored.
     #
-    # ==== Examples
-    #
-    #   # no message specified:
+    # @example no message given
     #
     #   T? { true }  # => true
     #   T? { false } # => false
     #   T? { nil }   # => false
     #
-    #   # message specified:
+    # @example message is given
     #
-    #   T?( "computers do not doublethink" ) { 2 + 2 != 5 } # => true
+    #   T?("computers do not doublethink") { 2 + 2 != 5 } # => true
     #
     def T? condition = nil, message = nil, &block
       assert_yield :sample, condition, message, &block
@@ -346,20 +320,15 @@ module Dfect
     # Returns true if the result of the given block is
     # either nil or false.  Otherwise, returns false.
     #
-    # ==== Parameters
+    # @param message (see Dfect.T?)
     #
-    # [message]
-    #   This parameter is optional and completely ignored.
-    #
-    # ==== Examples
-    #
-    #   # no message specified:
+    # @example no message given
     #
     #   F? { true }  # => false
     #   F? { false } # => true
     #   F? { nil }   # => true
     #
-    #   # message specified:
+    # @example message is given
     #
     #   F?( "computers do not doublethink" ) { 2 + 2 == 5 } # => true
     #
@@ -372,14 +341,15 @@ module Dfect
     # kinds of exceptions is raised
     # when the given block is executed.
     #
-    # If the block raises an exception,
-    # then that exception is returned.
+    # @return
     #
-    # Otherwise, nil is returned.
+    #   If the block raises an exception,
+    #   then that exception is returned.
     #
-    # ==== Parameters
+    #   Otherwise, nil is returned.
     #
-    # [kinds_then_message]
+    # @param [...] kinds_then_message
+    #
     #   Exception classes that must be raised by the given block, optionally
     #   followed by a message to show in the report if this assertion fails.
     #
@@ -388,22 +358,20 @@ module Dfect
     #   how a plain 'rescue' statement without
     #   any arguments catches StandardError).
     #
-    # ==== Examples
-    #
-    #   # no exceptions specified:
+    # @example no exceptions given
     #
     #   E { }       # fails
     #   E { raise } # passes
     #
-    #   # single exception specified:
+    # @example single exception given
     #
-    #   E( ArgumentError ) { raise ArgumentError }
-    #   E( ArgumentError, "argument must be invalid" ) { raise ArgumentError }
+    #   E(ArgumentError) { raise ArgumentError }
+    #   E(ArgumentError, "argument must be invalid") { raise ArgumentError }
     #
-    #   # multiple exceptions specified:
+    # @example multiple exceptions given
     #
-    #   E( SyntaxError, NameError ) { eval "..." }
-    #   E( SyntaxError, NameError, "string must compile" ) { eval "..." }
+    #   E(SyntaxError, NameError) { eval "..." }
+    #   E(SyntaxError, NameError, "string must compile") { eval "..." }
     #
     def E *kinds_then_message, &block
       assert_raise :assert, *kinds_then_message, &block
@@ -413,38 +381,24 @@ module Dfect
     # Asserts that one of the given kinds of exceptions
     # is not raised when the given block is executed.
     #
-    # If the block raises an exception,
-    # then that exception is returned.
+    # @return (see Dfect.E)
     #
-    # Otherwise, nil is returned.
+    # @param kinds_then_message (see Dfect.E)
     #
-    # ==== Parameters
-    #
-    # [kinds_then_message]
-    #   Exception classes that must not be raised by the given block, optionally
-    #   followed by a message to show in the report if this assertion fails.
-    #
-    #   If no exception classes are given, then
-    #   StandardError is assumed (similar to
-    #   how a plain 'rescue' statement without
-    #   any arguments catches StandardError).
-    #
-    # ==== Examples
-    #
-    #   # no exceptions specified:
+    # @example no exceptions given
     #
     #   E! { }       # passes
     #   E! { raise } # fails
     #
-    #   # single exception specified:
+    # @example single exception given
     #
-    #   E!( ArgumentError ) { raise ArgumentError } # fails
-    #   E!( ArgumentError, "argument must be invalid" ) { raise ArgumentError }
+    #   E!(ArgumentError) { raise ArgumentError } # fails
+    #   E!(ArgumentError, "argument must be invalid") { raise ArgumentError }
     #
-    #   # multiple exceptions specified:
+    # @example multiple exceptions given
     #
-    #   E!( SyntaxError, NameError ) { eval "..." }
-    #   E!( SyntaxError, NameError, "string must compile" ) { eval "..." }
+    #   E!(SyntaxError, NameError) { eval "..." }
+    #   E!(SyntaxError, NameError, "string must compile") { eval "..." }
     #
     def E! *kinds_then_message, &block
       assert_raise :negate, *kinds_then_message, &block
@@ -455,9 +409,8 @@ module Dfect
     # exceptions is raised when the given block
     # is executed.  Otherwise, returns false.
     #
-    # ==== Parameters
+    # @param [...] kinds_then_message
     #
-    # [kinds_then_message]
     #   Exception classes that must be raised by
     #   the given block, optionally followed by
     #   a message that is completely ignored.
@@ -467,21 +420,19 @@ module Dfect
     #   how a plain 'rescue' statement without
     #   any arguments catches StandardError).
     #
-    # ==== Examples
-    #
-    #   # no exceptions specified:
+    # @example no exceptions given
     #
     #   E? { }       # => false
     #   E? { raise } # => true
     #
-    #   # single exception specified:
+    # @example single exception given
     #
-    #   E?( ArgumentError ) { raise ArgumentError } # => true
+    #   E?(ArgumentError) { raise ArgumentError } # => true
     #
-    #   # multiple exceptions specified:
+    # @example multiple exceptions given
     #
-    #   E?( SyntaxError, NameError ) { eval "..." } # => true
-    #   E!( SyntaxError, NameError, "string must compile" ) { eval "..." }
+    #   E?(SyntaxError, NameError) { eval "..." } # => true
+    #   E!(SyntaxError, NameError, "string must compile") { eval "..." }
     #
     def E? *kinds_then_message, &block
       assert_raise :sample, *kinds_then_message, &block
@@ -491,32 +442,29 @@ module Dfect
     # Asserts that the given symbol is thrown
     # when the given block is executed.
     #
-    # If a value is thrown along
-    # with the expected symbol,
-    # then that value is returned.
+    # @return
     #
-    # Otherwise, nil is returned.
+    #   If a value is thrown along
+    #   with the expected symbol,
+    #   then that value is returned.
     #
-    # ==== Parameters
+    #   Otherwise, nil is returned.
     #
-    # [symbol]
+    # @param [Symbol] symbol
+    #
     #   Symbol that must be thrown by the given block.
     #
-    # [message]
-    #   Optional message to show in the
-    #   report if this assertion fails.
+    # @param message (see Dfect.T)
     #
-    # ==== Examples
-    #
-    #   # no message specified:
+    # @example no message given
     #
     #   C(:foo) { throw :foo, 123 } # passes, => 123
     #   C(:foo) { throw :bar, 456 } # fails,  => 456
     #   C(:foo) { }                 # fails,  => nil
     #
-    #   # message specified:
+    # @example message is given
     #
-    #   C( :foo, ":foo must be thrown" ) { throw :bar, 789 } # fails, => nil
+    #   C(:foo, ":foo must be thrown") { throw :bar, 789 } # fails, => nil
     #
     def C symbol, message = nil, &block
       assert_catch :assert, symbol, message, &block
@@ -526,28 +474,23 @@ module Dfect
     # Asserts that the given symbol is not
     # thrown when the given block is executed.
     #
-    # Returns nil, always.
+    # @return nil, always.
     #
-    # ==== Parameters
+    # @param [Symbol] symbol
     #
-    # [symbol]
     #   Symbol that must not be thrown by the given block.
     #
-    # [message]
-    #   Optional message to show in the
-    #   report if this assertion fails.
+    # @param message (see Dfect.T)
     #
-    # ==== Examples
-    #
-    #   # no message specified:
+    # @example no message given
     #
     #   C!(:foo) { throw :foo, 123 } # fails,  => nil
     #   C!(:foo) { throw :bar, 456 } # passes, => nil
     #   C!(:foo) { }                 # passes, => nil
     #
-    #   # message specified:
+    # @example message is given
     #
-    #   C!( :foo, ":foo must be thrown" ) { throw :bar, 789 } # passes, => nil
+    #   C!(:foo, ":foo must be thrown") { throw :bar, 789 } # passes, => nil
     #
     def C! symbol, message = nil, &block
       assert_catch :negate, symbol, message, &block
@@ -557,49 +500,44 @@ module Dfect
     # Returns true if the given symbol is thrown when the
     # given block is executed.  Otherwise, returns false.
     #
-    # ==== Parameters
+    # @param symbol (see Dfect.C)
     #
-    # [symbol]
-    #   Symbol that must be thrown by the given block.
+    # @param message (see Dfect.T?)
     #
-    # [message]
-    #   This parameter is optional and is completely ignored.
-    #
-    # ==== Examples
-    #
-    #   # no message specified:
+    # @example no message given
     #
     #   C?(:foo) { throw :foo, 123 } # => true
     #   C?(:foo) { throw :bar, 456 } # => false
     #   C?(:foo) { }                 # => false
     #
-    #   # message specified:
+    # @example message is given
     #
-    #   C?( :foo, ":foo must be thrown" ) { throw :bar, 789 } # => false
+    #   C?(:foo, ":foo must be thrown") { throw :bar, 789 } # => false
     #
     def C? symbol, message = nil, &block
       assert_catch :sample, symbol, message, &block
     end
 
     ##
-    # Adds the given message to the report inside
+    # Adds the given messages to the report inside
     # the section of the currently running test.
     #
     # You can think of "L" as "to log something".
     #
-    # ==== Parameters
+    # @param messages
     #
-    # [message]
     #   Objects to be added to the report.
     #
-    # ==== Examples
+    # @example single message given
     #
     #   L "establishing connection..."
     #
+    # @example multiple messages given
+    #
     #   L "beginning calculation...", Math::PI, [1, 2, 3, ['a', 'b', 'c']]
     #
-    def L *message
-      @trace.concat message
+    def L *messages
+      @trace.concat messages
     end
 
     ##
@@ -612,13 +550,12 @@ module Dfect
     # into the closest insulated Dfect test
     # that contains the call to this method.
     #
-    # ==== Parameters
+    # @param [Symbol, Object] identifier
     #
-    # [identifier]
     #   An object that identifies shared code.  This must be common
     #   knowledge to all parties that want to partake in the sharing.
     #
-    # ==== Examples
+    # @example
     #
     #   S :knowledge do
     #     #...
@@ -661,13 +598,9 @@ module Dfect
     # code block into the closest insulated Dfect
     # test that contains the call to this method.
     #
-    # ==== Parameters
+    # @param identifier (see Dfect.S)
     #
-    # [identifier]
-    #   An object that identifies shared code.  This must be common
-    #   knowledge to all parties that want to partake in the sharing.
-    #
-    # ==== Examples
+    # @example
     #
     #   D "some test" do
     #     S! :knowledge do
@@ -693,11 +626,11 @@ module Dfect
     end
 
     ##
-    # Executes all tests defined thus far and stores the results in #report.
+    # Executes all tests defined thus far and
+    # stores the results in {Dfect.report}.
     #
-    # ==== Parameters
+    # @param [Boolean] continue
     #
-    # [continue]
     #   If true, results from previous executions will not be cleared.
     #
     def run continue = true
@@ -728,8 +661,8 @@ module Dfect
     end
 
     ##
-    # Stops the execution of the #run method or raises an
-    # exception if that method is not currently executing.
+    # Stops the execution of the {Dfect.run} method or raises
+    # an exception if that method is not currently executing.
     #
     def stop
       throw :stop_dfect_execution
@@ -966,23 +899,24 @@ module Dfect
       end
     end
 
-    INTERNALS = File.dirname(__FILE__) #:nodoc:
+    INTERNALS = File.dirname(__FILE__) # @private
 
     ##
     # Adds debugging information to the report.
     #
-    # ==== Parameters
+    # @param [Binding, Proc, #binding] context
     #
-    # [context]
     #   Binding of code being debugged.  This can be either a Binding or
-    #   Proc object, or +nil+ if no binding is available---in which case,
+    #   Proc object, or nil if no binding is available---in which case,
     #   the binding of the inner-most enclosing test or hook will be used.
     #
-    # [message]
+    # @param message
+    #
     #   Message describing the failure
     #   in the code being debugged.
     #
-    # [backtrace]
+    # @param [Array<String>] backtrace
+    #
     #   Stack trace corresponding to point of
     #   failure in the code being debugged.
     #
@@ -999,11 +933,6 @@ module Dfect
       backtrace = backtrace.reject {|s| s.include? INTERNALS }
 
       # record failure details in the report
-      #
-      # NOTE: using string keys here instead
-      #       of symbols because they make
-      #       the YAML output easier to read
-      #
       details = {
         # user message
         :fail => message,
@@ -1117,9 +1046,7 @@ module Dfect
       end
     end
 
-    #:stopdoc:
-
-    class Suite
+    class Suite # @private
       attr_reader :tests, :before_each, :after_each, :before_all, :after_all
 
       def initialize
@@ -1130,10 +1057,8 @@ module Dfect
         @after_all   = []
       end
 
-      Test = Struct.new :desc, :block, :sandbox
+      Test = Struct.new(:desc, :block, :sandbox) # @private
     end
-
-    #:startdoc:
   end
 
   @options = {:debug => $DEBUG, :quiet => false}
@@ -1149,8 +1074,8 @@ module Dfect
   @files = Hash.new {|h,k| h[k] = File.readlines(k) rescue nil }
 
   ##
-  # Allows before and after hooks to be specified via
-  # the D() method syntax when this module is mixed-in:
+  # Allows before and after hooks to be specified via the
+  # following method syntax when this module is mixed-in:
   #
   #   D .<< { puts "before all nested tests" }
   #   D .<  { puts "before each nested test" }

@@ -1,0 +1,35 @@
+%#                                                                          #%
+%#             You can read this document in its full glory by              #%
+%#          opening ./doc/index.html in your favorite Web browser.          #%
+%#                                                                          #%
+
+%#----------------------------------------------------------------------------
+%| section "Prerequisites"
+%#----------------------------------------------------------------------------
+
+  * [Ruby](http://ruby-lang.org) 1.8.6 or newer.
+
+  * [RubyGems](http://rubygems.org) 1.3.6 or newer.
+
+  * [ruby-debug](http://www.datanoise.com/ruby-debug) will
+    be used if it is available.  Otherwise the standard
+    interactive Ruby shell (IRB) will be used instead.
+
+%#----------------------------------------------------------------------------
+%| section "Installing"
+%#----------------------------------------------------------------------------
+
+  %|command! "gem install dfect"
+
+%#----------------------------------------------------------------------------
+%| section "Upgrading"
+%#----------------------------------------------------------------------------
+
+  %|command! "gem update dfect"
+
+%#----------------------------------------------------------------------------
+%| section "Uninstalling"
+%#----------------------------------------------------------------------------
+
+  %|command! "gem uninstall dfect"
+
