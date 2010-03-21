@@ -1090,6 +1090,6 @@ module Dfect
     # XXX: using eval() on a string because Ruby 1.8's
     #      define_method() cannot take a block parameter
     #
-    eval "def #{name}(*a, &b) ::#{self}.#{name}(*a, &b) end", binding, __FILE__, __LINE__
+    module_eval "def #{name}(*a, &b) ::#{self.name}.#{name}(*a, &b) end", __FILE__, __LINE__
   end
 end
