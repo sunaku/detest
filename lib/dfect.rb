@@ -138,10 +138,15 @@ module Dfect
     #
     # @example
     #
-    #   D "an outer test" do
+    #   D "a root-level test" do
     #     @outside = 1
     #     T { defined? @outside }
     #     T { @outside == 1 }
+    #
+    #     D "an inner, non-insulated test" do
+    #       T { defined? @outside }
+    #       T { @outside == 1 }
+    #     end
     #
     #     D! "an inner, insulated test" do
     #       F { defined? @outside }

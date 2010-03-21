@@ -3,6 +3,31 @@
 %#          opening ./doc/index.html in your favorite Web browser.          #%
 %#                                                                          #%
 
+% def example_dfect_test *example_node_args, &block_containing_code_to_run
+  % code_to_run = __block_content__(&block_containing_code_to_run).join
+  % code_to_run.insert 0, "require 'dfect/auto'\n\n"
+
+  %|example! *example_node_args
+    When the following test is run:
+
+    <%
+      code :ruby do
+        code_to_run
+      end
+    %>
+
+    Dfect will output the following:
+
+    <%
+      text do
+        IO.popen('ruby -Ilib 2>&1', 'w+') do |ruby|
+          ruby.write code_to_run
+          ruby.close_write
+          ruby.read
+        end
+      end
+    %>
+
 Begin by loading Dfect into your program:
 
 %|code :ruby
@@ -222,47 +247,40 @@ illustrative example.
   %| section "Insulation"
   %#--------------------------------------------------------------------------
 
-    Use the singleton class of a temporary object to shield your test logic
-    from Ruby's global environment, the code being tested, and from other
-    tests:
+    The `D!()` method defines a new test that is explicitly insulated from the
+    tests that contain it and also from the top-level Ruby environment.
+    Root-level calls to the `D()` method are insulated by default.
 
-    %|code :ruby
-      class << Object.new
-        # your test logic here
-      end
-
-    Inside this insulated environment, you are free to:
+    Inside an insulated test, you are free to:
     * mix-in any modules your test logic needs
     * define your own constants, methods, and classes
 
-    For example:
+    %|example_dfect_test "Insulated and uninsulated tests"
+      D "a root-level test" do
+        @outside = 1
+        T { defined? @outside }
+        T { @outside == 1 }
 
-    %|code :ruby
-      class << Object.new
-        include SomeModule
-        extend AnotherModule
-
-        YOUR_CONSTANT = 123
-
-        D "your tests here" do
-          # your test logic here
-
-          your_helper_method
+        D "an inner, non-insulated test" do
+          T { defined? @outside }
+          T { @outside == 1 }
         end
 
-        def self.your_helper_method
-          # your helper logic here
+        D! "an inner, insulated test" do
+          F { defined? @outside }
+          F { @outside == 1 }
 
-          helper = YourHelperClass.new
-          helper.do_something_helpful
-
-          T { 2 + 2 != 5 }
+          @inside = 2
+          T { defined? @inside }
+          T { @inside == 2 }
         end
 
-        class YourHelperClass
-          # your helper logic here
-        end
+        F { defined? @inside }
+        F { @inside == 2 }
       end
+
+
+
 
 %#----------------------------------------------------------------------------
 %| section "Execution"
