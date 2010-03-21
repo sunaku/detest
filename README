@@ -48,46 +48,6 @@
     of code.
 
 %#----------------------------------------------------------------------------
-%| section "Motivation"
-%#----------------------------------------------------------------------------
-
-  The basic premise of Dfect is that, when a failure occurs, I want to be put
-  inside an interactive debugger where I have the freedom to properly
-  scrutinize the state of my program and determine the root cause of the
-  failure.
-
-  Other testing libraries do not fulfill this need.  Instead, they simply
-  report each failed assertion along with a stack trace (if I am lucky) and
-  abruptly terminate my program.
-
-  This deliberate separation of *fault* (my program being in an erroneous
-  state) and *cause* (the source code of my program which caused the fault)
-  reduces me to a primitive and laborious investigative technique known as
-  "[printf debugging][1]".
-
-  If you are not the least bit *unsettled* by those two words, then recall
-  your first encounter with [IRB, the interactive Ruby
-  shell](http://tryruby.hobix.com/):  remember how you would enter code
-  expressions and IRB would *instantly* evaluate them and show you the result?
-
-  What an immense productivity boost!  A *stark contrast* to the endless toil
-  of wrapping every such experiment in standard boilerplate (`public static
-  void`...), saving the result to a correctly named file, invoking the
-  C/C++/Java compiler, and finally executing the binary---only to be greeted
-  by a [segfault](http://en.wikipedia.org/wiki/Segmentation_fault). ;-)
-
-  I exaggerate, for the sake of entertainment, of course.  But my point is
-  that the Ruby testing libraries of today have (thus far) limited our
-  productivity by orphaning us from the nurturing environment of IRB and
-  shooing us off to a barren desert of antiquated techniques.  How cruel!
-
-  And that, I say, is why Dfect is essential to Ruby developers today.  It
-  reunites us with our playful, interactive, *real-time* IRB roots and, with
-  unwavering tenacity, enables us to investigate failures *productively*!
-
-  [1]: http://oopweb.com/CPP/Documents/DebugCPP/Volume/techniques.html#PRINTF
-
-%#----------------------------------------------------------------------------
 %| section "Etymology"
 %#----------------------------------------------------------------------------
 

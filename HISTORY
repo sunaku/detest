@@ -110,8 +110,8 @@
   %| paragraph "Housekeeping"
   %#--------------------------------------------------------------------------
 
-    * Add <%= xref "Motivation" %> section in user manual to promote
-      interactive debugging.
+    * Add "Motivation" section in user manual to promote interactive
+      debugging.
 
     * Add brief <%= xref "History" %> of this project's inception.
 
