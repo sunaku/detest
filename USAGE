@@ -244,6 +244,50 @@ illustrative example.
       D .< { puts "do something more!" }
 
   %#--------------------------------------------------------------------------
+  %| section "Sharing"
+  %#--------------------------------------------------------------------------
+
+    The `S()` method is a mechanism for sharing code.  When called with a
+    block, it shares the given block (under a given identifier) for injection
+    into other tests.  When called without a block, it injects a previously
+    shared block (under a given identifier) into the environment where it is
+    called.
+
+    The `S!()` method is a combination of the two uses of the `S()` method: it
+    lets you simultaneously share a block of code while injecting it into the
+    environment where that method is called.
+
+    The `S?()` method simply checks whether any code has been shared under a
+    given identifier.
+
+    %|example_dfect_test "Sharing code between tests"
+      S :knowledge do
+        L 'Knowledge is power!'
+      end
+
+      D 'Healer' do
+        S :knowledge
+      end
+
+      D 'Warrior' do
+        S! :strength do
+          L 'Strength is power!'
+        end
+      end
+
+      D 'Wizard' do
+        S :knowledge
+        S :strength
+      end
+
+      D 'King' do
+        T { S? :knowledge }
+        T { S? :strength }
+        F { S? :power }
+        L 'Power is power!'
+      end
+
+  %#--------------------------------------------------------------------------
   %| section "Insulation"
   %#--------------------------------------------------------------------------
 
@@ -278,9 +322,6 @@ illustrative example.
         F { defined? @inside }
         F { @inside == 2 }
       end
-
-
-
 
 %#----------------------------------------------------------------------------
 %| section "Execution"
