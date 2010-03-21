@@ -20,7 +20,7 @@
   %| paragraph "New features"
   %#--------------------------------------------------------------------------
 
-    * Add `Dfect::S()` method for <%= xref "Reporting", "adding status
+    * Add `Dfect::S()` method for <%= xref "Logging", "adding status
       messages" %> to the execution report. This feature was [requested
       by](http://github.com/sunaku/dfect/issues/closed#issue/1) Iñaki Baz
       Castillo.

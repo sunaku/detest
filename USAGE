@@ -244,6 +244,25 @@ illustrative example.
       D .< { puts "do something more!" }
 
   %#--------------------------------------------------------------------------
+  %| section "Logging"
+  %#--------------------------------------------------------------------------
+
+    The `L()` method lets you insert log messages, composed of arbitrary Ruby
+    objects, into the test execution report.
+
+    %|example_dfect_test "Logging information in the test execution report"
+      D 'Wizard' do
+        L 'Preparing spell to defeat mortal foes...'
+      end
+
+      D 'Magician' do
+        L 'Preparing rabbits to pull from hat...', rand(15)
+      end
+
+      D 'Calculator' do
+        L Math::PI, [1, 2, 3, ['a', 'b', 'c']], {:foo => 'bar!'}
+
+  %#--------------------------------------------------------------------------
   %| section "Sharing"
   %#--------------------------------------------------------------------------
 
@@ -359,15 +378,6 @@ illustrative example.
 
     The above code will mix-in the `Dfect` module into your program and will
     execute all tests defined by your program before it terminates.
-
-%#--------------------------------------------------------------------------
-%| section "Reporting"
-%#--------------------------------------------------------------------------
-
-  You can insert status messages, which can be arbitrary Ruby objects, into
-  the execution report using the `Dfect::S()` method.
-
-  See the <%= api_reference %> for details and examples.
 
 %#--------------------------------------------------------------------------
 %| section "Emulation"
