@@ -36,11 +36,16 @@
 
   Dfect is exciting because:
 
-  * It has only 5 methods to remember: D F E C T.
+  * There are only 5 methods to remember:  D F E C T.
+
   * It lets you debug assertion failures interactively.
+
   * It keeps a detailed report of assertion failures.
+
   * It lets you nest tests and execution hooks.
-  * Its core consists of a mere <%= `sloccount lib/dfect.rb`[/^\d+/] %> lines of code.
+
+  * Its core consists of a mere <%= `sloccount lib/dfect.rb`[/^\d+/] %> lines
+    of code.
 
 %#----------------------------------------------------------------------------
 %| section "Motivation"
@@ -89,7 +94,7 @@
   Dfect is named after the D F E C T methods it provides.
 
   The name is also play on the word "defect", whereby the intentional
-  misspelling of "defect" as "dfect" is a defect in itself!  <tt>;-)</tt>
+  misspelling of "defect" as "dfect" is a defect in itself! ;-)
 
   This wordplay is similar to [Mnesia][1]'s play on the word "amnesia",
   whereby the intentional omission of the letter "A" indicates
