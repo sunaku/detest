@@ -4,6 +4,107 @@
 %#                                                                          #%
 
 %#----------------------------------------------------------------------------
+%| section "Version 2.0.0 (2010-03-21)"
+%#----------------------------------------------------------------------------
+
+  This release adds the ability to insulate tests from each other, share code
+  between them, makes the order of parameters consistent in the API, improves
+  user interactivity, fixes some bugs, and revises the user manual.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Incompatible changes"
+  %#--------------------------------------------------------------------------
+
+    * Root-level calls to the `Dfect::D()` method are <%=
+      xref "Insulation", "automatically insulated" %> now.
+
+    * The `Dfect::E()` methods now expects its optional message
+      parameter to be the *last parameter* in the parameter list.
+
+    * The `Dfect::C()` methods now expect their first parameter to be a symbol
+      instead of the optional message to be shown in case of assertion failure.
+
+    * The `Dfect::R()` has been renamed to `Dfect::L()`,
+      which is a mnemonic for <%= xref "Logging" %>.
+
+    * Shorten names of hash keys in the execution trace for brevity
+      and rename `:raise` key in report statistics to `:error`.
+
+    * Only the most helpful subset of the failure details is shown before
+      placing the user into a debugger because they can query the omitted
+      information (on demand) inside the debugger.
+
+    * The execution trace is only shown if all tests passed in `Dfect::run()`.
+
+    * The `:debug` option is now set to Ruby's `$DEBUG` global by default.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "New features"
+  %#--------------------------------------------------------------------------
+
+    * Print failures as they occur instead of waiting until the end.
+
+    * Allow passing condition as argument to true/false assertions instead
+      of requiring the condition to be passed as a code block, and also fall
+      back to the binding of inner-most enclosing test or hook when
+      debugging or constructing a failure report for an assertion that was
+      not given a block.
+
+      This allows you to reduce "line noise" in your tests:
+
+      %|code :ruby
+        D "Lottery" do
+          winning_ticket = rand()
+
+          D "My chances of winning" do
+            my_ticket = rand()
+            F my_ticket == winning_ticket, "I won?!  Dream on."
+          end
+        end
+
+    %# XXX: this line protects the following list item from the above code
+    * Add <%= xref "Sharing", "`Dfect::S()` methods" %>
+      for sharing code between tests.
+
+    * Add <%= xref "Insulation", "`Dfect::D!()` method" %>
+      to explicitly insulate a test from other tests, the
+      top-level Ruby environment, and the code being tested.
+
+    * Add `Dfect::info()` method which returns the details of
+      the failure that is currently being debugged by the user.
+
+    * Add instance variables to the `:vars` section of a failure report.
+
+    * Add `setup!()` and `teardown!()` methods for before-all and
+      after-all hooks in the <tt>dfect/unit</tt> emulation library.
+
+    * Add test execution time to statistics hash (under the `:time` key).
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Bug fixes"
+  %#--------------------------------------------------------------------------
+
+    * Do not print any output when `:quiet` option is active.
+
+    * Allow passing multiple strings/objects to `Dfect::D()` like in RSpec.
+
+    * Make before and after hook methods mixin-able like assertions.
+
+    * Do not assume that `Module#to_s` is the same as `Module#name`.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Housekeeping"
+  %#--------------------------------------------------------------------------
+
+    * Upgrade to Inochi 2.0.0 for managing this project.
+
+    * Make emulation libraries modify Dfect module instead of Kernel.
+
+    * Do not pollute the user's output with our `Class#to_yaml` workaround.
+
+    * Remove "Motivation" section from user manual.  It was too fanatic!
+
+%#----------------------------------------------------------------------------
 %| section "Version 1.1.0 (2009-10-27)"
 %#----------------------------------------------------------------------------
 
