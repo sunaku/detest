@@ -199,6 +199,21 @@ illustrative example.
     Details about all assertion failures and a trace of all tests executed are
     stored by Dfect and provided by the `Dfect.report()` method.
 
+  %#--------------------------------------------------------------------------
+  %| section "Emulation"
+  %#--------------------------------------------------------------------------
+
+    Dfect provides emulation layers for several popular testing libraries:
+
+    * <tt>dfect/unit</tt> --- Test::Unit
+    * <tt>dfect/mini</tt> --- Minitest
+    * <tt>dfect/spec</tt> --- RSpec
+
+    Simply `require()` one of these emulation layers into your test suite and
+    you can write your tests using the familiar syntax of that testing
+    library.  See [their source code](<%= source_code_url
+    %>/tree/master/lib/dfect/) for more details.
+
 %#----------------------------------------------------------------------------
 %| section "Tests"
 %#----------------------------------------------------------------------------
@@ -378,21 +393,6 @@ illustrative example.
 
     The above code will mix-in the `Dfect` module into your program and will
     execute all tests defined by your program before it terminates.
-
-%#--------------------------------------------------------------------------
-%| section "Emulation"
-%#--------------------------------------------------------------------------
-
-  Dfect provides emulation layers for several popular testing libraries:
-
-  * <tt>dfect/unit</tt> --- Test::Unit
-  * <tt>dfect/mini</tt> --- Minitest
-  * <tt>dfect/spec</tt> --- RSpec
-
-  Simply `require()` one of these emulation layers into your test suite and
-  you can write your tests using the familiar syntax of that testing library.
-
-  See the <%= api_reference %> for details and examples.
 
 %#----------------------------------------------------------------------------
 %| example! "A sample unit test"
