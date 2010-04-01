@@ -4,6 +4,27 @@
 %#                                                                          #%
 
 %#----------------------------------------------------------------------------
+%| section "Version 2.1.0 (2010-03-31)"
+%#----------------------------------------------------------------------------
+
+  This release adds a <%= xref "Shell command", "command-line test runner" %>
+  and performs some minor housekeeping.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "New features"
+  %#--------------------------------------------------------------------------
+
+    * Add `bin/dfect` executable as command-line interface to this library.
+
+  %#--------------------------------------------------------------------------
+  %| paragraph "Housekeeping"
+  %#--------------------------------------------------------------------------
+
+    * Do not `require 'rubygems'` before loading the "ruby-debug" library.
+
+    * Upgrade to Inochi 2.0.0-rc2 for managing this project.
+
+%#----------------------------------------------------------------------------
 %| section "Version 2.0.0 (2010-03-21)"
 %#----------------------------------------------------------------------------
 
@@ -96,7 +117,7 @@
   %| paragraph "Housekeeping"
   %#--------------------------------------------------------------------------
 
-    * Upgrade to Inochi 2.0.0 for managing this project.
+    * Upgrade to Inochi 2.0.0-rc1 for managing this project.
 
     * Make emulation libraries modify Dfect module instead of Kernel.
 
@@ -237,9 +258,9 @@
   %| paragraph "New features"
   %#--------------------------------------------------------------------------
 
-      * Added <%= xref "Negation", "negation (m!)" %> and <%=
-        xref "Sampling", "sampling (m?)" %> variations to <%=
-        xref "Assertions", "assertion methods" %>.
+    * Added <%= xref "Negation", "negation (m!)" %> and <%=
+      xref "Sampling", "sampling (m?)" %> variations to <%=
+      xref "Assertions", "assertion methods" %>.
 
       These new methods implement assertion functionality missing so far
       (previously we could not assert that a given exception was NOT thrown)
