@@ -3,391 +3,404 @@
 %#          opening ./doc/index.html in your favorite Web browser.          #%
 %#                                                                          #%
 
-% def example_dfect_test *example_node_args, &block_containing_code_to_run
-  % code_to_run = __block_content__(&block_containing_code_to_run).join
-  % code_to_run.insert 0, "require 'dfect/auto'\n\n"
+%#----------------------------------------------------------------------------
+%| section "Shell command"
+%#----------------------------------------------------------------------------
 
-  %|example! *example_node_args
-    When the following test is run:
+  %|command! "dfect --help" do |node|
+    %|text
+      %= verbatim `ruby bin/#{node.title}`
 
-    <%
-      code :ruby do
-        code_to_run
-      end
-    %>
+%#----------------------------------------------------------------------------
+%| section "Ruby library"
+%#----------------------------------------------------------------------------
 
-    Dfect will output the following:
+  % def example_dfect_test *example_node_args, &block_containing_code_to_run
+    % code_to_run = __block_content__(&block_containing_code_to_run).join
+    % code_to_run.insert 0, "require 'dfect/auto'\n\n"
 
-    <%
-      text do
-        IO.popen('ruby -Ilib 2>&1', 'w+') do |ruby|
-          ruby.write code_to_run
-          ruby.close_write
-          ruby.read
+    %|example! *example_node_args
+      When the following test is run:
+
+      <%
+        code :ruby do
+          code_to_run
         end
-      end
-    %>
+      %>
 
-Begin by loading Dfect into your program:
+      Dfect will output the following:
 
-%|code :ruby
-  require 'rubygems' # only necessary if you are using Ruby 1.8
-  require 'dfect'
+      <%
+        text do
+          IO.popen('ruby -Ilib 2>&1', 'w+') do |ruby|
+            ruby.write code_to_run
+            ruby.close_write
+            ruby.read
+          end
+        end
+      %>
 
-You now have access to the `Dfect` module, which provides methods that can be
-either mixed-in or called directly, according to your preference:
-
-%|code :ruby
-  Dfect.D "hello" do  # D() is a class method
-    puts "world"
-  end
-
-  # the above is same as:
-
-  include Dfect       # mix-in the Dfect API
-
-  D "hello" do        # D() is an instance method
-    puts "world"
-  end
-
-%#----------------------------------------------------------------------------
-%| section "Assertions"
-%#----------------------------------------------------------------------------
-
-  The following methods accept a block parameter and assert something about
-  the result of executing that block.  They also accept an optional message,
-  which is shown in <%= xref "Failures", "failure reports" %> if they fail.
-
-  See the <%= api_reference %> for more details and examples.
-
-  %|table
-    %|thead
-      %|tr
-        %|th
-          Method
-        %|th
-          Description
-    %|tbody
-      %|tr
-        %|td
-          T
-        %|td
-          assert true (not `nil` and not `false`)
-      %|tr
-        %|td
-          F
-        %|td
-          assert not true (`nil` or `false`)
-      %|tr
-        %|td
-          E
-        %|td
-          assert that an execption is raised
-      %|tr
-        %|td
-          C
-        %|td
-          assert that a symbol is thrown
-
-  %#--------------------------------------------------------------------------
-  %| section "Negation"
-  %#--------------------------------------------------------------------------
-
-    These methods are the *opposite* of
-    <%= xref "Assertions", "normal assertions" %>.
-
-    %|table
-      %|thead
-        %|tr
-          %|th
-            Method
-          %|th
-            Description
-      %|tbody
-        %|tr
-          %|td
-            T!
-          %|td
-            same as F
-        %|tr
-          %|td
-            F!
-          %|td
-            same as T
-        %|tr
-          %|td
-            E!
-          %|td
-            assert that an exception is *not* raised
-        %|tr
-          %|td
-            C!
-          %|td
-            assert that a symbol is *not* thrown
-
-  %#--------------------------------------------------------------------------
-  %| section "Sampling"
-  %#--------------------------------------------------------------------------
-
-    These methods allow you to *check the outcome* of an assertion without
-    recording a success or failure for that assertion in the execution report.
-
-    %|table
-      %|thead
-        %|tr
-          %|th
-            Method
-          %|th
-            Description
-      %|tbody
-        %|tr
-          %|td
-            T?
-          %|td
-            returns `true` if T passes; `false` otherwise
-        %|tr
-          %|td
-            F?
-          %|td
-            returns `true` if F passes; `false` otherwise
-        %|tr
-          %|td
-            E?
-          %|td
-            returns `true` if E passes; `false` otherwise
-        %|tr
-          %|td
-            C?
-          %|td
-            returns `true` if C passes; `false` otherwise
-
-  %#--------------------------------------------------------------------------
-  %| section "Failures"
-  %#--------------------------------------------------------------------------
-
-    When an assertion fails, details about the failure will be shown:
-
-        - fail: block must yield true (!nil && !false)
-          code: |-
-            [12..22] in test/simple.rb
-               12
-               13     D "with more nested tests" do
-               14       x = 5
-               15
-               16       T { x > 2 }   # passes
-            => 17       F { x > 2 }   # fails
-               18       E { x.hello } # passes
-               19     end
-               20   end
-               21
-               22   # equivalent of before(:each) or setup()
-          vars:
-            x: 5
-            y: 83
-          call:
-          - test/simple.rb:17
-          - test/simple.rb:3
-
-    You will then be placed into a debugger to investigate the failure if the
-    `:debug` option is enabled in the `Dfect.options` hash.
-
-    Details about all assertion failures and a trace of all tests executed are
-    stored by Dfect and provided by the `Dfect.report()` method.
-
-  %#--------------------------------------------------------------------------
-  %| section "Emulation"
-  %#--------------------------------------------------------------------------
-
-    Dfect provides emulation layers for several popular testing libraries:
-
-    * <tt>dfect/unit</tt> --- Test::Unit
-    * <tt>dfect/mini</tt> --- Minitest
-    * <tt>dfect/spec</tt> --- RSpec
-
-    Simply `require()` one of these emulation layers into your test suite and
-    you can write your tests using the familiar syntax of that testing
-    library.  See [their source code](<%= source_code_url
-    %>/tree/master/lib/dfect/) for more details.
-
-%#----------------------------------------------------------------------------
-%| section "Tests"
-%#----------------------------------------------------------------------------
-
-  The `D()` method defines a new Dfect **test**, which is analagous to the
-  concept of **test case** in xUnit or **describe** in rSpec.  A test may
-  contain nested tests.
+  Begin by loading Dfect into your program:
 
   %|code :ruby
-    D "outer test" do
-      # assertions and logic here
+    require 'rubygems' # only necessary if you are using Ruby 1.8
+    require 'dfect'
 
-      D "inner test" do
-        # more assertions and logic here
-      end
+  You now have access to the `Dfect` module, which provides methods that can
+  be either mixed-in or called directly, according to your preference:
+
+  %|code :ruby
+    Dfect.D "hello" do  # D() is a class method
+      puts "world"
+    end
+
+    # the above is same as:
+
+    include Dfect       # mix-in the Dfect API
+
+    D "hello" do        # D() is an instance method
+      puts "world"
     end
 
   %#--------------------------------------------------------------------------
-  %| section "Execution"
+  %| section "Assertions"
   %#--------------------------------------------------------------------------
 
-    Tests are executed in depth-first order.
+    The following methods accept a block parameter and assert something about
+    the result of executing that block.  They also accept an optional message,
+    which is shown in <%= xref "Failures", "failure reports" %> if they fail.
 
-    You can configure the test execution process using:
+    See the <%= api_reference %> for more details and examples.
 
-    %|code :ruby
-      Dfect.options = your_options_hash
-
-    You can execute all tests defined thus far using:
-
-    %|code :ruby
-      Dfect.run
-
-    You can stop the execution at any time using:
-
-    %|code :ruby
-      Dfect.stop
-
-    You can view the results of execution using:
-
-    %|code :ruby
-      puts Dfect.report.to_yaml
-
-    See the <%= api_reference %> for details and examples.
+    %|table
+      %|thead
+        %|tr
+          %|th
+            Method
+          %|th
+            Description
+      %|tbody
+        %|tr
+          %|td
+            T
+          %|td
+            assert true (not `nil` and not `false`)
+        %|tr
+          %|td
+            F
+          %|td
+            assert not true (`nil` or `false`)
+        %|tr
+          %|td
+            E
+          %|td
+            assert that an execption is raised
+        %|tr
+          %|td
+            C
+          %|td
+            assert that a symbol is thrown
 
     %#------------------------------------------------------------------------
-    %| paragraph "Automatic test execution"
+    %| section "Negation"
     %#------------------------------------------------------------------------
 
-      To mix-in the `Dfect` module into your program and execute all tests
-      defined by your program before it terminates, simply add the following
-      line at the top of your program:
+      These methods are the *opposite* of
+      <%= xref "Assertions", "normal assertions" %>.
+
+      %|table
+        %|thead
+          %|tr
+            %|th
+              Method
+            %|th
+              Description
+        %|tbody
+          %|tr
+            %|td
+              T!
+            %|td
+              same as F
+          %|tr
+            %|td
+              F!
+            %|td
+              same as T
+          %|tr
+            %|td
+              E!
+            %|td
+              assert that an exception is *not* raised
+          %|tr
+            %|td
+              C!
+            %|td
+              assert that a symbol is *not* thrown
+
+    %#------------------------------------------------------------------------
+    %| section "Sampling"
+    %#------------------------------------------------------------------------
+
+      These methods allow you to *check the outcome* of an assertion without
+      recording a success or failure for that assertion in the execution
+      report.
+
+      %|table
+        %|thead
+          %|tr
+            %|th
+              Method
+            %|th
+              Description
+        %|tbody
+          %|tr
+            %|td
+              T?
+            %|td
+              returns `true` if T passes; `false` otherwise
+          %|tr
+            %|td
+              F?
+            %|td
+              returns `true` if F passes; `false` otherwise
+          %|tr
+            %|td
+              E?
+            %|td
+              returns `true` if E passes; `false` otherwise
+          %|tr
+            %|td
+              C?
+            %|td
+              returns `true` if C passes; `false` otherwise
+
+    %#------------------------------------------------------------------------
+    %| section "Failures"
+    %#------------------------------------------------------------------------
+
+      When an assertion fails, details about the failure will be shown:
+
+          - fail: block must yield true (!nil && !false)
+            code: |-
+              [12..22] in test/simple.rb
+                 12
+                 13     D "with more nested tests" do
+                 14       x = 5
+                 15
+                 16       T { x > 2 }   # passes
+              => 17       F { x > 2 }   # fails
+                 18       E { x.hello } # passes
+                 19     end
+                 20   end
+                 21
+                 22   # equivalent of before(:each) or setup()
+            vars:
+              x: 5
+              y: 83
+            call:
+            - test/simple.rb:17
+            - test/simple.rb:3
+
+      You will then be placed into a debugger to investigate the failure if
+      the `:debug` option is enabled in the `Dfect.options` hash.
+
+      Details about all assertion failures and a trace of all tests executed
+      are stored by Dfect and provided by the `Dfect.report()` method.
+
+    %#------------------------------------------------------------------------
+    %| section "Emulation"
+    %#------------------------------------------------------------------------
+
+      Dfect provides emulation layers for several popular testing libraries:
+
+      * <tt>dfect/unit</tt> --- Test::Unit
+      * <tt>dfect/mini</tt> --- Minitest
+      * <tt>dfect/spec</tt> --- RSpec
+
+      Simply `require()` one of these emulation layers into your test suite
+      and you can write your tests using the familiar syntax of that testing
+      library.  See [their source code](<%= source_code_url
+      %>/tree/master/lib/dfect/) for more details.
+
+  %#--------------------------------------------------------------------------
+  %| section "Tests"
+  %#--------------------------------------------------------------------------
+
+    The `D()` method defines a new Dfect **test**, which is analagous to the
+    concept of **test case** in xUnit or **describe** in rSpec.  A test may
+    contain nested tests.
+
+    %|code :ruby
+      D "outer test" do
+        # assertions and logic here
+
+        D "inner test" do
+          # more assertions and logic here
+        end
+      end
+
+    %#------------------------------------------------------------------------
+    %| section "Execution"
+    %#------------------------------------------------------------------------
+
+      Tests are executed in depth-first order.
+
+      You can configure the test execution process using:
 
       %|code :ruby
-        require 'dfect/auto'
+        Dfect.options = your_options_hash
 
-    %#------------------------------------------------------------------------
-    %| section "Hooks"
-    %#------------------------------------------------------------------------
-
-      The `D()` method provides several entry points (hooks) into the test
-      execution process:
+      You can execute all tests defined thus far using:
 
       %|code :ruby
-        D "outer test" do
-          D .<  { puts "before each nested test" }
-          D .>  { puts "after  each nested test" }
-          D .<< { puts "before all nested tests" }
-          D .>> { puts "after  all nested tests" }
+        Dfect.run
 
-          D "inner test" do
-            # assertions and logic here
+      You can stop the execution at any time using:
+
+      %|code :ruby
+        Dfect.stop
+
+      You can view the results of execution using:
+
+      %|code :ruby
+        puts Dfect.report.to_yaml
+
+      See the <%= api_reference %> for details and examples.
+
+      %#----------------------------------------------------------------------
+      %| paragraph "Automatic test execution"
+      %#----------------------------------------------------------------------
+
+        To mix-in the `Dfect` module into your program and execute all tests
+        defined by your program before it terminates, simply add the following
+        line at the top of your program:
+
+        %|code :ruby
+          require 'dfect/auto'
+
+      %#----------------------------------------------------------------------
+      %| section "Hooks"
+      %#----------------------------------------------------------------------
+
+        The `D()` method provides several entry points (hooks) into the test
+        execution process:
+
+        %|code :ruby
+          D "outer test" do
+            D .<  { puts "before each nested test" }
+            D .>  { puts "after  each nested test" }
+            D .<< { puts "before all nested tests" }
+            D .>> { puts "after  all nested tests" }
+
+            D "inner test" do
+              # assertions and logic here
+            end
+          end
+
+        A hook method may be called multiple times.  Each call registers
+        additional logic to execute during the hook:
+
+        %|code :ruby
+          D .< { puts "do something" }
+          D .< { puts "do something more!" }
+
+      %#----------------------------------------------------------------------
+      %| section "Logging"
+      %#----------------------------------------------------------------------
+
+        The `L()` method lets you insert log messages, composed of arbitrary
+        Ruby objects, into the test execution report.
+
+        %|example_dfect_test "Logging information in the execution report"
+          D 'Wizard' do
+            L 'Preparing spell to defeat mortal foes...'
+          end
+
+          D 'Magician' do
+            L 'Preparing rabbits to pull from hat...', rand(15)
+          end
+
+          D 'Calculator' do
+            L Math::PI, [1, 2, 3, ['a', 'b', 'c']], {:foo => 'bar!'}
+          end
+
+    %#------------------------------------------------------------------------
+    %| section "Sharing"
+    %#------------------------------------------------------------------------
+
+      The `S()` method is a mechanism for sharing code.  When called with a
+      block, it shares the given block (under a given identifier) for
+      injection into other tests.  When called without a block, it injects a
+      previously shared block (under a given identifier) into the environment
+      where it is called.
+
+      The `S!()` method is a combination of the two uses of the `S()` method:
+      it lets you simultaneously share a block of code while injecting it into
+      the environment where that method is called.
+
+      The `S?()` method simply checks whether any code has been shared under a
+      given identifier.
+
+      %|example_dfect_test "Sharing code between tests"
+        S :knowledge do
+          L 'Knowledge is power!'
+        end
+
+        D 'Healer' do
+          S :knowledge
+        end
+
+        D 'Warrior' do
+          S! :strength do
+            L 'Strength is power!'
           end
         end
 
-      A hook method may be called multiple times.  Each call registers
-      additional logic to execute during the hook:
-
-      %|code :ruby
-        D .< { puts "do something" }
-        D .< { puts "do something more!" }
-
-    %#------------------------------------------------------------------------
-    %| section "Logging"
-    %#------------------------------------------------------------------------
-
-      The `L()` method lets you insert log messages, composed of arbitrary
-      Ruby objects, into the test execution report.
-
-      %|example_dfect_test "Logging information in the execution report"
         D 'Wizard' do
-          L 'Preparing spell to defeat mortal foes...'
+          S :knowledge
+          S :strength
         end
 
-        D 'Magician' do
-          L 'Preparing rabbits to pull from hat...', rand(15)
+        D 'King' do
+          T { S? :knowledge }
+          T { S? :strength }
+          F { S? :power }
+          L 'Power is power!'
         end
 
-        D 'Calculator' do
-          L Math::PI, [1, 2, 3, ['a', 'b', 'c']], {:foo => 'bar!'}
-        end
+    %#------------------------------------------------------------------------
+    %| section "Insulation"
+    %#------------------------------------------------------------------------
 
-  %#--------------------------------------------------------------------------
-  %| section "Sharing"
-  %#--------------------------------------------------------------------------
+      The `D!()` method defines a new test that is explicitly insulated from
+      the tests that contain it and also from the top-level Ruby environment.
+      Root-level calls to the `D()` method are insulated by default.
 
-    The `S()` method is a mechanism for sharing code.  When called with a
-    block, it shares the given block (under a given identifier) for injection
-    into other tests.  When called without a block, it injects a previously
-    shared block (under a given identifier) into the environment where it is
-    called.
+      Inside an insulated test, you are free to:
+      * mix-in any modules your test logic needs
+      * define your own constants, methods, and classes
 
-    The `S!()` method is a combination of the two uses of the `S()` method: it
-    lets you simultaneously share a block of code while injecting it into the
-    environment where that method is called.
-
-    The `S?()` method simply checks whether any code has been shared under a
-    given identifier.
-
-    %|example_dfect_test "Sharing code between tests"
-      S :knowledge do
-        L 'Knowledge is power!'
-      end
-
-      D 'Healer' do
-        S :knowledge
-      end
-
-      D 'Warrior' do
-        S! :strength do
-          L 'Strength is power!'
-        end
-      end
-
-      D 'Wizard' do
-        S :knowledge
-        S :strength
-      end
-
-      D 'King' do
-        T { S? :knowledge }
-        T { S? :strength }
-        F { S? :power }
-        L 'Power is power!'
-      end
-
-  %#--------------------------------------------------------------------------
-  %| section "Insulation"
-  %#--------------------------------------------------------------------------
-
-    The `D!()` method defines a new test that is explicitly insulated from the
-    tests that contain it and also from the top-level Ruby environment.
-    Root-level calls to the `D()` method are insulated by default.
-
-    Inside an insulated test, you are free to:
-    * mix-in any modules your test logic needs
-    * define your own constants, methods, and classes
-
-    %|example_dfect_test "Insulated and uninsulated tests"
-      D "a root-level test" do
-        @outside = 1
-        T { defined? @outside }
-        T { @outside == 1 }
-
-        D "an inner, non-insulated test" do
+      %|example_dfect_test "Insulated and uninsulated tests"
+        D "a root-level test" do
+          @outside = 1
           T { defined? @outside }
           T { @outside == 1 }
+
+          D "an inner, non-insulated test" do
+            T { defined? @outside }
+            T { @outside == 1 }
+          end
+
+          D! "an inner, insulated test" do
+            F { defined? @outside }
+            F { @outside == 1 }
+
+            @inside = 2
+            T { defined? @inside }
+            T { @inside == 2 }
+          end
+
+          F { defined? @inside }
+          F { @inside == 2 }
         end
-
-        D! "an inner, insulated test" do
-          F { defined? @outside }
-          F { @outside == 1 }
-
-          @inside = 2
-          T { defined? @inside }
-          T { @inside == 2 }
-        end
-
-        F { defined? @inside }
-        F { @inside == 2 }
-      end
 

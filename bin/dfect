@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+#
+# Usage:
+#
+#   dfect [Options] FILE_OR_GLOB...
+#
+#   FILE_OR_GLOB  : A file or file globbing pattern that
+#                   describes a set of files to evaluate.
+#
+#
+# Options:
+#
+#   -d, --debug   : Launch interactive debugger
+#                   during assertion failures.
+#
+#   -q, --quiet   : Do not show execution report.
+#
+#   -h, --help    : Show this message and exit.
+#
+#   -v, --version : Show version number and exit.
+#
+
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'dfect'
+
+# parse command line
+if ARGV.delete('-h') or ARGV.delete('--help')
+  puts
+  puts Dfect.inspect
+  puts Dfect::TAGLINE
+  puts
+  puts
+  puts File.read(__FILE__)[/^#(\r?\n)(.*?)\1\1/m, 2].gsub(/^# ?/, '')
+  puts
+  puts
+  puts 'Read the user manual for more information:'
+  puts
+  puts "  #{Dfect::INSTDIR}/doc/index.html"
+  puts
+  puts "  #{Dfect::WEBSITE}"
+  puts
+  exit
+elsif ARGV.delete('-v') or ARGV.delete('--version')
+  puts Dfect::VERSION
+  exit
+end
+
+if ARGV.delete('-d') or ARGV.delete('--debug')
+  Dfect.options[:debug] = true
+end
+
+if ARGV.delete('-q') or ARGV.delete('--quiet')
+  Dfect.options[:quiet] = true
+end
+
+require 'dfect/auto'
+ARGV.each {|glob| Dir[glob].each {|test| load test } }
