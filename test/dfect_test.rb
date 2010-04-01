@@ -1,3 +1,5 @@
+require 'dfect'
+
 D 'T()' do
   T { true   }
   T { !false }

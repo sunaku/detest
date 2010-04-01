@@ -1,3 +1,5 @@
+require 'dfect/inochi'
+
 require 'yaml'
 #
 # YAML raises this error when we try to serialize a class:
