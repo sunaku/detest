@@ -21,14 +21,7 @@ end
 
 # load interactive debugger
 begin
-
-  begin
-    require 'rubygems'
-  rescue LoadError
-  end
-
   require 'ruby-debug'
-
 rescue LoadError
   require 'irb'
 end
