@@ -1,0 +1,20 @@
+%#----------------------------------------------------------------------------
+## SEE ALSO
+%#----------------------------------------------------------------------------
+
+[assert{ 2.0 }],
+[Testy],
+[Verify]
+
+%#----------------------------------------------------------------------------
+%# Markdown link references
+%#----------------------------------------------------------------------------
+
+[assert{ 2.0 }]: http://assert2.rubyforge.org
+[Inochi]: <%= Inochi::WEBSITE %>
+[RSpec]: http://rspec.info
+[ruby-debug]: http://github.com/mark-moseley/ruby-debug
+[RubyGems]: http://rubygems.org
+[Ruby]: http://ruby-lang.org
+[Testy]: http://github.com/ahoward/testy/tree/master
+[Verify]: http://www.ruby-forum.com/topic/183354

@@ -1,2 +1,15 @@
-- François Beausoleil <http://github.com/francois>
-- Iñaki Baz Castillo <http://github.com/ibc>
+%#----------------------------------------------------------------------------
+## CREDITS
+%#----------------------------------------------------------------------------
+
+Suraj N. Kurapati,
+François Beausoleil,
+Iñaki Baz Castillo,
+Sean O'Halpin
+
+%#----------------------------------------------------------------------------
+## LICENSE
+%#----------------------------------------------------------------------------
+
+%# See the file named "LICENSE".
+%< "LICENSE"

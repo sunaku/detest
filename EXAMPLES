@@ -1,0 +1,124 @@
+%#----------------------------------------------------------------------------
+## EXAMPLES
+%#----------------------------------------------------------------------------
+
+Begin by loading Dfect into your program:
+
+    require 'rubygems' # might not be necessary; see HACKING
+    require 'dfect'
+
+You now have access to the `Dfect` module, which provides methods that can
+be either mixed-in or called directly, according to your preference:
+
+    Dfect.D "hello" do  # D() is a class method
+      puts "world"
+    end
+
+    # the above is same as:
+
+    include Dfect       # mix-in the Dfect API
+
+    D "hello" do        # D() is an instance method
+      puts "world"
+    end
+
+%#----------------------------------------------------------------------------
+
+<%
+  def example_test &code_block
+    code = Ember::Template.content_from_block(&code_block).join
+    code.insert 0, "require 'dfect/auto'\n\n"
+
+    buffer = eval(:_erbout, code_block.binding)
+    buffer.push [
+      'When the following test is run:',
+      preformatted(code),
+
+      'Dfect will output the following:',
+      preformatted(
+        IO.popen('ruby -Ilib 2>&1', 'w+') do |ruby|
+          ruby.write code
+          ruby.close_write
+          ruby.read
+        end
+      )
+
+    ].join("\n")
+  end
+%>
+
+%#----------------------------------------------------------------------------
+### Logging information in the execution report
+%#----------------------------------------------------------------------------
+
+%|example_test
+  D 'Wizard' do
+    L 'Preparing spell to defeat mortal foes...'
+  end
+
+  D 'Magician' do
+    L 'Preparing rabbits to pull from hat...', rand(15)
+  end
+
+  D 'Calculator' do
+    L Math::PI, [1, 2, 3, ['a', 'b', 'c']], {:foo => 'bar!'}
+  end
+
+%#----------------------------------------------------------------------------
+### Sharing code between tests
+%#----------------------------------------------------------------------------
+
+%|example_test
+  S :knowledge do
+    L 'Knowledge is power!'
+  end
+
+  D 'Healer' do
+    S :knowledge
+  end
+
+  D 'Warrior' do
+    S! :strength do
+      L 'Strength is power!'
+    end
+  end
+
+  D 'Wizard' do
+    S :knowledge
+    S :strength
+  end
+
+  D 'King' do
+    T { S? :knowledge }
+    T { S? :strength }
+    F { S? :power }
+    L 'Power is power!'
+  end
+
+%#----------------------------------------------------------------------------
+### Insulated and uninsulated tests
+%#----------------------------------------------------------------------------
+
+%|example_test
+  D "a root-level test" do
+    @outside = 1
+    T { defined? @outside }
+    T { @outside == 1 }
+
+    D "an inner, non-insulated test" do
+      T { defined? @outside }
+      T { @outside == 1 }
+    end
+
+    D! "an inner, insulated test" do
+      F { defined? @outside }
+      F { @outside == 1 }
+
+      @inside = 2
+      T { defined? @inside }
+      T { @inside == 2 }
+    end
+
+    F { defined? @inside }
+    F { @inside == 2 }
+  end
