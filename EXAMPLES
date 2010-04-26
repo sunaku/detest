@@ -25,25 +25,23 @@ be either mixed-in or called directly, according to your preference:
 %#----------------------------------------------------------------------------
 
 <%
-  def example_test &code_block
-    code = Ember::Template.content_from_block(&code_block).join
-    code.insert 0, "require 'dfect/auto'\n\n"
+  def example &block
+    Ember::Template.wrap_content_block(block) do |content|
+      code = "require 'dfect/auto'\n\n#{content.join}"
+      [
+        'When the following test is run:',
+        preformatted(code),
 
-    buffer = eval(:_erbout, code_block.binding)
-    buffer.push [
-      'When the following test is run:',
-      preformatted(code),
-
-      'Dfect will output the following:',
-      preformatted(
-        IO.popen('ruby -Ilib 2>&1', 'w+') do |ruby|
-          ruby.write code
-          ruby.close_write
-          ruby.read
-        end
-      )
-
-    ].join("\n")
+        'Dfect will output the following:',
+        preformatted(
+          IO.popen('ruby -Ilib 2>&1', 'w+') do |ruby|
+            ruby.write code
+            ruby.close_write
+            ruby.read
+          end
+        )
+      ].join("\n\n")
+    end
   end
 %>
 
@@ -51,7 +49,7 @@ be either mixed-in or called directly, according to your preference:
 ### Logging information in the execution report
 %#----------------------------------------------------------------------------
 
-%|example_test
+%|example
   D 'Wizard' do
     L 'Preparing spell to defeat mortal foes...'
   end
@@ -68,7 +66,7 @@ be either mixed-in or called directly, according to your preference:
 ### Sharing code between tests
 %#----------------------------------------------------------------------------
 
-%|example_test
+%|example
   S :knowledge do
     L 'Knowledge is power!'
   end
@@ -99,7 +97,7 @@ be either mixed-in or called directly, according to your preference:
 ### Insulated and uninsulated tests
 %#----------------------------------------------------------------------------
 
-%|example_test
+%|example
   D "a root-level test" do
     @outside = 1
     T { defined? @outside }
