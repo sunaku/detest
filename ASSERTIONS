@@ -1,0 +1,91 @@
+%#--------------------------------------------------------------------------
+## ASSERTIONS
+%#--------------------------------------------------------------------------
+
+The following methods accept a block parameter and assert something about the
+result of executing that block.  They also accept an optional message, which
+is shown in failure reports (see **Failures** below) if they fail.
+
+* `T()`:
+  assert true (not `nil` and not `false`)
+
+* `F()`:
+  assert not true (`nil` or `false`)
+
+* `E()`:
+  assert that an execption is raised
+
+* `C()`:
+  assert that a symbol is thrown
+
+%#------------------------------------------------------------------------
+### Negation
+%#------------------------------------------------------------------------
+
+The following methods are the *opposite* of normal assertions.  They also
+accept an optional message, which is shown in failure reports (see
+**Failures** below) if they fail.
+
+* `T!()`:
+  same as `F()`
+
+* `F!()`:
+  same as `T()`
+
+* `E!()`:
+  assert that an exception is *not* raised
+
+* `C!()`:
+  assert that a symbol is *not* thrown
+
+%#------------------------------------------------------------------------
+### Sampling
+%#------------------------------------------------------------------------
+
+The following methods let you *check the outcome* of an assertion without
+recording a success or failure in the test execution report.
+
+* `T?()`:
+  returns true if `T()` passes; false otherwise
+
+* `F?()`:
+  returns true if `F()` passes; false otherwise
+
+* `E?()`:
+  returns true if `E()` passes; false otherwise
+
+* `C?()`:
+  returns true if `C()` passes; false otherwise
+
+%#------------------------------------------------------------------------
+### Failures
+%#------------------------------------------------------------------------
+
+When an assertion fails, details about the failure will be shown:
+
+    - fail: block must yield true (!nil && !false)
+      code: |-
+        [12..22] in test/simple.rb
+           12
+           13     D "with more nested tests" do
+           14       x = 5
+           15
+           16       T { x > 2 }   # passes
+        => 17       F { x > 2 }   # fails
+           18       E { x.hello } # passes
+           19     end
+           20   end
+           21
+           22   # equivalent of before(:each) or setup()
+      vars:
+        x: 5
+        y: 83
+      call:
+      - test/simple.rb:17
+      - test/simple.rb:3
+
+You will then be placed into a debugger to investigate the failure if
+the `:debug` option is enabled in the `Dfect.options` hash.
+
+Details about all assertion failures and a trace of all tests executed
+are stored by Dfect and provided by the `Dfect.report()` method.

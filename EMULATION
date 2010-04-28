@@ -1,0 +1,18 @@
+%#------------------------------------------------------------------------
+## EMULATION
+%#------------------------------------------------------------------------
+
+Dfect provides emulation layers for several popular testing libraries:
+
+* dfect/unit:
+  [Test::Unit] emulation layer
+
+* dfect/mini:
+  [Minitest] emulation layer
+
+* dfect/spec:
+  [RSpec] emulation layer
+
+Simply load one of these emulation layers into your test suite and you can
+write your tests using the familiar syntax of that testing library.  See
+their source code for more information.

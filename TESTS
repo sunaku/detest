@@ -1,0 +1,105 @@
+%#--------------------------------------------------------------------------
+## TESTS
+%#--------------------------------------------------------------------------
+
+The `D()` method defines a new Dfect **test**, which is analagous to the
+concept of **test case** in xUnit or **describe** in rSpec.  A test may
+contain nested tests.
+
+    D "outer test" do
+      # assertions and logic here
+
+      D "inner test" do
+        # more assertions and logic here
+      end
+    end
+
+%#------------------------------------------------------------------------
+### Execution
+%#------------------------------------------------------------------------
+
+Tests are executed in depth-first order.
+
+You can configure the test execution process using:
+
+    Dfect.options = your_options_hash
+
+You can execute all tests defined thus far using:
+
+    Dfect.run
+
+You can stop the execution at any time using:
+
+    Dfect.stop
+
+You can view the results of execution using:
+
+    puts Dfect.report.to_yaml
+
+You can mix-in the `Dfect` module into your program and execute all tests
+defined by your program before it terminates by simply adding the following
+line at the top of your program:
+
+    require 'dfect/auto'
+
+See the API documentation for more information and examples.
+
+%#----------------------------------------------------------------------
+### Hooks
+%#----------------------------------------------------------------------
+
+The `D()` method provides several entry points (hooks) into the test
+execution process:
+
+    D "outer test" do
+      D .<  { puts "before each nested test" }
+      D .>  { puts "after  each nested test" }
+      D .<< { puts "before all nested tests" }
+      D .>> { puts "after  all nested tests" }
+
+      D "inner test" do
+        # assertions and logic here
+      end
+    end
+
+A hook method may be called multiple times.  Each call registers
+additional logic to execute during the hook:
+
+    D .< { puts "do something" }
+    D .< { puts "do something more!" }
+
+%#----------------------------------------------------------------------
+### Logging
+%#----------------------------------------------------------------------
+
+The `L()` method lets you insert log messages, composed of arbitrary
+Ruby objects, into the test execution report.
+
+%#----------------------------------------------------------------------------
+### Sharing
+%#----------------------------------------------------------------------------
+
+* `S()`:
+  Mechanism for sharing code.  When called with a block, it shares the given
+  block (under a given identifier) for injection into other tests.  When
+  called without a block, it injects a previously shared block (under a given
+  identifier) into the environment where it is called.
+
+* `S!()`:
+  Combination of the two uses of the `S()` method: it lets you simultaneously
+  share a block of code while injecting it into the environment where that
+  method is called.
+
+* `S?()`:
+  Checks whether any code has been shared under a given identifier.
+
+%#------------------------------------------------------------------------
+### Insulation
+%#------------------------------------------------------------------------
+
+The `D!()` method defines a new test that is explicitly insulated from
+the tests that contain it and also from the top-level Ruby environment.
+Root-level calls to the `D()` method are insulated by default.
+
+Inside an insulated test, you are free to mix-in any modules your test
+logic needs and also define your own constants, methods, and classes.
