@@ -1,14 +1,6 @@
-%#----------------------------------------------------------------------------
-## ABOUT
-%#----------------------------------------------------------------------------
-
 Dfect is an assertion testing library for Ruby that emphasizes a simple
 assertion vocabulary, instant debuggability of failures, and flexibility in
 composing tests.
-
-Dfect is named after the D F E C T methods it provides.  Its name is also
-play on the word "defect", whereby the intentional misspelling of "defect"
-as "dfect" is a defect in itself! ;-)
 
 %#----------------------------------------------------------------------------
 ### Features
