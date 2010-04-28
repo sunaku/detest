@@ -18,3 +18,6 @@
 [Ruby]: http://ruby-lang.org
 [Testy]: http://github.com/ahoward/testy/tree/master
 [Verify]: http://www.ruby-forum.com/topic/183354
+[xUnit]: http://en.wikipedia.org/wiki/XUnit
+[Test::Unit]: http://ruby-doc.org/stdlib/libdoc/test/unit/rdoc/classes/Test/Unit.html
+[Minitest]: http://blog.zenspider.com/minitest/

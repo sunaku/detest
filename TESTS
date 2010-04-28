@@ -3,7 +3,7 @@
 %#--------------------------------------------------------------------------
 
 The `D()` method defines a new Dfect **test**, which is analagous to the
-concept of **test case** in xUnit or **describe** in rSpec.  A test may
+concept of **test case** in [xUnit] or **describe** in [RSpec].  A test may
 contain nested tests.
 
     D "outer test" do

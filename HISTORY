@@ -145,7 +145,7 @@ Housekeeping:
 ### Version 1.0.1 (2009-10-07)
 %#----------------------------------------------------------------------------
 
-This release fixes a bug in the Test::Unit emulation library and revises the
+This release fixes a bug in the [Test::Unit] emulation library and revises the
 user manual.
 
 Bug fixes:
@@ -188,9 +188,9 @@ Incompatible changes:
 New features:
 
   * Add emulation layers to mimic other testing libraries:
-    * dfect/unit --- Test::Unit
-    * dfect/mini --- Minitest
-    * dfect/spec --- RSpec
+    * dfect/unit --- [Test::Unit]
+    * dfect/mini --- [Minitest]
+    * dfect/spec --- [RSpec]
 
 Bug fixes:
 
