@@ -6,16 +6,17 @@ composing tests.
 ### Features
 %#----------------------------------------------------------------------------
 
-* There are only 5 methods to remember:  D F E C T.
+* Adds only 7 mnemonic method names to your memory:
 
-* It lets you debug assertion failures interactively.
+  `D`escribe, `T`rue, `F`alse, `E`rror, `C`atch, `S`hare, and `L`og.
 
-* It keeps a detailed report of assertion failures.
+* Lets you debug assertion failures interactively.
 
-* It lets you nest tests and execution hooks.
+* Lets you nest tests, assertions, and execution hooks.
 
-* Its core consists of a mere <%= `sloccount lib/dfect.rb`[/^\d+/] %> lines of
-  code.
+* Maintains a detailed report of assertion failures.
+
+* Implemented in <%= `sloccount lib/dfect.rb`[/^\d+/] %> lines of code.
 
 %#----------------------------------------------------------------------------
 ### Resources
