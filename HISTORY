@@ -5,6 +5,25 @@
 This section contains release notes of current and past releases.
 
 %#----------------------------------------------------------------------------
+### Version 2.2.0 (2010-04-28)
+%#----------------------------------------------------------------------------
+
+This release adds a UNIX manual page and a sub-library for full method names.
+
+New features:
+
+  * Add `dfect/full` sub-library that provides full name aliases to Dfect's
+    abbreviated vocabulary:
+
+    `D`escribe, `T`rue, `F`alse, `E`rror, `C`atch, `S`hare, and `L`og.
+
+  * Run `dfect --help` to see the UNIX manual page!
+
+Housekeeping:
+
+  * Upgrade to Inochi 3.0.0 and revise the help manual.
+
+%#----------------------------------------------------------------------------
 ### Version 2.1.0 (2010-03-31)
 %#----------------------------------------------------------------------------
 

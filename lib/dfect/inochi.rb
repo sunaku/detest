@@ -18,12 +18,12 @@ module Dfect
   ##
   # Number of this release of this project.
   #
-  VERSION = "2.1.0"
+  VERSION = "2.2.0"
 
   ##
   # Date of this release of this project.
   #
-  RELDATE = "2010-03-31"
+  RELDATE = "2010-04-28"
 
   ##
   # Description of this release of this project.
