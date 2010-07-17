@@ -32,12 +32,12 @@ each do |outer, inner|
         #{inner}_empty self, message
       end
 
-      def #{outer}_be_instance_of _class, message = nil
-        #{inner}_instance_of _class, self, message
+      def #{outer}_be_instance_of klass, message = nil
+        #{inner}_instance_of klass, self, message
       end
 
-      def #{outer}_be_kind_of _class, message = nil
-        #{inner}_kind_of _class, self, message
+      def #{outer}_be_kind_of klass, message = nil
+        #{inner}_kind_of klass, self, message
       end
 
       def #{outer}_be_nil message = nil

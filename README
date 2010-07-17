@@ -1,4 +1,4 @@
-DIFECTS is an assertion testing library for Ruby that emphasizes a simple
+DIFECTS is an assertion testing library for [Ruby] that emphasizes a simple
 assertion vocabulary, instant debuggability of failures, and flexibility in
 composing tests.
 
@@ -16,7 +16,7 @@ composing tests.
 
 * Maintains a detailed report of assertion failures.
 
-* Implemented in <%= `sloccount lib/difects.rb`[/^\d+/] %> lines of code.
+* Implemented in <%= `sloccount lib/difects.rb`[/^\d+/] %> lines of pure Ruby.
 
 %#----------------------------------------------------------------------------
 ### Resources

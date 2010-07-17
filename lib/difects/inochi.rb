@@ -3,27 +3,27 @@ module DIFECTS
   ##
   # Official name of this project.
   #
-  PROJECT = "DIFECTS"
+  PROJECT = 'DIFECTS'
 
   ##
   # Short single-line description of this project.
   #
-  TAGLINE = "Assertion testing library for Ruby"
+  TAGLINE = 'Assertion testing library for Ruby'
 
   ##
   # Address of this project's official home page.
   #
-  WEBSITE = "http://snk.tuxfamily.org/lib/difects/"
+  WEBSITE = 'http://snk.tuxfamily.org/lib/difects/'
 
   ##
   # Number of this release of this project.
   #
-  VERSION = "2.2.0"
+  VERSION = '2.2.0'
 
   ##
   # Date of this release of this project.
   #
-  RELDATE = "2010-04-28"
+  RELDATE = '2010-04-28'
 
   ##
   # Description of this release of this project.
@@ -74,7 +74,7 @@ module DIFECTS
   #   }
   #
   DEVTIME = {
-    "inochi" => [ ">= 3.0.0", "< 4" ],
+    'inochi' => [ '>= 3.0.0', '< 4' ],
   }
 
   # establish gem version dependencies

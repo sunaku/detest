@@ -19,7 +19,7 @@ module DIFECTS
     #      not support default values and
     #      block parameters in define_method()
     #
-    file, line = __FILE__, __LINE__ ; eval %{
+    file, line = __FILE__, __LINE__ ; module_eval %{
       alias #{prefix} T#{polarity}
       alias #{prefix} T#{polarity}
 
@@ -49,14 +49,14 @@ module DIFECTS
         T#{polarity}(messsage) { collection.include? item }
       end
 
-      def #{prefix}_instance_of _class, object, message = nil
+      def #{prefix}_instance_of klass, object, message = nil
         message ||= 'object must #{action}be an instance of class'
-        T#{polarity}(message) { object.instance_of? _class }
+        T#{polarity}(message) { object.instance_of? klass }
       end
 
-      def #{prefix}_kind_of _class, object, message = nil
+      def #{prefix}_kind_of klass, object, message = nil
         message ||= 'object must #{action}be a kind of class'
-        T#{polarity}(message) { object.kind_of? _class }
+        T#{polarity}(message) { object.kind_of? klass }
       end
 
       def #{prefix}_nil object, message = nil
@@ -96,6 +96,6 @@ module DIFECTS
         response = object.__send__(query, *args)
         T#{polarity} { response }
       end
-    }, binding, file, line
+    }, file, line
   end
 end

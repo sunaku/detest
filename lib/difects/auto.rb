@@ -4,10 +4,7 @@
 # in your program and will execute all tests before your program exits.
 
 require 'difects'
-
-class Object
-  include DIFECTS
-end
+include DIFECTS
 
 at_exit do
   DIFECTS.start
@@ -15,5 +12,6 @@ at_exit do
   # reflect number of failures in exit status
   stats = DIFECTS.stats
   fails = stats[:fail] + stats[:error]
+
   exit [fails, 255].min
 end

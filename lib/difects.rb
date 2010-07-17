@@ -10,13 +10,11 @@ require 'yaml'
 #
 class Class # @private
   alias __to_yaml__ to_yaml
-  undef to_yaml
-
   def to_yaml opts = {}
     begin
-      __to_yaml__
-    rescue TypeError => e
-      self.name.to_yaml opts
+      __to_yaml__ opts
+    rescue TypeError
+      inspect.to_yaml opts
     end
   end
 end
@@ -237,8 +235,8 @@ module DIFECTS
     #
     # @param message
     #
-    #   Optional message to show in the
-    #   report if this assertion fails.
+    #   Optional message to show in the test
+    #   execution report if this assertion fails.
     #
     # @example no message given
     #
@@ -340,8 +338,9 @@ module DIFECTS
     #
     # @param [...] kinds_then_message
     #
-    #   Exception classes that must be raised by the given block, optionally
-    #   followed by a message to show in the report if this assertion fails.
+    #   Exception classes that must be raised by the given
+    #   block, optionally followed by a message to show in
+    #   the test execution report if this assertion fails.
     #
     #   If no exception classes are given, then
     #   StandardError is assumed (similar to
@@ -509,14 +508,14 @@ module DIFECTS
     end
 
     ##
-    # Adds the given messages to the report inside
-    # the section of the currently running test.
+    # Adds the given messages to the test execution
+    # report beneath the currently running test.
     #
     # You can think of "I" as to "inform" the user.
     #
     # @param messages
     #
-    #   Objects to be added to the report.
+    #   Objects to be added to the test execution report.
     #
     # @example single message given
     #
@@ -572,14 +571,16 @@ module DIFECTS
     def S identifier, &block
       if block_given?
         if already_shared = @share[identifier]
-          raise ArgumentError, "A code block #{already_shared.inspect} has already been shared under the identifier #{identifier.inspect}."
+          raise ArgumentError, "A code block #{already_shared.inspect} has "\
+            "already been shared under the identifier #{identifier.inspect}."
         end
 
         @share[identifier] = block
 
       elsif block = @share[identifier]
         if @tests.empty?
-          raise "Cannot inject code block #{block.inspect} shared under identifier #{identifier.inspect} outside of a DIFECTS test."
+          raise "Cannot inject code block #{block.inspect} shared under "\
+            "identifier #{identifier.inspect} outside of a DIFECTS test."
         else
           # find the closest insulated parent test; this should always
           # succeed because root-level tests are insulated by default
@@ -588,7 +589,8 @@ module DIFECTS
         end
 
       else
-        raise ArgumentError, "No code block is shared under identifier #{identifier.inspect}."
+        raise ArgumentError, "No code block is shared under identifier "\
+          "#{identifier.inspect}."
       end
     end
 
@@ -805,15 +807,16 @@ module DIFECTS
       result = catch(symbol) do
         begin
           block.call
-
         rescue Exception => e
-          debug_uncaught_exception e unless
-            # ignore error about the wrong symbol being thrown
-            #
-            # NOTE: Ruby 1.8 formats the thrown value in `quotes'
-            #       whereas Ruby 1.9 formats it like a :symbol
-            #
-            e.message =~ /\Auncaught throw (`.*?'|:.*)\z/
+          #
+          # ignore error about the wrong symbol being thrown
+          #
+          # NOTE: Ruby 1.8 formats the thrown value in `quotes'
+          #       whereas Ruby 1.9 formats it like a :symbol
+          #
+          unless e.message =~ /\Auncaught throw (`.*?'|:.*)\z/
+            debug_uncaught_exception e
+          end
         end
 
         self # unlikely that block will throw *this* object
@@ -832,7 +835,9 @@ module DIFECTS
     end
 
     ##
-    # Prints the given object in YAML format.
+    # Prints the given object in YAML
+    # format if possible, or falls back
+    # to Ruby's pretty print library.
     #
     def display object
       # stringify symbols in YAML output for better readability
@@ -984,7 +989,7 @@ module DIFECTS
                      [source_line + radius, source.length].min
 
             # ensure proper alignment by zero-padding line numbers
-            format = "%2s %0#{region.last.to_s.length}d %s"
+            format = "%2s %0#{region.last.to_s.length}d  %s"
 
             pretty = region.map do |n|
               format % [('=>' if n == source_line), n, source[n-1].chomp]
@@ -1117,7 +1122,11 @@ module DIFECTS
     # XXX: using eval() on a string because Ruby 1.8's
     #      define_method() cannot take a block parameter
     #
-    module_eval "def #{meth}(*a, &b) ::#{name}.#{meth}(*a, &b) end", __FILE__, __LINE__
+    file, line = __FILE__, __LINE__ ; module_eval %{
+      def #{meth}(*args, &block)
+        ::#{name}.#{meth}(*args, &block)
+      end
+    }, file, line
   end
 
   # allow mixin-able methods to be accessed as class methods

@@ -7,20 +7,22 @@ Begin by loading DIFECTS into your program:
     require 'rubygems' # might not be necessary; see HACKING
     require 'difects'
 
-You now have access to the `DIFECTS` module, which provides methods that can
-be either mixed-in or called directly, according to your preference:
+You now have access to the `DIFECTS` module, whose methods can be called
+directly:
 
     DIFECTS.D "hello" do  # D() is a class method
       puts "world"
     end
 
-    # the above is same as:
+or mixed-in and called implicitly:
 
-    include DIFECTS       # mix-in the DIFECTS API
+    include DIFECTS       # mix-in the DIFECTS module
 
     D "hello" do          # D() is an instance method
       puts "world"
     end
+
+according to your preference.
 
 %#----------------------------------------------------------------------------
 

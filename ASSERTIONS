@@ -1,6 +1,6 @@
-%#--------------------------------------------------------------------------
+%#----------------------------------------------------------------------------
 ## ASSERTIONS
-%#--------------------------------------------------------------------------
+%#----------------------------------------------------------------------------
 
 The following methods accept a block parameter and assert something about the
 result of executing that block.  They also accept an optional message, which
@@ -18,9 +18,9 @@ is shown in failure reports (see **Failures** below) if they fail.
 * `C()`:
   assert that a symbol is thrown
 
-You can also pass the condition to be asserted as the first argument
-(instead of passing it as a block) to the `T()` and `F()` methods.
-This may result in a more pleasing syntax, depending on your taste:
+For the `T()` and `F()` methods, you may also pass the condition to be
+asserted as the first argument (instead of passing it as a block).  This might
+result in a less noisy more pleasing syntax, depending on your taste:
 
     D "Lottery" do
       winning_ticket = rand()
@@ -37,13 +37,11 @@ This may result in a more pleasing syntax, depending on your taste:
       end
     end
 
-%#------------------------------------------------------------------------
+%#----------------------------------------------------------------------------
 ### Negation
-%#------------------------------------------------------------------------
+%#----------------------------------------------------------------------------
 
-The following methods are the *opposite* of normal assertions.  They also
-accept an optional message, which is shown in failure reports (see
-**Failures** below) if they fail.
+The following methods are the *opposite* of normal assertions.
 
 * `T!()`:
   same as `F()`
@@ -57,9 +55,9 @@ accept an optional message, which is shown in failure reports (see
 * `C!()`:
   assert that a symbol is *not* thrown
 
-%#------------------------------------------------------------------------
+%#----------------------------------------------------------------------------
 ### Sampling
-%#------------------------------------------------------------------------
+%#----------------------------------------------------------------------------
 
 The following methods let you *check the outcome* of an assertion without
 recording a success or failure in the test execution report.
@@ -76,11 +74,11 @@ recording a success or failure in the test execution report.
 * `C?()`:
   returns true if `C()` passes; false otherwise
 
-%#------------------------------------------------------------------------
+%#----------------------------------------------------------------------------
 ### Failures
-%#------------------------------------------------------------------------
+%#----------------------------------------------------------------------------
 
-When an assertion fails, details about the failure will be shown:
+Assertions failures are reported in the following manner:
 
     - fail: block must yield true (!nil && !false)
       call:
@@ -104,7 +102,25 @@ When an assertion fails, details about the failure will be shown:
         x: (Fixnum) 5
         y: (Fixnum) 83
 
-You will then be placed into a debugger to investigate the failure, if the
-`DIFECTS.debug` option is enabled.  Nevertheless, details about all assertion
-failures and a trace of all tests executed are stored inside DIFECTS and can be
-accessed via the `DIFECTS.trace()` method.
+Failure reports are composed of the following sections:
+
+* fail:
+  Description of the assertion failure.
+
+* call:
+  Stack trace leading to the point of failure.
+
+* code:
+  Source code surrounding the point of failure.
+
+* bind:
+  Location where local variables (in the "vars" section) were extracted.
+
+* vars:
+  Local variables visible at the point of failure.
+
+After the failure is reported, you will be placed into a debugger to
+investigate the failure if the `DIFECTS.debug` option is enabled.
+
+Assertion failure reports can be accessed at any time within the test
+execution trace provided by the `DIFECTS.trace()` method.

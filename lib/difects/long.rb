@@ -13,11 +13,10 @@ module DIFECTS
     'I' => 'Inform',
   }
 
-  short_names = instance_methods(false).grep(/^[#{short_to_long.keys.join}]\b/)
-
-  short_to_long.each do |prefix, long|
-    short_names.grep(/^#{prefix}/).each do |short|
-      alias_method short.to_s.sub(prefix, long), short
+  short_to_long.each do |src, dst|
+    instance_methods(false).grep(/^#{src}\b/).each do |short|
+      long = short.to_s.sub(src, dst)
+      alias_method long, short
     end
   end
 
