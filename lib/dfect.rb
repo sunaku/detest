@@ -643,7 +643,11 @@ module Dfect
 
       # make new results
       start = Time.now
-      catch(:stop_dfect_execution) { execute }
+      catch(:stop_dfect_execution) do
+        @@caller_bindings.track do
+          execute
+        end
+      end
       finish = Time.now
       @stats[:time] = finish - start
 
@@ -882,24 +886,55 @@ module Dfect
     # exceptions that may arise as a result.
     #
     def call block, sandbox = nil
-      begin
-        @calls.push block
-
-        if sandbox
-          sandbox.instance_eval(&block)
-        else
-          block.call
-        end
-
-      rescue Exception => e
-        debug_uncaught_exception block, e
-
-      ensure
-        @calls.pop
+      if sandbox
+        sandbox.instance_eval(&block)
+      else
+        block.call
       end
+
+    rescue Exception => e
+      debug_uncaught_exception block, e
     end
 
-    INTERNALS = File.dirname(__FILE__) # @private
+    INTERNALS = /^#{Regexp.escape(File.dirname(__FILE__))}/ # @private
+
+    ##
+    # Keep track of Kernel#caller() bindings for use later in Dfect#debug().
+    #
+    # This allows us to debug block-less assertions with the same level of
+    # accuracy as normal block assertions.  For example, you will be able
+    # to inspect the local variables x & y in both of the following cases:
+    #
+    #   x = 1
+    #   y = 3
+    #   T { x == y }  # normal block assertion
+    #   T x == y      # a block-less assertion
+    #
+    class << @@caller_bindings = [] # @private
+      def track
+        raise ArgumentError unless block_given?
+
+        set_trace_func lambda {|event, file, line, id, binding, klass|
+          case event
+          when /call$/
+            unshift [file, binding]
+
+          when 'line' # update visibility to current line of execution
+            shift
+            unshift [file, binding]
+
+          when /return$/
+            shift
+          end
+        }
+
+        yield
+
+      ensure
+        set_trace_func nil
+        clear
+      end
+    end
 
     ##
     # Adds debugging information to the report.
@@ -921,8 +956,16 @@ module Dfect
     #   failure in the code being debugged.
     #
     def debug context, message = nil, backtrace = caller
-      # inherit binding of enclosing test or hook
-      context ||= @calls.last
+      # inherit binding of nearest external stack frame
+      unless context
+        frame = backtrace.find {|f| f !~ INTERNALS } and
+        @@caller_bindings.each do |filename, binding|
+          if frame.start_with? filename
+            context = binding
+            break
+          end
+        end
+      end
 
       # allow a Proc to be passed instead of a binding
       if context and context.respond_to? :binding
@@ -930,7 +973,7 @@ module Dfect
       end
 
       # omit internals from failure details
-      backtrace = backtrace.reject {|s| s.include? INTERNALS }
+      backtrace = backtrace.reject {|s| s =~ INTERNALS }
 
       # record failure details in the report
       details = {
@@ -1070,7 +1113,6 @@ module Dfect
   @suite = class << self; Suite.new; end
   @share = {}
   @tests = []
-  @calls = []
   @files = Hash.new {|h,k| h[k] = File.readlines(k) rescue nil }
 
   ##
