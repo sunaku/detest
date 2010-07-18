@@ -1032,8 +1032,10 @@ module Dfect
         display build_fail_trace(overview), true
 
         # start interactive shell for debugging
-        require 'irb'
-        IRB.setup nil
+        unless defined? IRB
+          require 'irb'
+          IRB.setup nil
+        end
 
         irb = IRB::Irb.new(IRB::WorkSpace.new(context))
         IRB.conf[:MAIN_CONTEXT] = irb.context
