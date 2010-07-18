@@ -47,10 +47,6 @@ Prerequisites:
 
   * [RubyGems] 1.3.6 or newer.
 
-  * [ruby-debug] will be used to help you debug assertion
-    failures interactively if it is installed.  Otherwise, the
-    standard interactive Ruby shell (IRB) will be used instead.
-
 Installing:
 
     gem install dfect

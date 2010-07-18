@@ -21,13 +21,6 @@ class Class # @private
   end
 end
 
-# load interactive debugger
-begin
-  require 'ruby-debug'
-rescue LoadError
-  require 'irb'
-end
-
 module Dfect
   class << self
     ##
@@ -1038,19 +1031,14 @@ module Dfect
         overview.delete :call
         display build_fail_trace(overview), true
 
-        if Kernel.respond_to? :debugger
-          eval '::Kernel.debugger', context, __FILE__, __LINE__
-        else
-          IRB.setup nil
+        # start interactive shell for debugging
+        require 'irb'
+        IRB.setup nil
 
-          env = IRB::WorkSpace.new(context)
-          irb = IRB::Irb.new(env)
-          IRB.conf[:MAIN_CONTEXT] = irb.context
+        irb = IRB::Irb.new(IRB::WorkSpace.new(context))
+        IRB.conf[:MAIN_CONTEXT] = irb.context
+        catch(:IRB_EXIT) { irb.eval_input }
 
-          catch :IRB_EXIT do
-            irb.eval_input
-          end
-        end
       else
         # show all failure details to the user
         display build_fail_trace(details)
