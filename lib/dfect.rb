@@ -830,8 +830,13 @@ module Dfect
     #
     def display object, force = false
       if force or not @options[:quiet]
-        # stringify symbols in YAML output for better readability
-        puts object.to_yaml.gsub(/^([[:blank:]]*(- )?):(?=@?\w+: )/, '\1')
+        begin
+          # stringify symbols in YAML output for better readability
+          puts object.to_yaml.gsub(/^([[:blank:]]*(- )?):(?=@?\w+: )/, '\1')
+        rescue
+          require 'pp'
+          pp object
+        end
       end
     end
 
@@ -992,13 +997,9 @@ module Dfect
 
               pretty = region.map do |n|
                 format % [('=>' if n == line), n, source[n-1].chomp]
-              end
+              end.unshift "[#{region.inspect}] in #{file}"
 
-              pretty.unshift "[#{region.inspect}] in #{file}"
-
-              # to_yaml will render the paragraph without escaping newlines
-              # ONLY IF the first and last character are non-whitespace
-              pretty.join("\n").strip
+              pretty.extend FailureDetailsCodeListing
             end
           end
         ),
@@ -1078,6 +1079,29 @@ module Dfect
     def build_fail_trace details
       @tests.reverse.inject(details) do |inner, outer|
         { outer.desc => inner }
+      end
+    end
+
+    ##
+    # Logic to pretty print the code listing in a failure's details.
+    #
+    module FailureDetailsCodeListing # @private
+      def to_yaml options = {}
+        #
+        # strip because to_yaml() will render the paragraph without escaping
+        # newlines ONLY IF the first and last character are non-whitespace!
+        #
+        join("\n").strip.to_yaml(options)
+      end
+
+      def pretty_print printer
+        margin = ' ' * printer.indent
+        escape = map {|line| '# ' + line }
+        printer.text [
+          escape.first,
+          escape[1..-1].map {|line| margin + line },
+          margin + 'nil'
+        ].join(printer.newline)
       end
     end
 
