@@ -1075,7 +1075,7 @@ module Dfect
       if @tests.empty?
         details
       else
-        { @tests.last.desc => details }
+        { @tests.last.desc => (details unless details.empty?) }
       end
     end
 
