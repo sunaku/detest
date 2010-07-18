@@ -632,6 +632,8 @@ module Dfect
         @stats.clear
         @trace.clear
         @tests.clear
+        @share.clear
+        @files.clear
       end
 
       # make new results
