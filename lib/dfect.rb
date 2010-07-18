@@ -833,8 +833,8 @@ module Dfect
     ##
     # Prints the given object in YAML format.
     #
-    def display object
-      unless @options[:quiet]
+    def display object, force = false
+      if force or not @options[:quiet]
         # stringify symbols in YAML output for better readability
         puts object.to_yaml.gsub(/^([[:blank:]]*(- )?):(?=@?\w+: )/, '\1')
       end
@@ -1036,7 +1036,7 @@ module Dfect
         overview = details.dup
         overview.delete :vars
         overview.delete :call
-        display build_fail_trace(overview)
+        display build_fail_trace(overview), true
 
         if Kernel.respond_to? :debugger
           eval '::Kernel.debugger', context, __FILE__, __LINE__
