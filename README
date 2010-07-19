@@ -23,10 +23,10 @@ composing tests.
 %#----------------------------------------------------------------------------
 
 * Issue tracker (report bugs, request features, get help):
-  <http://github.com/sunaku/dfect/issues>
+  <<%= github_url %>/issues>
 
 * Source code (browse online or obtain with [Git](http://git-scm.com)):
-  <http://github.com/sunaku/dfect>
+  <<%= github_url %>>
 
 * API documentation:
   <<%= File.join(Dfect::WEBSITE, 'api/') %>>

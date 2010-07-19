@@ -12,6 +12,8 @@
   end
 %>
 
+% github_url = 'http://github.com/sunaku/dfect'
+
 %+ "README"
 
 %+ "USAGE"

@@ -4,15 +4,62 @@
 
 Dfect provides emulation layers for several popular testing libraries:
 
-* dfect/unit:
-  [Test::Unit] emulation layer
+<%
+  emulation_layers = {
+    'dfect/spec' => '[RSpec]',
+    'dfect/unit' => '[Test::Unit]',
+    'dfect/mini' => '[Minitest]',
+    'dfect/long' => 'Readability',
+  }
+%>
 
-* dfect/mini:
-  [Minitest] emulation layer
+% emulation_layers.each do |layer, title|
 
-* dfect/spec:
-  [RSpec] emulation layer
+  * <%= layer %>:
+    <%= title %> emulation layer
 
-Simply load one of these emulation layers into your test suite and you can
-write your tests using the familiar syntax of that testing library.  See
-their source code for more information.
+Simply require one of these emulation layers into your test suite and you can
+write your tests using the familiar syntax of the testing library it emulates.
+
+%#----------------------------------------------------------------------------
+%# list the methods provided by the various emulation layers
+%#----------------------------------------------------------------------------
+
+% require 'dfect'
+% before = Dfect.instance_methods(false)
+% sandbox = Object.new.extend(Dfect)
+
+% emulation_layers.each do |layer, title|
+  % require layer
+  % after = Dfect.instance_methods(false)
+
+  % unless before == after
+
+    %#------------------------------------------------------------------------
+    ### <%= layer %>
+    %#------------------------------------------------------------------------
+
+    This library emulates <%= title %> by adding the following instance
+    methods to the `Dfect` module.
+
+    % (after - before).sort.each do |method_name|
+      % method = sandbox.method(method_name)
+
+      % file, line = method.source_location
+      % file = file.sub(Dfect::INSTDIR, '').sub(%r(^/+), '')
+      % url = "#{github_url}/tree/master/#{file}#L#{line}"
+
+      * `<%= method.name %>`(<%=
+        method.parameters.map do |type, name|
+          name = "_#{name}_" # italicize in markdown
+          case type
+          when :opt   then name + '=nil'
+          when :rest  then '*' + name
+          when :block then '&' + name
+          else name
+          end
+        end.join(', ')
+      %>):
+        Defined at [<%= file %>:<%= line %>](<%= url %>)
+
+    % before = after
