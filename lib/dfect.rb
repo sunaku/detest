@@ -976,12 +976,12 @@ module Dfect
       backtrace = backtrace.reject {|s| s =~ INTERNALS }
 
       # record failure details in the report
-      details = {
+      details = Hash[
         # user message
-        :fail => message,
+        :fail, message,
 
         # code snippet
-        :code => (
+        :code, (
           if frame = backtrace.first
             file, line = frame.scan(/(.+?):(\d+(?=:|\z))/).first
 
@@ -1005,7 +1005,7 @@ module Dfect
         ),
 
         # variable values
-        :vars => if context
+        :vars, if context
           names = eval('::Kernel.local_variables + self.instance_variables', context, __FILE__, __LINE__)
 
           pairs = names.inject([]) do |pair, name|
@@ -1019,8 +1019,8 @@ module Dfect
         end,
 
         # stack trace
-        :call => backtrace,
-      }
+        :call, backtrace
+      ]
 
       @trace << details
 
@@ -1117,6 +1117,21 @@ module Dfect
       end
 
       Test = Struct.new(:desc, :block, :sandbox) # @private
+    end
+  end
+
+  # set Dfect::Hash from an ordered hash library in lesser Ruby versions
+  if RUBY_VERSION < '1.9'
+    begin
+      #
+      # NOTE: I realize that there are other libraries, such as facets and
+      # activesupport, that provide an ordered hash implementation, but this
+      # particular library does not interfere with pretty printing routines.
+      #
+      require 'orderedhash'
+      Hash = OrderedHash
+    rescue LoadError
+      warn "#{inspect}: Install 'orderedhash' gem for better failure reports."
     end
   end
 
