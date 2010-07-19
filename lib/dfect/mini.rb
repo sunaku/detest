@@ -13,8 +13,8 @@ module Dfect
 end
 
 {
-  :must => :assert,
-  :wont => :refute,
+  :must => '::Dfect.assert',
+  :wont => '::Dfect.refute',
 }.
 each do |outer, inner|
   #
@@ -88,5 +88,5 @@ each do |outer, inner|
         #{inner}_throw symbol, message, &self
       end
     end
-  }, binding, file, line
+  }, TOPLEVEL_BINDING, file, line
 end

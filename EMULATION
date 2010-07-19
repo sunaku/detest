@@ -39,8 +39,8 @@ write your tests using the familiar syntax of the testing library it emulates.
     ### <%= layer %>
     %#------------------------------------------------------------------------
 
-    This library emulates <%= title %> by adding the following instance
-    methods to the `Dfect` module.
+    This library emulates <%= title %> by adding the following methods to the
+    `Dfect` module.
 
     % (after - before).sort.each do |method_name|
       % method = sandbox.method(method_name)

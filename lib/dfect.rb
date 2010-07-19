@@ -167,13 +167,17 @@ module Dfect
     #     puts "before each nested test"
     #   end
     #
-    def <(*args, &block)
-      if args.empty?
+    def <(klass = nil, &block)
+      if klass
+        # this method is being used as a check for inheritance
+        #
+        # NOTE: we cannot call super() here because this module
+        #       extends itself, thereby causing an infinite loop!
+        #
+        ancestors.include? klass
+      else
         raise ArgumentError, 'block must be given' unless block
         @suite.before_each << block
-      else
-        # the < method is being used as a check for inheritance
-        super
       end
     end
 
@@ -1120,6 +1124,28 @@ module Dfect
     end
   end
 
+  # provide mixin-able versions of Dfect's core vocabulary
+  singleton_methods(false).grep(/^[[:upper:]]?[[:punct:]]*$/).each do |meth|
+    #
+    # XXX: using eval() on a string because Ruby 1.8's
+    #      define_method() cannot take a block parameter
+    #
+    module_eval "def #{meth}(*a, &b) ::#{name}.#{meth}(*a, &b) end", __FILE__, __LINE__
+  end
+
+  # allow mixin-able methods to be accessed as class methods
+  extend self
+
+  # allow before and after hooks to be specified via the
+  # following method syntax when this module is mixed-in:
+  #
+  #   D .<< { puts "before all nested tests" }
+  #   D .<  { puts "before each nested test" }
+  #   D .>  { puts "after  each nested test" }
+  #   D .>> { puts "after  all nested tests" }
+  #
+  D = self
+
   # set Dfect::Hash from an ordered hash library in lesser Ruby versions
   if RUBY_VERSION < '1.9'
     begin
@@ -1145,24 +1171,4 @@ module Dfect
   @share = {}
   @tests = []
   @files = Hash.new {|h,k| h[k] = File.readlines(k) rescue nil }
-
-  ##
-  # Allows before and after hooks to be specified via the
-  # following method syntax when this module is mixed-in:
-  #
-  #   D .<< { puts "before all nested tests" }
-  #   D .<  { puts "before each nested test" }
-  #   D .>  { puts "after  each nested test" }
-  #   D .>> { puts "after  all nested tests" }
-  #
-  D = self
-
-  # provide mixin-able assertion methods
-  methods(false).grep(/^[[:upper:]]?[[:punct:]]*$/).each do |name|
-    #
-    # XXX: using eval() on a string because Ruby 1.8's
-    #      define_method() cannot take a block parameter
-    #
-    module_eval "def #{name}(*a, &b) ::#{self.name}.#{name}(*a, &b) end", __FILE__, __LINE__
-  end
 end
