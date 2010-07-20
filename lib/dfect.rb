@@ -24,61 +24,59 @@ end
 module Dfect
   class << self
     ##
-    # Hash of test results, assembled by {Dfect.run}.
+    # Launch an interactive debugger
+    # during assertion failures so
+    # the user can investigate them?
     #
-    # [:trace]
-    #   Hierarchical trace of all tests executed, where each test is
-    #   represented by its description, is mapped to an Array of
-    #   nested tests, and may contain zero or more assertion failures.
+    # The default value is $DEBUG.
     #
-    #   Assertion failures are represented as a Hash:
-    #
-    #   [:fail]
-    #     Description of the assertion failure.
-    #
-    #   [:code]
-    #     Source code surrounding the point of failure.
-    #
-    #   [:vars]
-    #     Local variables visible at the point of failure.
-    #
-    #   [:call]
-    #     Stack trace leading to the point of failure.
-    #
-    # [:stats]
-    #   Hash of counts of major events in test execution:
-    #
-    #   [:time]
-    #     Number of seconds elapsed for test execution.
-    #
-    #   [:pass]
-    #     Number of assertions that held true.
-    #
-    #   [:fail]
-    #     Number of assertions that did not hold true.
-    #
-    #   [:error]
-    #     Number of exceptions that were not rescued.
-    #
-    attr_reader :report
+    attr_accessor :debug
 
     ##
-    # Hash of choices that affect how Dfect operates.
+    # Do not print test results
+    # after executing all tests?
     #
-    # [:debug]
-    #   Launch an interactive debugger
-    #   during assertion failures so
-    #   the user can investigate them.
+    # The default value is false.
     #
-    #   The default value is $DEBUG.
+    attr_accessor :quiet
+
+    ##
+    # Hash of counts of major events in test execution:
     #
-    # [:quiet]
-    #   Do not print the report
-    #   after executing all tests.
+    # [:time]
+    #   Number of seconds elapsed for test execution.
     #
-    #   The default value is false.
+    # [:pass]
+    #   Number of assertions that held true.
     #
-    attr_accessor :options
+    # [:fail]
+    #   Number of assertions that did not hold true.
+    #
+    # [:error]
+    #   Number of exceptions that were not rescued.
+    #
+    attr_reader :stats
+
+    ##
+    # Hierarchical trace of all tests executed, where each test is
+    # represented by its description, is mapped to an Array of
+    # nested tests, and may contain zero or more assertion failures.
+    #
+    # Assertion failures are represented as a Hash:
+    #
+    # [:fail]
+    #   Description of the assertion failure.
+    #
+    # [:code]
+    #   Source code surrounding the point of failure.
+    #
+    # [:vars]
+    #   Local variables visible at the point of failure.
+    #
+    # [:call]
+    #   Stack trace leading to the point of failure.
+    #
+    attr_reader :trace
 
     ##
     # Defines a new test composed of the given
@@ -623,8 +621,8 @@ module Dfect
     end
 
     ##
-    # Executes all tests defined thus far and
-    # stores the results in {Dfect.report}.
+    # Executes all tests defined thus far and stores
+    # the results in {Dfect.trace} and {Dfect.stats}.
     #
     # @param [Boolean] continue
     #
@@ -833,7 +831,7 @@ module Dfect
     # Prints the given object in YAML format.
     #
     def display object, force = false
-      if force or not @options[:quiet]
+      if force or not @quiet
         begin
           # stringify symbols in YAML output for better readability
           puts object.to_yaml.gsub(/^([[:blank:]]*(- )?):(?=@?\w+: )/, '\1')
@@ -1029,7 +1027,7 @@ module Dfect
       @trace << details
 
       # allow user to investigate the failure
-      if @options[:debug] and context
+      if @debug and context
         # show only the most helpful subset of the
         # failure details, because the rest can be
         # queried (on demand) inside the debugger
@@ -1161,11 +1159,11 @@ module Dfect
     end
   end
 
-  @options = {:debug => $DEBUG, :quiet => false}
+  @debug = $DEBUG
+  @quiet = false
 
-  @stats  = Hash.new {|h,k| h[k] = 0 }
-  @trace  = []
-  @report = {:trace => @trace, :stats => @stats}.freeze
+  @stats = Hash.new {|h,k| h[k] = 0 }
+  @trace = []
 
   @suite = class << self; Suite.new; end
   @share = {}

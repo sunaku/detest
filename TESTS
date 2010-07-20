@@ -22,7 +22,8 @@ Tests are executed in depth-first order.
 
 You can configure the test execution process using:
 
-    Dfect.options = your_options_hash
+    Dfect.debug = your_choice_here
+    Dfect.quiet = your_choice_here
 
 You can execute all tests defined thus far using:
 
@@ -34,7 +35,8 @@ You can stop the execution at any time using:
 
 You can view the results of execution using:
 
-    puts Dfect.report.to_yaml
+    puts Dfect.trace.to_yaml
+    puts Dfect.stats.to_yaml
 
 You can mix-in the `Dfect` module into your program and execute all tests
 defined by your program before it terminates by simply adding the following

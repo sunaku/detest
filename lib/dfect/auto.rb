@@ -13,8 +13,7 @@ at_exit do
   Dfect.run
 
   # reflect number of failures in exit status
-  stats = Dfect.report[:stats]
+  stats = Dfect.stats
   fails = stats[:fail] + stats[:error]
-
   exit [fails, 255].min
 end

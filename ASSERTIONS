@@ -84,8 +84,7 @@ When an assertion fails, details about the failure will be shown:
       - test/simple.rb:17
       - test/simple.rb:3
 
-You will then be placed into a debugger to investigate the failure if
-the `:debug` option is enabled in the `Dfect.options` hash.
-
-Details about all assertion failures and a trace of all tests executed
-are stored by Dfect and provided by the `Dfect.report()` method.
+You will then be placed into a debugger to investigate the failure, if the
+`Dfect.debug` option is enabled.  Nevertheless, details about all assertion
+failures and a trace of all tests executed are stored inside Dfect and can be
+accessed via the `Dfect.trace()` method.
