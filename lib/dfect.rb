@@ -917,16 +917,18 @@ module Dfect
         raise ArgumentError unless block_given?
 
         set_trace_func lambda {|event, file, line, id, binding, klass|
-          case event
-          when /call$/
-            unshift [file, binding]
+          unless file =~ INTERNALS
+            case event
+            when /call$/
+              unshift binding
 
-          when 'line' # update visibility to current line of execution
-            shift
-            unshift [file, binding]
+            when 'line' # update visibility to current line of execution
+              shift
+              unshift binding
 
-          when /return$/
-            shift
+            when /return$/
+              shift
+            end
           end
         }
 
@@ -944,8 +946,8 @@ module Dfect
     # @param [Binding, Proc, #binding] context
     #
     #   Binding of code being debugged.  This can be either a Binding or
-    #   Proc object, or nil if no binding is available---in which case,
-    #   the binding of the inner-most enclosing test or hook will be used.
+    #   Proc object, or +nil+ if no binding is available---in which case,
+    #   the binding of the nearest external stack frame will be used.
     #
     # @param message
     #
@@ -958,16 +960,13 @@ module Dfect
     #   failure in the code being debugged.
     #
     def debug context, message = nil, backtrace = caller
-      # inherit binding of nearest external stack frame
-      unless context
-        frame = backtrace.find {|f| f !~ INTERNALS } and
-        @@caller_bindings.each do |filename, binding|
-          if frame.start_with? filename
-            context = binding
-            break
-          end
-        end
-      end
+      #
+      # prefer the binding of nearest external stack frame
+      # because our tracking of caller bindings (updated on
+      # `line` events) is much more accurate than the given
+      # block (binding only captured at block `call` event)
+      #
+      context = @@caller_bindings.first || context
 
       # allow a Proc to be passed instead of a binding
       if context and context.respond_to? :binding
