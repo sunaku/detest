@@ -641,7 +641,7 @@ module Dfect
       # make new results
       start = Time.now
       catch(:stop_dfect_execution) do
-        @@caller_bindings.track do
+        BINDINGS.track do
           execute
         end
       end
@@ -706,7 +706,7 @@ module Dfect
 
       failed = lambda do
         @stats[:fail] += 1
-        debug block, message
+        debug message
       end
 
       result = block ? call(block) : condition
@@ -748,13 +748,13 @@ module Dfect
 
         if exception
           # debug the uncaught exception...
-          debug_uncaught_exception block, exception
+          debug_uncaught_exception exception
 
           # ...in addition to debugging this assertion
-          debug block, [message, {'block raised' => exception}]
+          debug [message, {'block raised' => exception}]
 
         else
-          debug block, message
+          debug message
         end
       end
 
@@ -793,7 +793,7 @@ module Dfect
 
       failed = lambda do
         @stats[:fail] += 1
-        debug block, message
+        debug message
       end
 
       # if nothing was thrown, the result of catch()
@@ -803,7 +803,7 @@ module Dfect
           block.call
 
         rescue Exception => e
-          debug_uncaught_exception block, e unless
+          debug_uncaught_exception e unless
             # ignore error about the wrong symbol being thrown
             #
             # NOTE: Ruby 1.8 formats the thrown value in `quotes'
@@ -895,40 +895,23 @@ module Dfect
       end
 
     rescue Exception => e
-      debug_uncaught_exception block, e
+      debug_uncaught_exception e
     end
 
     INTERNALS = /^#{Regexp.escape(File.dirname(__FILE__))}/ # @private
 
-    ##
-    # Keep track of Kernel#caller() bindings for use later in Dfect#debug().
-    #
-    # This allows us to debug block-less assertions with the same level of
-    # accuracy as normal block assertions.  For example, you will be able
-    # to inspect the local variables x & y in both of the following cases:
-    #
-    #   x = 1
-    #   y = 3
-    #   T { x == y }  # normal block assertion
-    #   T x == y      # a block-less assertion
-    #
-    class << @@caller_bindings = [] # @private
+    class << BINDINGS = Hash.new {|h,k| h[k] = {} } # @private
+      ##
+      # Keeps track of bindings for all
+      # lines of code processed by Ruby
+      # for use later in {Dfect.debug}.
+      #
       def track
         raise ArgumentError unless block_given?
 
         set_trace_func lambda {|event, file, line, id, binding, klass|
           unless file =~ INTERNALS
-            case event
-            when /call$/
-              unshift binding
-
-            when 'line' # update visibility to current line of execution
-              shift
-              unshift binding
-
-            when /return$/
-              shift
-            end
+            self[file][line] = binding
           end
         }
 
@@ -941,13 +924,8 @@ module Dfect
     end
 
     ##
-    # Adds debugging information to the report.
-    #
-    # @param [Binding, Proc, #binding] context
-    #
-    #   Binding of code being debugged.  This can be either a Binding or
-    #   Proc object, or +nil+ if no binding is available---in which case,
-    #   the binding of the nearest external stack frame will be used.
+    # Adds debugging information to the test execution report and
+    # invokes the debugger if the {Dfect.debug} option is enabled.
     #
     # @param message
     #
@@ -959,65 +937,51 @@ module Dfect
     #   Stack trace corresponding to point of
     #   failure in the code being debugged.
     #
-    def debug context, message = nil, backtrace = caller
-      #
-      # prefer the binding of nearest external stack frame
-      # because our tracking of caller bindings (updated on
-      # `line` events) is much more accurate than the given
-      # block (binding only captured at block `call` event)
-      #
-      context = @@caller_bindings.first || context
-
-      # allow a Proc to be passed instead of a binding
-      if context and context.respond_to? :binding
-        context = context.binding
-      end
-
+    def debug message = nil, backtrace = caller
       # omit internals from failure details
       backtrace = backtrace.reject {|s| s =~ INTERNALS }
 
-      # record failure details in the report
+      backtrace.first =~ /(.+?):(\d+(?=:|\z))/ or raise SyntaxError
+      file, line = $1, $2.to_i
+      binding = BINDINGS[file][line]
+
+      # record failure details in the test execution report
       details = Hash[
         # user message
         :fail, message,
 
         # code snippet
         :code, (
-          if frame = backtrace.first
-            file, line = frame.scan(/(.+?):(\d+(?=:|\z))/).first
+          if source = @files[file]
+            radius = 5 # number of surrounding lines to show
+            region = [line - radius, 1].max ..
+                     [line + radius, source.length].min
 
-            if source = @files[file]
-              line = line.to_i
+            # ensure proper alignment by zero-padding line numbers
+            format = "%2s %0#{region.last.to_s.length}d %s"
 
-              radius = 5 # number of surrounding lines to show
-              region = [line - radius, 1].max ..
-                       [line + radius, source.length].min
+            pretty = region.map do |n|
+              format % [('=>' if n == line), n, source[n-1].chomp]
+            end.unshift "[#{region.inspect}] in #{file}"
 
-              # ensure proper alignment by zero-padding line numbers
-              format = "%2s %0#{region.last.to_s.length}d %s"
-
-              pretty = region.map do |n|
-                format % [('=>' if n == line), n, source[n-1].chomp]
-              end.unshift "[#{region.inspect}] in #{file}"
-
-              pretty.extend FailureDetailsCodeListing
-            end
+            pretty.extend FailureDetailsCodeListing
           end
         ),
 
         # variable values
-        :vars, if context
-          names = eval('::Kernel.local_variables + self.instance_variables', context, __FILE__, __LINE__)
+        :vars, (
+          if binding
+            names = eval('::Kernel.local_variables + self.instance_variables',
+                         binding, __FILE__, __LINE__)
 
-          pairs = names.inject([]) do |pair, name|
-            variable = name.to_s
-            value    = eval(variable, context, __FILE__, __LINE__)
+            pairs = names.inject([]) do |pair, name|
+              value = eval(name.to_s, binding, __FILE__, __LINE__)
+              pair.push name.to_sym, value
+            end
 
-            pair.push variable.to_sym, value
+            Hash[*pairs]
           end
-
-          Hash[*pairs]
-        end,
+        ),
 
         # stack trace
         :call, backtrace
@@ -1026,7 +990,7 @@ module Dfect
       @trace << details
 
       # allow user to investigate the failure
-      if @debug and context
+      if @debug and binding
         # show only the most helpful subset of the
         # failure details, because the rest can be
         # queried (on demand) inside the debugger
@@ -1041,7 +1005,7 @@ module Dfect
           IRB.setup nil
         end
 
-        irb = IRB::Irb.new(IRB::WorkSpace.new(context))
+        irb = IRB::Irb.new(IRB::WorkSpace.new(binding))
         IRB.conf[:MAIN_CONTEXT] = irb.context
         catch(:IRB_EXIT) { irb.eval_input }
 
@@ -1056,9 +1020,9 @@ module Dfect
     ##
     # Debugs the given uncaught exception inside the given context.
     #
-    def debug_uncaught_exception context, exception
+    def debug_uncaught_exception exception
       @stats[:error] += 1
-      debug context, exception, exception.backtrace
+      debug exception, exception.backtrace
     end
 
     ##
