@@ -74,8 +74,8 @@ additional logic to execute during the hook:
 ### Logging
 %#----------------------------------------------------------------------
 
-The `L()` method lets you insert log messages, composed of arbitrary
-Ruby objects, into the test execution report.
+The `I()` method lets you insert arbitrary Ruby objects into the test
+execution report.
 
 %#----------------------------------------------------------------------------
 ### Sharing

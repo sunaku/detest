@@ -517,7 +517,7 @@ module Dfect
     # Adds the given messages to the report inside
     # the section of the currently running test.
     #
-    # You can think of "L" as "to log something".
+    # You can think of "I" as to "inform" the user.
     #
     # @param messages
     #
@@ -525,13 +525,13 @@ module Dfect
     #
     # @example single message given
     #
-    #   L "establishing connection..."
+    #   I "establishing connection..."
     #
     # @example multiple messages given
     #
-    #   L "beginning calculation...", Math::PI, [1, 2, 3, ['a', 'b', 'c']]
+    #   I "beginning calculation...", Math::PI, [1, 2, 3, ['a', 'b', 'c']]
     #
-    def L *messages
+    def I *messages
       @trace.concat messages
     end
 

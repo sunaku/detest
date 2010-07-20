@@ -10,7 +10,7 @@ module Dfect
     'E' => 'Error',
     'C' => 'Catch',
     'S' => 'Share',
-    'L' => 'Log',
+    'I' => 'Inform',
   }
 
   short_names = instance_methods(false).grep(/^[#{short_to_long.keys.join}]\b/)

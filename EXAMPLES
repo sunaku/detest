@@ -51,15 +51,15 @@ be either mixed-in or called directly, according to your preference:
 
 %|example
   D 'Wizard' do
-    L 'Preparing spell to defeat mortal foes...'
+    I 'Preparing spell to defeat mortal foes...'
   end
 
   D 'Magician' do
-    L 'Preparing rabbits to pull from hat...', rand(15)
+    I 'Preparing rabbits to pull from hat...', rand(15)
   end
 
   D 'Calculator' do
-    L Math::PI, [1, 2, 3, ['a', 'b', 'c']], {:foo => 'bar!'}
+    I Math::PI, [1, 2, 3, ['a', 'b', 'c']], {:foo => 'bar!'}
   end
 
 %#----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ be either mixed-in or called directly, according to your preference:
 
 %|example
   S :knowledge do
-    L 'Knowledge is power!'
+    I 'Knowledge is power!'
   end
 
   D 'Healer' do
@@ -77,7 +77,7 @@ be either mixed-in or called directly, according to your preference:
 
   D 'Warrior' do
     S! :strength do
-      L 'Strength is power!'
+      I 'Strength is power!'
     end
   end
 
@@ -90,7 +90,7 @@ be either mixed-in or called directly, according to your preference:
     T { S? :knowledge }
     T { S? :strength }
     F { S? :power }
-    L 'Power is power!'
+    I 'Power is power!'
   end
 
 %#----------------------------------------------------------------------------
