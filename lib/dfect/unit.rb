@@ -3,6 +3,7 @@
 require 'dfect'
 
 module Dfect
+  alias test      D
   alias setup     <
   alias setup!    <<
   alias teardown  >
