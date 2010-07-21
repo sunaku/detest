@@ -67,14 +67,14 @@ module Dfect
     # [:fail]
     #   Description of the assertion failure.
     #
+    # [:call]
+    #   Stack trace leading to the point of failure.
+    #
     # [:code]
     #   Source code surrounding the point of failure.
     #
     # [:vars]
     #   Local variables visible at the point of failure.
-    #
-    # [:call]
-    #   Stack trace leading to the point of failure.
     #
     attr_reader :trace
 
@@ -972,6 +972,9 @@ module Dfect
         # user message
         :fail, message,
 
+        # stack trace
+        :call, backtrace,
+
         # code snippet
         :code, (
           if source = @files[file]
@@ -1003,10 +1006,7 @@ module Dfect
 
             Hash[*pairs]
           end
-        ),
-
-        # stack trace
-        :call, backtrace
+        )
       ]
 
       @trace << details

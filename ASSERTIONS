@@ -64,6 +64,9 @@ recording a success or failure in the test execution report.
 When an assertion fails, details about the failure will be shown:
 
     - fail: block must yield true (!nil && !false)
+      call:
+      - test/simple.rb:17
+      - test/simple.rb:3
       code: |-
         [12..22] in test/simple.rb
            12
@@ -80,9 +83,6 @@ When an assertion fails, details about the failure will be shown:
       vars:
         x: 5
         y: 83
-      call:
-      - test/simple.rb:17
-      - test/simple.rb:3
 
 You will then be placed into a debugger to investigate the failure, if the
 `Dfect.debug` option is enabled.  Nevertheless, details about all assertion
