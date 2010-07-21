@@ -943,7 +943,29 @@ module Dfect
 
       backtrace.first =~ /(.+?):(\d+(?=:|\z))/ or raise SyntaxError
       file, line = $1, $2.to_i
-      binding = BINDINGS[file][line]
+
+      binding_by_line = BINDINGS[file]
+      unless binding_by_line.key? line
+        #
+        # There is no binding for the line number given in the backtrace, so
+        # try to adjust it to the nearest line that actually has a binding.
+        #
+        # This problem occurs because line numbers reported in backtraces
+        # sometimes do not agree with those observed by set_trace_func(),
+        # particularly in method calls that span multiple lines:
+        # set_trace_func() will consistently observe the ending parenthesis
+        # (last line of the method call) whereas the backtrace will oddly
+        # report a line somewhere in the middle of the method call.
+        #
+        # NOTE: I chose to adjust the imprecise line to the nearest one BELOW
+        # it.  This might not always be correct because the nearest line below
+        # could belong to a completely different scope, like a new class.
+        #
+        if nearest_line = binding_by_line.keys.sort.find {|n| n > line }
+          line = nearest_line
+        end
+      end
+      binding = binding_by_line[line]
 
       # record failure details in the test execution report
       details = Hash[
