@@ -1,25 +1,25 @@
 #!/usr/bin/env ruby
 
-require 'dfect'
+require 'difects'
 
 if ARGV.delete('-h') or ARGV.delete('--help')
   # try to display UNIX version of help manual
-  man_path = File.join(Dfect::INSTDIR, 'man')
-  unless system 'man', '-M', man_path, '-a', 'dfect'
+  man_path = File.join(DIFECTS::INSTDIR, 'man')
+  unless system 'man', '-M', man_path, '-a', 'difects'
     # try to display HTML version of help manual
     man_html = man_path + '.html'
     unless %w[$BROWSER open start].any? {|b| system "#{b} #{man_html}" }
       # no luck; direct user to project website
-      puts "See #{Dfect::WEBSITE}"
+      puts "See #{DIFECTS::WEBSITE}"
     end
   end
   exit
 elsif ARGV.delete('-v') or ARGV.delete('--version')
-  puts Dfect::VERSION
+  puts DIFECTS::VERSION
   exit
 end
 
-Dfect.debug = ARGV.delete('-d') || ARGV.delete('--debug')
+DIFECTS.debug = ARGV.delete('-d') || ARGV.delete('--debug')
 
-require 'dfect/auto'
+require 'difects/auto'
 ARGV.each {|glob| Dir[glob].each {|test| load test } }

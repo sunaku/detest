@@ -1,19 +1,19 @@
-# Provides painless, automatic configuration of Dfect.
+# Provides painless, automatic configuration of DIFECTS.
 #
-# Simply require() this file and Dfect will be available for use anywhere
+# Simply require() this file and DIFECTS will be available for use anywhere
 # in your program and will execute all tests before your program exits.
 
-require 'dfect'
+require 'difects'
 
 class Object
-  include Dfect
+  include DIFECTS
 end
 
 at_exit do
-  Dfect.start
+  DIFECTS.start
 
   # reflect number of failures in exit status
-  stats = Dfect.stats
+  stats = DIFECTS.stats
   fails = stats[:fail] + stats[:error]
   exit [fails, 255].min
 end

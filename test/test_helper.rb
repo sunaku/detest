@@ -1,1 +1,1 @@
-require 'dfect/auto'
+require 'difects/auto'

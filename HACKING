@@ -2,7 +2,7 @@
 ## HACKING
 %#----------------------------------------------------------------------------
 
-This section is meant for people who want to develop Dfect's source code.
+This section is meant for people who want to develop DIFECTS's source code.
 
 %#----------------------------------------------------------------------------
 ### Prerequisites
@@ -10,13 +10,13 @@ This section is meant for people who want to develop Dfect's source code.
 
 Install Ruby libraries necessary for development:
 
-    gem install dfect --development
+    gem install difects --development
 
 %#----------------------------------------------------------------------------
 ### Infrastructure
 %#----------------------------------------------------------------------------
 
-[Inochi] serves as the project infrastructure for Dfect.  It handles tasks
+[Inochi] serves as the project infrastructure for DIFECTS.  It handles tasks
 such as building this help manual and API documentation, and packaging,
 announcing, and publishing new releases.  See its help manual and list of
 tasks to get started:
@@ -33,8 +33,8 @@ use any libraries therein or run any executables in the `bin/` directory.
 
 This can be achieved by passing an option to Ruby:
 
-    ruby -Ilib bin/dfect
-    irb -Ilib -r dfect
+    ruby -Ilib bin/difects
+    irb -Ilib -r difects
 
 Or by setting the `$RUBYLIB` environment variable:
 
@@ -42,8 +42,8 @@ Or by setting the `$RUBYLIB` environment variable:
     setenv RUBYLIB lib   # csh
     set -x RUBYLIB lib   # fish
 
-    ruby bin/dfect
-    irb -r dfect
+    ruby bin/difects
+    irb -r difects
 
 Or by installing the [ruby-wrapper](http://github.com/chneukirchen/rup) tool.
 
@@ -57,8 +57,8 @@ you use any libraries in the `lib/` directory or run any executables in the
 
 This can be achieved by passing an option to Ruby:
 
-    ruby -rubygems bin/dfect
-    irb -rubygems -r dfect
+    ruby -rubygems bin/difects
+    irb -rubygems -r difects
 
 Or by setting the `$RUBYOPT` environment variable:
 

@@ -2,14 +2,14 @@
 ## EMULATION
 %#------------------------------------------------------------------------
 
-Dfect provides emulation layers for several popular testing libraries:
+DIFECTS provides emulation layers for several popular testing libraries:
 
 <%
   emulation_layers = {
-    'dfect/spec' => '[RSpec]',
-    'dfect/unit' => '[Test::Unit]',
-    'dfect/mini' => '[Minitest]',
-    'dfect/long' => 'Readability',
+    'difects/spec' => '[RSpec]',
+    'difects/unit' => '[Test::Unit]',
+    'difects/mini' => '[Minitest]',
+    'difects/long' => 'Readability',
   }
 %>
 
@@ -25,13 +25,13 @@ write your tests using the familiar syntax of the testing library it emulates.
 %# list the methods provided by the various emulation layers
 %#----------------------------------------------------------------------------
 
-% require 'dfect'
-% before = Dfect.instance_methods(false)
-% sandbox = Object.new.extend(Dfect)
+% require 'difects'
+% before = DIFECTS.instance_methods(false)
+% sandbox = Object.new.extend(DIFECTS)
 
 % emulation_layers.each do |layer, title|
   % require layer
-  % after = Dfect.instance_methods(false)
+  % after = DIFECTS.instance_methods(false)
 
   % unless before == after
 
@@ -40,13 +40,13 @@ write your tests using the familiar syntax of the testing library it emulates.
     %#------------------------------------------------------------------------
 
     This library emulates <%= title %> by adding the following methods to the
-    `Dfect` module.
+    `DIFECTS` module.
 
     % (after - before).sort.each do |method_name|
       % method = sandbox.method(method_name)
 
       % file, line = method.source_location
-      % file = file.sub(Dfect::INSTDIR, '').sub(%r(^/+), '')
+      % file = file.sub(DIFECTS::INSTDIR, '').sub(%r(^/+), '')
       % url = "#{github_url}/tree/master/#{file}#L#{line}"
 
       * `<%= method.name %>`(<%=

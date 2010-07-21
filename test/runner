@@ -18,7 +18,7 @@ lib_dir = File.expand_path('../../lib', __FILE__)
 test_dir = File.expand_path('..', __FILE__)
 $LOAD_PATH.unshift lib_dir, test_dir
 
-require 'dfect/inochi'
+require 'difects/inochi'
 require 'test_helper'
 
 ARGV << "#{test_dir}/**/*_test.rb" if ARGV.empty?

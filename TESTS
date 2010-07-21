@@ -2,7 +2,7 @@
 ## TESTS
 %#--------------------------------------------------------------------------
 
-The `D()` method defines a new Dfect **test**, which is analagous to the
+The `D()` method defines a new DIFECTS **test**, which is analagous to the
 concept of **test case** in [xUnit] or **describe** in [RSpec].  A test may
 contain nested tests.
 
@@ -22,7 +22,7 @@ Tests are executed in depth-first order.
 
 You can configure the test execution process using:
 
-    Dfect.debug = your_choice_here
+    DIFECTS.debug = your_choice_here
 
 You can execute all tests defined thus far using:
 
@@ -30,18 +30,18 @@ You can execute all tests defined thus far using:
 
 You can stop the execution at any time using:
 
-    Dfect.stop
+    DIFECTS.stop
 
 You can view the results of execution using:
 
-    puts Dfect.trace.to_yaml
-    puts Dfect.stats.to_yaml
+    puts DIFECTS.trace.to_yaml
+    puts DIFECTS.stats.to_yaml
 
-You can mix-in the `Dfect` module into your program and execute all tests
+You can mix-in the `DIFECTS` module into your program and execute all tests
 defined by your program before it terminates by simply adding the following
 line at the top of your program:
 
-    require 'dfect/auto'
+    require 'difects/auto'
 
 See the API documentation for more information and examples.
 

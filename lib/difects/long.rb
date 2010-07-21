@@ -1,8 +1,8 @@
-# Provides long name aliases for Dfect's default abbreviated vocabulary.
+# Provides long name aliases for DIFECTS's default abbreviated vocabulary.
 
-require 'dfect'
+require 'difects'
 
-module Dfect
+module DIFECTS
   short_to_long = {
     'D' => 'Describe',
     'T' => 'True',

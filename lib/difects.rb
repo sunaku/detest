@@ -1,4 +1,4 @@
-require 'dfect/inochi'
+require 'difects/inochi'
 
 require 'yaml'
 #
@@ -21,7 +21,7 @@ class Class # @private
   end
 end
 
-module Dfect
+module DIFECTS
   class << self
     ##
     # Launch an interactive debugger
@@ -112,7 +112,7 @@ module Dfect
     #
     # This test may contain nested tests.
     #
-    # @param description (see Dfect.D)
+    # @param description (see DIFECTS.D)
     #
     # @example
     #
@@ -256,9 +256,9 @@ module Dfect
     # result of the given block is either nil
     # or false and returns that result.
     #
-    # @param condition (see Dfect.T)
+    # @param condition (see DIFECTS.T)
     #
-    # @param message (see Dfect.T)
+    # @param message (see DIFECTS.T)
     #
     # @example no message given
     #
@@ -279,7 +279,7 @@ module Dfect
     # the result of the given block is neither
     # nil nor false.  Otherwise, returns false.
     #
-    # @param condition (see Dfect.T)
+    # @param condition (see DIFECTS.T)
     #
     # @param message
     #
@@ -307,7 +307,7 @@ module Dfect
     # Returns true if the result of the given block is
     # either nil or false.  Otherwise, returns false.
     #
-    # @param message (see Dfect.T?)
+    # @param message (see DIFECTS.T?)
     #
     # @example no message given
     #
@@ -368,9 +368,9 @@ module Dfect
     # Asserts that one of the given kinds of exceptions
     # is not raised when the given block is executed.
     #
-    # @return (see Dfect.E)
+    # @return (see DIFECTS.E)
     #
-    # @param kinds_then_message (see Dfect.E)
+    # @param kinds_then_message (see DIFECTS.E)
     #
     # @example no exceptions given
     #
@@ -441,7 +441,7 @@ module Dfect
     #
     #   Symbol that must be thrown by the given block.
     #
-    # @param message (see Dfect.T)
+    # @param message (see DIFECTS.T)
     #
     # @example no message given
     #
@@ -467,7 +467,7 @@ module Dfect
     #
     #   Symbol that must not be thrown by the given block.
     #
-    # @param message (see Dfect.T)
+    # @param message (see DIFECTS.T)
     #
     # @example no message given
     #
@@ -487,9 +487,9 @@ module Dfect
     # Returns true if the given symbol is thrown when the
     # given block is executed.  Otherwise, returns false.
     #
-    # @param symbol (see Dfect.C)
+    # @param symbol (see DIFECTS.C)
     #
-    # @param message (see Dfect.T?)
+    # @param message (see DIFECTS.T?)
     #
     # @example no message given
     #
@@ -544,7 +544,7 @@ module Dfect
     # the given identifier.  Otherwise, the
     # code block that was previously shared
     # under the given identifier is injected
-    # into the closest insulated Dfect test
+    # into the closest insulated DIFECTS test
     # that contains the call to this method.
     #
     # @param [Symbol, Object] identifier
@@ -576,7 +576,7 @@ module Dfect
 
       elsif block = @share[identifier]
         if @tests.empty?
-          raise "Cannot inject code block #{block.inspect} shared under identifier #{identifier.inspect} outside of a Dfect test."
+          raise "Cannot inject code block #{block.inspect} shared under identifier #{identifier.inspect} outside of a DIFECTS test."
         else
           # find the closest insulated parent test; this should always
           # succeed because root-level tests are insulated by default
@@ -592,10 +592,10 @@ module Dfect
     ##
     # Shares the given code block under the given
     # identifier and then immediately injects that
-    # code block into the closest insulated Dfect
+    # code block into the closest insulated DIFECTS
     # test that contains the call to this method.
     #
-    # @param identifier (see Dfect.S)
+    # @param identifier (see DIFECTS.S)
     #
     # @example
     #
@@ -624,12 +624,12 @@ module Dfect
 
     ##
     # Executes all tests defined thus far and stores
-    # the results in {Dfect.trace} and {Dfect.stats}.
+    # the results in {DIFECTS.trace} and {DIFECTS.stats}.
     #
     def start
       # execute the tests
       start_time = Time.now
-      catch(:stop_dfect_execution) do
+      catch :DIFECTS_STOP do
         BINDINGS.track do
           execute
         end
@@ -655,11 +655,11 @@ module Dfect
     end
 
     ##
-    # Stops the execution of the {Dfect.start} method or raises
+    # Stops the execution of the {DIFECTS.start} method or raises
     # an exception if that method is not currently executing.
     #
     def stop
-      throw :stop_dfect_execution
+      throw :DIFECTS_STOP
     end
 
     ##
@@ -901,7 +901,7 @@ module Dfect
       ##
       # Keeps track of bindings for all
       # lines of code processed by Ruby
-      # for use later in {Dfect.debug}.
+      # for use later in {DIFECTS.debug}.
       #
       def track
         raise ArgumentError unless block_given?
@@ -922,7 +922,7 @@ module Dfect
 
     ##
     # Adds debugging information to the test execution report and
-    # invokes the debugger if the {Dfect.debug} option is enabled.
+    # invokes the debugger if the {DIFECTS.debug} option is enabled.
     #
     # @param message
     #
@@ -1109,7 +1109,7 @@ module Dfect
     end
   end
 
-  # provide mixin-able versions of Dfect's core vocabulary
+  # provide mixin-able versions of DIFECTS's core vocabulary
   singleton_methods(false).grep(/^[[:upper:]]?[[:punct:]]*$/).each do |meth|
     #
     # XXX: using eval() on a string because Ruby 1.8's
@@ -1131,7 +1131,7 @@ module Dfect
   #
   D = self
 
-  # set Dfect::Hash from an ordered hash library in lesser Ruby versions
+  # set DIFECTS::Hash from an ordered hash library in lesser Ruby versions
   if RUBY_VERSION < '1.9'
     begin
       #

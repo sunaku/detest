@@ -1,8 +1,8 @@
 # RSpec emulation layer.
 
-require 'dfect'
+require 'difects'
 
-module Dfect
+module DIFECTS
   alias describe D
   alias context  D
   alias it       D

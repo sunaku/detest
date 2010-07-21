@@ -1,9 +1,9 @@
-module Dfect
+module DIFECTS
 
   ##
   # Official name of this project.
   #
-  PROJECT = "Dfect"
+  PROJECT = "DIFECTS"
 
   ##
   # Short single-line description of this project.
@@ -13,7 +13,7 @@ module Dfect
   ##
   # Address of this project's official home page.
   #
-  WEBSITE = "http://snk.tuxfamily.org/lib/dfect/"
+  WEBSITE = "http://snk.tuxfamily.org/lib/difects/"
 
   ##
   # Number of this release of this project.

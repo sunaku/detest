@@ -1,4 +1,4 @@
-Dfect is an assertion testing library for Ruby that emphasizes a simple
+DIFECTS is an assertion testing library for Ruby that emphasizes a simple
 assertion vocabulary, instant debuggability of failures, and flexibility in
 composing tests.
 
@@ -8,7 +8,7 @@ composing tests.
 
 * Adds only 7 mnemonic method names to your memory:
 
-  `D`escribe, `T`rue, `F`alse, `E`rror, `C`atch, `S`hare, and `I`nform.
+  `D`escribe, `I`nform, `F`alse, `E`rror, `C`atch, `T`rue, and `S`hare.
 
 * Lets you debug assertion failures interactively.
 
@@ -16,7 +16,7 @@ composing tests.
 
 * Maintains a detailed report of assertion failures.
 
-* Implemented in <%= `sloccount lib/dfect.rb`[/^\d+/] %> lines of code.
+* Implemented in <%= `sloccount lib/difects.rb`[/^\d+/] %> lines of code.
 
 %#----------------------------------------------------------------------------
 ### Resources
@@ -29,13 +29,13 @@ composing tests.
   <<%= github_url %>>
 
 * API documentation:
-  <<%= File.join(Dfect::WEBSITE, 'api/') %>>
+  <<%= File.join(DIFECTS::WEBSITE, 'api/') %>>
 
 * Announcements feed:
-  <<%= File.join(Dfect::WEBSITE, 'ann.xml') %>>
+  <<%= File.join(DIFECTS::WEBSITE, 'ann.xml') %>>
 
 * Official website:
-  <<%= Ember::WEBSITE %>>
+  <<%= DIFECTS::WEBSITE %>>
 
 %#----------------------------------------------------------------------------
 ### Setup
@@ -49,12 +49,12 @@ Prerequisites:
 
 Installing:
 
-    gem install dfect
+    gem install difects
 
 Upgrading:
 
-    gem update dfect
+    gem update difects
 
 Removing:
 
-    gem uninstall dfect
+    gem uninstall difects

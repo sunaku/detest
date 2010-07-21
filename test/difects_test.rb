@@ -1,4 +1,4 @@
-require 'dfect'
+require 'difects'
 
 D 'T()' do
   T { true   }
@@ -444,6 +444,6 @@ E 'injecting shared block outside of a test' do
 end
 
 D 'stoping #start' do
-  Dfect.stop
+  DIFECTS.stop
   raise 'this must not be reached!'
 end

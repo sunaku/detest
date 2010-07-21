@@ -2,23 +2,23 @@
 ## EXAMPLES
 %#----------------------------------------------------------------------------
 
-Begin by loading Dfect into your program:
+Begin by loading DIFECTS into your program:
 
     require 'rubygems' # might not be necessary; see HACKING
-    require 'dfect'
+    require 'difects'
 
-You now have access to the `Dfect` module, which provides methods that can
+You now have access to the `DIFECTS` module, which provides methods that can
 be either mixed-in or called directly, according to your preference:
 
-    Dfect.D "hello" do  # D() is a class method
+    DIFECTS.D "hello" do  # D() is a class method
       puts "world"
     end
 
     # the above is same as:
 
-    include Dfect       # mix-in the Dfect API
+    include DIFECTS       # mix-in the DIFECTS API
 
-    D "hello" do        # D() is an instance method
+    D "hello" do          # D() is an instance method
       puts "world"
     end
 
@@ -27,12 +27,12 @@ be either mixed-in or called directly, according to your preference:
 <%
   def example &block
     Ember::Template.wrap_content_block(block) do |content|
-      code = "require 'dfect/auto'\n\n#{content.join}"
+      code = "require 'difects/auto'\n\n#{content.join}"
       [
         'When the following test is run:',
         preformatted(code),
 
-        'Dfect will output the following:',
+        'DIFECTS will output the following:',
         preformatted(
           IO.popen('ruby -Ilib 2>&1', 'w+') do |ruby|
             ruby.write code

@@ -1,10 +1,10 @@
 # MiniTest emulation layer.
 
-require 'dfect'
-require 'dfect/unit'
-require 'dfect/spec'
+require 'difects'
+require 'difects/spec'
+require 'difects/unit'
 
-module Dfect
+module DIFECTS
   instance_methods(false).each do |meth|
     if meth =~ /^assert_not/
       alias_method 'refute' + $', meth
@@ -13,8 +13,8 @@ module Dfect
 end
 
 {
-  :must => '::Dfect.assert',
-  :wont => '::Dfect.refute',
+  :must => '::DIFECTS.assert',
+  :wont => '::DIFECTS.refute',
 }.
 each do |outer, inner|
   #
