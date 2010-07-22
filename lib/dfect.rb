@@ -1013,13 +1013,7 @@ module Dfect
 
       # allow user to investigate the failure
       if @debug and binding
-        # show only the most helpful subset of the
-        # failure details, because the rest can be
-        # queried (on demand) inside the debugger
-        overview = details.dup
-        overview.delete :vars
-        overview.delete :call
-        display build_fail_trace(overview), true
+        display build_fail_trace(details), true
 
         # start interactive shell for debugging
         unless defined? IRB
