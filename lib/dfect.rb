@@ -996,8 +996,7 @@ module Dfect
         # variable values
         :vars, (
           if binding
-            names = eval('::Kernel.local_variables + self.instance_variables',
-                         binding, __FILE__, __LINE__)
+            names = eval('::Kernel.local_variables', binding, __FILE__, __LINE__)
 
             pairs = names.inject([]) do |pair, name|
               value = eval(name.to_s, binding, __FILE__, __LINE__)
