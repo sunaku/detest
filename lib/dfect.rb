@@ -1004,7 +1004,7 @@ module Dfect
               pair.push name.to_sym, value
             end
 
-            Hash[*pairs]
+            Hash[*pairs].extend FailureDetailsVariablesListing
           end
         )
       ]
@@ -1090,6 +1090,21 @@ module Dfect
           escape[1..-1].map {|line| margin + line },
           margin + 'nil'
         ].join(printer.newline)
+      end
+    end
+
+    module FailureDetailsVariablesListing # @private
+      def to_yaml options = {}
+        require 'pp'
+        require 'stringio'
+
+        pairs = []
+        each do |variable, value|
+          pretty = PP.pp(value, StringIO.new).string.chomp
+          pairs.push variable, "(#{value.class}) #{pretty}"
+        end
+
+        Hash[*pairs].to_yaml(options)
       end
     end
 

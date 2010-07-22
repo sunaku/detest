@@ -81,8 +81,8 @@ When an assertion fails, details about the failure will be shown:
            21
            22   # equivalent of before(:each) or setup()
       vars:
-        x: 5
-        y: 83
+        x: (Fixnum) 5
+        y: (Fixnum) 83
 
 You will then be placed into a debugger to investigate the failure, if the
 `Dfect.debug` option is enabled.  Nevertheless, details about all assertion
