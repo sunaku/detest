@@ -10,7 +10,7 @@ class Object
 end
 
 at_exit do
-  Dfect.run
+  Dfect.start
 
   # reflect number of failures in exit status
   stats = Dfect.stats

@@ -443,7 +443,7 @@ E 'injecting shared block outside of a test' do
   S :knowledge
 end
 
-D 'stoping #run' do
+D 'stoping #start' do
   Dfect.stop
   raise 'this must not be reached!'
 end

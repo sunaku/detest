@@ -27,7 +27,7 @@ You can configure the test execution process using:
 
 You can execute all tests defined thus far using:
 
-    Dfect.run
+    Dfect.start
 
 You can stop the execution at any time using:
 

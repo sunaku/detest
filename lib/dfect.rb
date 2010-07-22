@@ -638,7 +638,7 @@ module Dfect
     #
     #   If true, results from previous executions will not be cleared.
     #
-    def run continue = true
+    def start continue = true
       # clear previous results
       unless continue
         @stats.clear
@@ -674,7 +674,7 @@ module Dfect
     end
 
     ##
-    # Stops the execution of the {Dfect.run} method or raises
+    # Stops the execution of the {Dfect.start} method or raises
     # an exception if that method is not currently executing.
     #
     def stop
