@@ -1009,6 +1009,7 @@ module Dfect
         )
       ]
 
+      details.reject! {|k,v| v.nil? }
       @trace << details
 
       # allow user to investigate the failure
