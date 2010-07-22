@@ -634,28 +634,17 @@ module Dfect
     # Executes all tests defined thus far and stores
     # the results in {Dfect.trace} and {Dfect.stats}.
     #
-    # @param [Boolean] continue
-    #
-    #   If true, results from previous executions will not be cleared.
-    #
-    def start continue = true
-      # clear previous results
-      unless continue
-        @stats.clear
-        @trace.clear
-      end
-
-      # make new results
-      start = Time.now
+    def start
+      # execute the tests
+      start_time = Time.now
       catch(:stop_dfect_execution) do
         BINDINGS.track do
           execute
         end
       end
-      finish = Time.now
-      @stats[:time] = finish - start
+      @stats[:time] = Time.now - start_time
 
-      # print new results
+      # print test results
       unless @stats.key? :fail or @stats.key? :error
         #
         # show execution trace only if all tests passed.
@@ -679,6 +668,14 @@ module Dfect
     #
     def stop
       throw :stop_dfect_execution
+    end
+
+    ##
+    # Clear all test results that were recorded thus far.
+    #
+    def reset
+      @stats.clear
+      @trace.clear
     end
 
     ##
