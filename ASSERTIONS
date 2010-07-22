@@ -18,6 +18,25 @@ is shown in failure reports (see **Failures** below) if they fail.
 * `C()`:
   assert that a symbol is thrown
 
+You can also pass the condition to be asserted as the first argument
+(instead of passing it as a block) to the `T()` and `F()` methods.
+This may result in a more pleasing syntax, depending on your taste:
+
+    D "Lottery" do
+      winning_ticket = rand()
+
+      D "My chances of winning" do
+        my_ticket = rand()
+
+        # passing the condition as a block:
+        F("I won?!  Dream on.") { my_ticket == winning_ticket }
+
+        # passing the condition as an argument:
+        F my_ticket == winning_ticket, "I won?!  Dream on."
+
+      end
+    end
+
 %#------------------------------------------------------------------------
 ### Negation
 %#------------------------------------------------------------------------
