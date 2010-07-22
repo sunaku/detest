@@ -643,9 +643,6 @@ module Dfect
       unless continue
         @stats.clear
         @trace.clear
-        @tests.clear
-        @share.clear
-        @files.clear
       end
 
       # make new results
@@ -669,6 +666,11 @@ module Dfect
       end
 
       display @stats
+
+    ensure
+      @tests.clear
+      @share.clear
+      @files.clear
     end
 
     ##
