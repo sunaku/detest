@@ -70,12 +70,16 @@ additional logic to execute during the hook:
     D .< { puts "do something" }
     D .< { puts "do something more!" }
 
-%#----------------------------------------------------------------------
-### Logging
-%#----------------------------------------------------------------------
+%#----------------------------------------------------------------------------
+### Information
+%#----------------------------------------------------------------------------
 
-The `I()` method lets you insert arbitrary Ruby objects into the test
-execution report.
+* `I()`:
+  Mechanism for inserting arbitrary Ruby objects into the test execution
+  report.  You can think of this method as a way to *inform* yourself.
+
+* `I!()`:
+  Starts the interactive debugger at the location where it is called.
 
 %#----------------------------------------------------------------------------
 ### Sharing

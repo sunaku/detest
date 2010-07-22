@@ -536,6 +536,16 @@ module Dfect
     end
 
     ##
+    # Starts an interactive debugging session at
+    # the location where this method was called.
+    #
+    # You can think of "I!" as to "investigate" the program.
+    #
+    def I!
+      debug
+    end
+
+    ##
     # Mechanism for sharing code between tests.
     #
     # If a block is given, it is shared under
