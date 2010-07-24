@@ -33,14 +33,6 @@ module Dfect
     attr_accessor :debug
 
     ##
-    # Do not print test results
-    # after executing all tests?
-    #
-    # The default value is false.
-    #
-    attr_accessor :quiet
-
-    ##
     # Hash of counts of major events in test execution:
     #
     # [:time]
@@ -839,16 +831,12 @@ module Dfect
     ##
     # Prints the given object in YAML format.
     #
-    def display object, force = false
-      if force or not @quiet
-        begin
-          # stringify symbols in YAML output for better readability
-          puts object.to_yaml.gsub(/^([[:blank:]]*(- )?):(?=@?\w+: )/, '\1')
-        rescue
-          require 'pp'
-          pp object
-        end
-      end
+    def display object
+      # stringify symbols in YAML output for better readability
+      puts object.to_yaml.gsub(/^([[:blank:]]*(- )?):(?=@?\w+: )/, '\1')
+    rescue
+      require 'pp'
+      pp object
     end
 
     ##
@@ -1020,11 +1008,11 @@ module Dfect
       details.reject! {|k,v| v.nil? }
       @trace << details
 
+      # show all failure details to the user
+      display build_fail_trace(details)
+
       # allow user to investigate the failure
       if @debug and binding
-        display build_fail_trace(details), true
-
-        # start interactive shell for debugging
         unless defined? IRB
           require 'irb'
           IRB.setup nil
@@ -1033,10 +1021,6 @@ module Dfect
         irb = IRB::Irb.new(IRB::WorkSpace.new(binding))
         IRB.conf[:MAIN_CONTEXT] = irb.context
         catch(:IRB_EXIT) { irb.eval_input }
-
-      else
-        # show all failure details to the user
-        display build_fail_trace(details)
       end
 
       nil
@@ -1163,7 +1147,6 @@ module Dfect
   end
 
   @debug = $DEBUG
-  @quiet = false
 
   @stats = Hash.new {|h,k| h[k] = 0 }
   @trace = []

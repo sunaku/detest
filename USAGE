@@ -20,9 +20,6 @@ failures up to a maximum of 255 (to avoid 8-bit unsigned integer overflow).
 * `-d`, `--debug`:
   Launch interactive debugger upon assertion failures.
 
-* `-q`, `--quiet`:
-  Do not print execution report.
-
 * `-h`, `--help`:
   Display this manual and exit.
 

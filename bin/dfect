@@ -20,7 +20,6 @@ elsif ARGV.delete('-v') or ARGV.delete('--version')
 end
 
 Dfect.debug = ARGV.delete('-d') || ARGV.delete('--debug')
-Dfect.quiet = ARGV.delete('-q') || ARGV.delete('--quiet')
 
 require 'dfect/auto'
 ARGV.each {|glob| Dir[glob].each {|test| load test } }

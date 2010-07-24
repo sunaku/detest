@@ -23,7 +23,6 @@ Tests are executed in depth-first order.
 You can configure the test execution process using:
 
     Dfect.debug = your_choice_here
-    Dfect.quiet = your_choice_here
 
 You can execute all tests defined thus far using:
 
