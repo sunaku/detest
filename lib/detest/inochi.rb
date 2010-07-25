@@ -1,9 +1,9 @@
-module DIFECTS
+module Detest
 
   ##
   # Official name of this project.
   #
-  PROJECT = 'DIFECTS'
+  PROJECT = 'Detest'
 
   ##
   # Short single-line description of this project.
@@ -13,7 +13,7 @@ module DIFECTS
   ##
   # Address of this project's official home page.
   #
-  WEBSITE = 'http://snk.tuxfamily.org/lib/difects/'
+  WEBSITE = 'http://snk.tuxfamily.org/lib/detest/'
 
   ##
   # Number of this release of this project.

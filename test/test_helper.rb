@@ -1,1 +1,1 @@
-require 'difects/auto'
+require 'detest/auto'

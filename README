@@ -1,4 +1,4 @@
-DIFECTS is an assertion testing library for [Ruby] that emphasizes a simple
+Detest is an assertion testing library for [Ruby] that emphasizes a simple
 assertion vocabulary, instant debuggability of failures, and flexibility in
 composing tests.
 
@@ -16,7 +16,7 @@ composing tests.
 
 * Maintains a detailed report of assertion failures.
 
-* Implemented in <%= `sloccount lib/difects.rb`[/^\d+/] %> lines of pure Ruby.
+* Implemented in <%= `sloccount lib/detest.rb`[/^\d+/] %> lines of pure Ruby.
 
 %#----------------------------------------------------------------------------
 ### Resources
@@ -29,13 +29,13 @@ composing tests.
   <<%= github_url %>>
 
 * API documentation:
-  <<%= File.join(DIFECTS::WEBSITE, 'api/') %>>
+  <<%= File.join(Detest::WEBSITE, 'api/') %>>
 
 * Announcements feed:
-  <<%= File.join(DIFECTS::WEBSITE, 'ann.xml') %>>
+  <<%= File.join(Detest::WEBSITE, 'ann.xml') %>>
 
 * Official website:
-  <<%= DIFECTS::WEBSITE %>>
+  <<%= Detest::WEBSITE %>>
 
 %#----------------------------------------------------------------------------
 ### Setup
@@ -49,12 +49,12 @@ Prerequisites:
 
 Installing:
 
-    gem install difects
+    gem install detest
 
 Upgrading:
 
-    gem update difects
+    gem update detest
 
 Removing:
 
-    gem uninstall difects
+    gem uninstall detest

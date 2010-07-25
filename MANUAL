@@ -12,7 +12,7 @@
   end
 %>
 
-% github_url = 'http://github.com/sunaku/difects'
+% github_url = 'http://github.com/sunaku/detest'
 
 %+ "README"
 

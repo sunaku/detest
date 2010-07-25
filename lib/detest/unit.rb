@@ -1,8 +1,8 @@
 # Test::Unit emulation layer.
 
-require 'difects'
+require 'detest'
 
-module DIFECTS
+module Detest
   alias test      D
   alias setup     <
   alias setup!    <<

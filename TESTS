@@ -89,25 +89,25 @@ Tests are executed in depth-first search (DFS) order.
 
 You can configure the test execution process using:
 
-    DIFECTS.debug = your_choice_here
+    Detest.debug = your_choice_here
 
 You can execute all tests defined thus far using:
 
-    DIFECTS.start
+    Detest.start
 
 You can stop the execution at any time using:
 
-    DIFECTS.stop
+    Detest.stop
 
 You can view the results of execution using:
 
-    puts DIFECTS.trace.to_yaml
-    puts DIFECTS.stats.to_yaml
+    puts Detest.trace.to_yaml
+    puts Detest.stats.to_yaml
 
-You can mix-in the `DIFECTS` module into your program and execute all tests
+You can mix-in the `Detest` module into your program and execute all tests
 defined by your program before it terminates by simply adding the following
 line at the top of your program:
 
-    require 'difects/auto'
+    require 'detest/auto'
 
 See the API documentation for more information and examples.

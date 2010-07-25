@@ -129,7 +129,7 @@ Failure reports are composed of the following sections:
   Local variables visible at the point of failure.
 
 After the failure is reported, you will be placed into a debugger to
-investigate the failure if the `DIFECTS.debug` option is enabled.
+investigate the failure if the `Detest.debug` option is enabled.
 
 Assertion failure reports can be accessed at any time within the test
-execution trace provided by the `DIFECTS.trace()` method.
+execution trace provided by the `Detest.trace()` method.

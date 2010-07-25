@@ -2,14 +2,14 @@
 ## EMULATION
 %#----------------------------------------------------------------------------
 
-DIFECTS can emulate several popular testing libraries:
+Detest can emulate several popular testing libraries:
 
 <%
   emulation_layers = {
-    'difects/spec' => '[RSpec]',
-    'difects/unit' => '[Test::Unit]',
-    'difects/mini' => '[Minitest]',
-    'difects/long' => 'Readability',
+    'detest/spec' => '[RSpec]',
+    'detest/unit' => '[Test::Unit]',
+    'detest/mini' => '[Minitest]',
+    'detest/long' => 'Readability',
   }
 %>
 
@@ -25,13 +25,13 @@ write your tests using the familiar syntax of the testing library it emulates.
 %# list the methods provided by the various emulation layers
 %#----------------------------------------------------------------------------
 
-% require 'difects'
-% before = DIFECTS.instance_methods(false)
-% sandbox = Object.new.extend(DIFECTS)
+% require 'detest'
+% before = Detest.instance_methods(false)
+% sandbox = Object.new.extend(Detest)
 
 % emulation_layers.each do |layer, title|
   % require layer
-  % after = DIFECTS.instance_methods(false)
+  % after = Detest.instance_methods(false)
 
   % unless before == after
 
@@ -40,13 +40,13 @@ write your tests using the familiar syntax of the testing library it emulates.
     %#------------------------------------------------------------------------
 
     This library emulates <%= title %> by adding the following methods to the
-    `DIFECTS` module.
+    `Detest` module.
 
     % (after - before).sort.each do |method_name|
       % method = sandbox.method(method_name)
 
       % file, line = method.source_location
-      % file = file.sub(DIFECTS::INSTDIR, '').sub(%r(^/+), '')
+      % file = file.sub(Detest::INSTDIR, '').sub(%r(^/+), '')
       % url = "#{github_url}/tree/master/#{file}#L#{line}"
 
       * `<%= method.name %>`(<%=

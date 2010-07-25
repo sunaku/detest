@@ -2,21 +2,21 @@
 ## EXAMPLES
 %#----------------------------------------------------------------------------
 
-Begin by loading DIFECTS into your program:
+Begin by loading Detest into your program:
 
     require 'rubygems' # might not be necessary; see HACKING
-    require 'difects'
+    require 'detest'
 
-You now have access to the `DIFECTS` module, whose methods can be called
+You now have access to the `Detest` module, whose methods can be called
 directly:
 
-    DIFECTS.D "hello" do  # D() is a class method
+    Detest.D "hello" do  # D() is a class method
       puts "world"
     end
 
 or mixed-in and called implicitly:
 
-    include DIFECTS       # mix-in the DIFECTS module
+    include Detest       # mix-in the Detest module
 
     D "hello" do          # D() is an instance method
       puts "world"
@@ -29,12 +29,12 @@ according to your preference.
 <%
   def example &block
     Ember::Template.wrap_content_block(block) do |content|
-      code = "require 'difects/auto'\n\n#{content.join}"
+      code = "require 'detest/auto'\n\n#{content.join}"
       [
         'When the following test is run:',
         preformatted(code),
 
-        'DIFECTS will output the following:',
+        'Detest will output the following:',
         preformatted(
           IO.popen('ruby -Ilib 2>&1', 'w+') do |ruby|
             ruby.write code

@@ -1,8 +1,8 @@
-# Provides long name aliases for DIFECTS's default abbreviated vocabulary.
+# Provides long name aliases for Detest's default abbreviated vocabulary.
 
-require 'difects'
+require 'detest'
 
-module DIFECTS
+module Detest
   short_to_long = {
     'D' => 'Describe',
     'T' => 'True',

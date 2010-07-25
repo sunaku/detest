@@ -1,25 +1,25 @@
 #!/usr/bin/env ruby
 
-require 'difects'
+require 'detest'
 
 if ARGV.delete('-h') or ARGV.delete('--help')
   # try to display UNIX version of help manual
-  man_path = File.join(DIFECTS::INSTDIR, 'man')
-  unless system 'man', '-M', man_path, '-a', 'difects'
+  man_path = File.join(Detest::INSTDIR, 'man')
+  unless system 'man', '-M', man_path, '-a', 'detest'
     # try to display HTML version of help manual
     man_html = man_path + '.html'
     unless %w[$BROWSER open start].any? {|b| system "#{b} #{man_html}" }
       # no luck; direct user to project website
-      puts "See #{DIFECTS::WEBSITE}"
+      puts "See #{Detest::WEBSITE}"
     end
   end
   exit
 elsif ARGV.delete('-v') or ARGV.delete('--version')
-  puts DIFECTS::VERSION
+  puts Detest::VERSION
   exit
 end
 
-DIFECTS.debug = ARGV.delete('-d') || ARGV.delete('--debug')
+Detest.debug = ARGV.delete('-d') || ARGV.delete('--debug')
 
-require 'difects/auto'
+require 'detest/auto'
 ARGV.each {|glob| Dir[glob].each {|test| load test } }

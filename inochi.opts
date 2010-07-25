@@ -2,7 +2,7 @@
 # Location where `inochi pub:web` will upload files.  This value
 # can use any local/remote/protocol syntax supported by rsync(1).
 #
-:pub_web_target: $HOME/www/lib/difects/
+:pub_web_target: $HOME/www/lib/detest/
 
 ##
 # Options for rsync(1), which uploads files for `inochi pub:web`.

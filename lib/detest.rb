@@ -1,4 +1,4 @@
-require 'difects/inochi'
+require 'detest/inochi'
 
 require 'yaml'
 #
@@ -19,7 +19,7 @@ class Class # @private
   end
 end
 
-module DIFECTS
+module Detest
   class << self
     ##
     # Launch an interactive debugger
@@ -113,7 +113,7 @@ module DIFECTS
     #
     # This test may contain nested tests.
     #
-    # @param description (see DIFECTS.D)
+    # @param description (see Detest.D)
     #
     # @example
     #
@@ -257,9 +257,9 @@ module DIFECTS
     # result of the given block is either nil
     # or false and returns that result.
     #
-    # @param condition (see DIFECTS.T)
+    # @param condition (see Detest.T)
     #
-    # @param message (see DIFECTS.T)
+    # @param message (see Detest.T)
     #
     # @example no message given
     #
@@ -280,7 +280,7 @@ module DIFECTS
     # the result of the given block is neither
     # nil nor false.  Otherwise, returns false.
     #
-    # @param condition (see DIFECTS.T)
+    # @param condition (see Detest.T)
     #
     # @param message
     #
@@ -308,7 +308,7 @@ module DIFECTS
     # Returns true if the result of the given block is
     # either nil or false.  Otherwise, returns false.
     #
-    # @param message (see DIFECTS.T?)
+    # @param message (see Detest.T?)
     #
     # @example no message given
     #
@@ -406,9 +406,9 @@ module DIFECTS
     # Asserts that one of the given kinds of exceptions
     # is not raised when the given block is executed.
     #
-    # @return (see DIFECTS.E)
+    # @return (see Detest.E)
     #
-    # @param kinds_then_message (see DIFECTS.E)
+    # @param kinds_then_message (see Detest.E)
     #
     # @example no exceptions given
     #
@@ -479,7 +479,7 @@ module DIFECTS
     #
     #   Symbol that must be thrown by the given block.
     #
-    # @param message (see DIFECTS.T)
+    # @param message (see Detest.T)
     #
     # @example no message given
     #
@@ -505,7 +505,7 @@ module DIFECTS
     #
     #   Symbol that must not be thrown by the given block.
     #
-    # @param message (see DIFECTS.T)
+    # @param message (see Detest.T)
     #
     # @example no message given
     #
@@ -525,9 +525,9 @@ module DIFECTS
     # Returns true if the given symbol is thrown when the
     # given block is executed.  Otherwise, returns false.
     #
-    # @param symbol (see DIFECTS.C)
+    # @param symbol (see Detest.C)
     #
-    # @param message (see DIFECTS.T?)
+    # @param message (see Detest.T?)
     #
     # @example no message given
     #
@@ -582,7 +582,7 @@ module DIFECTS
     # the given identifier.  Otherwise, the
     # code block that was previously shared
     # under the given identifier is injected
-    # into the closest insulated DIFECTS test
+    # into the closest insulated Detest test
     # that contains the call to this method.
     #
     # @param [Symbol, Object] identifier
@@ -616,7 +616,7 @@ module DIFECTS
       elsif block = @share[identifier]
         if @tests.empty?
           raise "Cannot inject code block #{block.inspect} shared under "\
-            "identifier #{identifier.inspect} outside of a DIFECTS test."
+            "identifier #{identifier.inspect} outside of a Detest test."
         else
           # find the closest insulated parent test; this should always
           # succeed because root-level tests are insulated by default
@@ -633,10 +633,10 @@ module DIFECTS
     ##
     # Shares the given code block under the given
     # identifier and then immediately injects that
-    # code block into the closest insulated DIFECTS
+    # code block into the closest insulated Detest
     # test that contains the call to this method.
     #
-    # @param identifier (see DIFECTS.S)
+    # @param identifier (see Detest.S)
     #
     # @example
     #
@@ -665,7 +665,7 @@ module DIFECTS
 
     ##
     # Executes all tests defined thus far and stores
-    # the results in {DIFECTS.trace} and {DIFECTS.stats}.
+    # the results in {Detest.trace} and {Detest.stats}.
     #
     def start
       # execute the tests
@@ -696,7 +696,7 @@ module DIFECTS
     end
 
     ##
-    # Stops the execution of the {DIFECTS.start} method or raises
+    # Stops the execution of the {Detest.start} method or raises
     # an exception if that method is not currently executing.
     #
     def stop
@@ -952,7 +952,7 @@ module DIFECTS
       ##
       # Keeps track of bindings for all
       # lines of code processed by Ruby
-      # for use later in {DIFECTS.debug}.
+      # for use later in {Detest.debug}.
       #
       def track
         raise ArgumentError unless block_given?
@@ -973,7 +973,7 @@ module DIFECTS
 
     ##
     # Adds debugging information to the test execution report and
-    # invokes the debugger if the {DIFECTS.debug} option is enabled.
+    # invokes the debugger if the {Detest.debug} option is enabled.
     #
     # @param message
     #
@@ -1157,7 +1157,7 @@ module DIFECTS
     end
   end
 
-  # provide mixin-able versions of DIFECTS's core vocabulary
+  # provide mixin-able versions of Detest's core vocabulary
   singleton_methods(false).grep(/^[[:upper:]]?[[:punct:]]*$/).each do |meth|
     #
     # XXX: using eval() on a string because Ruby 1.8's
@@ -1183,7 +1183,7 @@ module DIFECTS
   #
   D = self
 
-  # set DIFECTS::Hash from an ordered hash library in lesser Ruby versions
+  # set Detest::Hash from an ordered hash library in lesser Ruby versions
   if RUBY_VERSION < '1.9'
     begin
       #
