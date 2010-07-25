@@ -104,19 +104,19 @@ Assertions failures are reported in the following manner:
 
 Failure reports are composed of the following sections:
 
-* fail:
+* `:fail`:
   Description of the assertion failure.
 
-* call:
+* `:call`:
   Stack trace leading to the point of failure.
 
-* code:
+* `:code`:
   Source code surrounding the point of failure.
 
-* bind:
+* `:bind`:
   Location where local variables (in the "vars" section) were extracted.
 
-* vars:
+* `:vars`:
   Local variables visible at the point of failure.
 
 After the failure is reported, you will be placed into a debugger to

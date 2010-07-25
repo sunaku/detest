@@ -11,7 +11,7 @@
 Evaluates the given <FILE>s and also files matching the given <GLOB> patterns.
 
 The exit status of this command reflects the number of errors and assertion
-failures up to a maximum of 255 (to avoid 8-bit unsigned integer overflow).
+failures (up to a maximum of 255 to avoid 8-bit unsigned integer overflow).
 
 %#----------------------------------------------------------------------------
 ## OPTIONS

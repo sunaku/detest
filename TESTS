@@ -44,13 +44,13 @@ more logic to be executed during the hook:
 ### Insulation
 %#----------------------------------------------------------------------------
 
-The `D!()` method defines a new test that is explicitly insulated from
-the tests that contain it and also from the top-level Ruby environment.
+The `D!()` method defines a new test that is explicitly insulated from the
+tests that contain it and also from the top-level Ruby environment.
 Root-level calls to the `D()` method are insulated by default.
 
 Inside an insulated test, you are free to mix-in (using the `extend` keyword,
-not the `include` keyword) any modules your test logic needs and also define
-your own constants, methods, and classes.
+not the `include` keyword) any modules your test logic needs.  You can also
+define your own constants, methods, and classes.
 
 %#----------------------------------------------------------------------------
 ### Sharing
@@ -76,7 +76,7 @@ your own constants, methods, and classes.
 
 * `I()`:
   Mechanism for inserting arbitrary Ruby objects into the test execution
-  report.  You can think of this method as a way to *inform* yourself.
+  report.  You can think of this method as being a way to *inform* someone.
 
 * `I!()`:
   Starts the interactive debugger at the location where it is called.

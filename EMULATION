@@ -60,6 +60,6 @@ write your tests using the familiar syntax of the testing library it emulates.
           end
         end.join(', ')
       %>):
-        Defined at [<%= file %>:<%= line %>](<%= url %>)
+        This method is defined at [<%= file %>:<%= line %>](<%= url %>).
 
     % before = after
