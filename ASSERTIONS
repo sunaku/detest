@@ -99,6 +99,7 @@ When an assertion fails, details about the failure will be shown:
            20   end
            21
            22   # equivalent of before(:each) or setup()
+      bind: test/simple.rb:17
       vars:
         x: (Fixnum) 5
         y: (Fixnum) 83

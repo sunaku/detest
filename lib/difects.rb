@@ -65,6 +65,9 @@ module DIFECTS
     # [:code]
     #   Source code surrounding the point of failure.
     #
+    # [:bind]
+    #   Location where local variables in `:vars` were extracted.
+    #
     # [:vars]
     #   Local variables visible at the point of failure.
     #
@@ -939,30 +942,31 @@ module DIFECTS
       backtrace = backtrace.reject {|s| s =~ INTERNALS }
 
       backtrace.first =~ /(.+?):(\d+(?=:|\z))/ or raise SyntaxError
-      file, line = $1, $2.to_i
+      source_file, source_line = $1, $2.to_i
 
-      binding_by_line = BINDINGS[file]
-      unless binding_by_line.key? line
-        #
-        # There is no binding for the line number given in the backtrace, so
-        # try to adjust it to the nearest line that actually has a binding.
-        #
-        # This problem occurs because line numbers reported in backtraces
-        # sometimes do not agree with those observed by set_trace_func(),
-        # particularly in method calls that span multiple lines:
-        # set_trace_func() will consistently observe the ending parenthesis
-        # (last line of the method call) whereas the backtrace will oddly
-        # report a line somewhere in the middle of the method call.
-        #
-        # NOTE: I chose to adjust the imprecise line to the nearest one BELOW
-        # it.  This might not always be correct because the nearest line below
-        # could belong to a completely different scope, like a new class.
-        #
-        if nearest_line = binding_by_line.keys.sort.find {|n| n > line }
-          line = nearest_line
+      binding_by_line = BINDINGS[source_file]
+      binding_line =
+        if binding_by_line.key? source_line
+          source_line
+        else
+          #
+          # There is no binding for the line number given in the backtrace, so
+          # try to adjust it to the nearest line that actually has a binding.
+          #
+          # This problem occurs because line numbers reported in backtraces
+          # sometimes do not agree with those observed by set_trace_func(),
+          # particularly in method calls that span multiple lines:
+          # set_trace_func() will consistently observe the ending parenthesis
+          # (last line of the method call) whereas the backtrace will oddly
+          # report a line somewhere in the middle of the method call.
+          #
+          # NOTE: I chose to adjust the imprecise line to the nearest one
+          # BELOW it.  This might not always be correct because the nearest
+          # line below could belong to a different scope, like a new class.
+          #
+          binding_by_line.keys.sort.find {|n| n > source_line }
         end
-      end
-      binding = binding_by_line[line]
+      binding = binding_by_line[binding_line]
 
       # record failure details in the test execution report
       details = Hash[
@@ -974,36 +978,37 @@ module DIFECTS
 
         # code snippet
         :code, (
-          if source = @files[file]
+          if source = @files[source_file]
             radius = 5 # number of surrounding lines to show
-            region = [line - radius, 1].max ..
-                     [line + radius, source.length].min
+            region = [source_line - radius, 1].max ..
+                     [source_line + radius, source.length].min
 
             # ensure proper alignment by zero-padding line numbers
             format = "%2s %0#{region.last.to_s.length}d %s"
 
             pretty = region.map do |n|
-              format % [('=>' if n == line), n, source[n-1].chomp]
-            end.unshift "[#{region.inspect}] in #{file}"
+              format % [('=>' if n == source_line), n, source[n-1].chomp]
+            end.unshift "[#{region.inspect}] in #{source_file}"
 
             pretty.extend FailureDetailsCodeListing
           end
-        ),
-
-        # variable values
-        :vars, (
-          if binding
-            names = eval('::Kernel.local_variables', binding, __FILE__, __LINE__)
-
-            pairs = names.inject([]) do |pair, name|
-              value = eval(name.to_s, binding, __FILE__, __LINE__)
-              pair.push name.to_sym, value
-            end
-
-            Hash[*pairs].extend FailureDetailsVariablesListing
-          end
         )
       ]
+
+      if binding
+        # binding location
+        details[:bind] = [source_file, binding_line].join(':')
+
+        # variable values
+        names = eval('::Kernel.local_variables', binding, __FILE__, __LINE__)
+
+        pairs = names.inject([]) do |pair, name|
+          value = eval(name.to_s, binding, __FILE__, __LINE__)
+          pair.push name.to_sym, value
+        end
+
+        details[:vars] = Hash[*pairs].extend(FailureDetailsVariablesListing)
+      end
 
       details.reject! {|k,v| v.nil? }
       @trace << details
