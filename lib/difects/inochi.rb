@@ -18,12 +18,12 @@ module DIFECTS
   ##
   # Number of this release of this project.
   #
-  VERSION = '2.2.0'
+  VERSION = '3.0.0'
 
   ##
   # Date of this release of this project.
   #
-  RELDATE = '2010-04-28'
+  RELDATE = '2010-07-24'
 
   ##
   # Description of this release of this project.

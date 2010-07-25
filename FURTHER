@@ -21,3 +21,4 @@
 [xUnit]: http://en.wikipedia.org/wiki/XUnit
 [Test::Unit]: http://ruby-doc.org/stdlib/libdoc/test/unit/rdoc/classes/Test/Unit.html
 [Minitest]: http://blog.zenspider.com/minitest/
+[OrderedHash]: http://rubygems.org/gems/orderedhash

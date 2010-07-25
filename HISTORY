@@ -5,6 +5,106 @@
 This section contains release notes of current and past releases.
 
 %#----------------------------------------------------------------------------
+### Version 3.0.0 (2010-07-24)
+%#----------------------------------------------------------------------------
+
+This release renames the project to "DIFECTS", reduces cruft, improves the
+presentation and debuggability of assertion failures, and revises the manual.
+
+Thank you:
+
+  * Gavin Sinclair inspired me to work on this project again!
+
+Incompatible changes:
+
+  * Rename project from "Dfect" to "DIFECTS", which stands for:
+
+    `D`escribe, `I`nform, `F`alse, `E`rror, `C`atch, `T`rue, `S`hare
+
+  * Remove ruby-debug integration because it is only helpful if you run a
+    program inside it from the very start!  That is, you cannot start
+    ruby-debug in the middle of a program and expect it to know about the
+    call stack that lead up to that point in the program.  Instead, we now
+    use IRB to inspect program state at the point of failure only.
+
+  * Remove `--quiet` option because user can pipe to /dev/null instead.
+
+  * Rename `run()` to `start()` to better complement `stop()`.  The `run()`
+    method no longer clears test results; use `reset()` for that.
+
+  * Rename `L()` to `I()` as in "inform" the user.
+
+  * Replace `options()` with `debug()`.
+
+  * Replace `report()` with `trace()` and `stats()`.
+
+  * Rename the `difects/full` library to `difects/long`.
+
+  * Do not report instance variables in assertion failures.
+
+New features:
+
+  * Improve debuggability by tracking the bindings of all lines of code
+    executed leading up to the point of failure using Ruby's
+    awesome `set_trace_func` facility.
+
+    This allows block-less assertions to be debugged with the same level of
+    accuracy as normal block-given assertions:
+
+        x = 1
+        y = 3
+        T { x == y }  # a block-given assertion
+        T x == y      # a block-less assertion
+
+    In both cases, you will be able to inspect the local variables x and y!
+
+  * Add `I!()` method to start the interactive debugger anywhere in your tests.
+
+  * Add `reset()` to manually clear previous test results.
+
+  * Alias `test()` to `D()` in [Test::Unit] emulation layer.
+
+  * Fallback to `pp()` if `to_yaml()` fails while reporting failures.
+
+  * Use [OrderedHash] library in Ruby versions older than 1.9 for
+    consistent presentation of information in assertion failures.
+
+  * Show full failure details before starting debugger instead of omitting
+    the backtrace and local variables listing.
+
+  * Use PP to pretty-print variable values in failure details.
+
+  * Omit unavailable information from failure details.
+
+  * Put backtrace above code listing and variables in failure details.
+
+  * Prevent empty array leaf nodes in execution trace.
+
+Bug fixes:
+
+  * Make `DIFECTS` module's instance methods available as class methods.
+
+  * Always display fail trace before entering debugger.
+
+  * Always clear test execution internals after `start()`.
+
+  * Prevent IRB re-initialization errors when starting debugger.
+
+Housekeeping:
+
+  * Clarify how to mix-in modules inside insulated tests in the manual.
+
+    Thanks to Gavin Sinclair for reporting this issue.
+
+  * Document methods (with hyperlinks to the location in the source code
+    where they are defined) provided by emulation layers in manual.
+
+  * Talk about passing condition as first argument to `T` and `F` assertions
+    and provide a code example in the manual.
+
+  * Clean up the code and revise the manual.  Yay!
+
+%#----------------------------------------------------------------------------
 ### Version 2.2.0 (2010-04-28)
 %#----------------------------------------------------------------------------
 
