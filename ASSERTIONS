@@ -12,6 +12,9 @@ is shown in failure reports (see **Failures** below) if they fail.
 * `F()`:
   assert not true (`nil` or `false`)
 
+* `N()`:
+  assert that the value is `nil`
+
 * `E()`:
   assert that an execption is raised
 
@@ -49,6 +52,9 @@ The following methods are the *opposite* of normal assertions.
 * `F!()`:
   same as `T()`
 
+* `N!()`:
+  assert that value is not `nil`
+
 * `E!()`:
   assert that an exception is *not* raised
 
@@ -67,6 +73,9 @@ recording a success or failure in the test execution report.
 
 * `F?()`:
   returns true if `F()` passes; false otherwise
+
+* `N?()`:
+  returns true if `N()` passes; false otherwise
 
 * `E?()`:
   returns true if `E()` passes; false otherwise

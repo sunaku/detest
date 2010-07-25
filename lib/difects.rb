@@ -249,7 +249,7 @@ module DIFECTS
     #   T("computers do not doublethink") { 2 + 2 != 5 } # passes
     #
     def T condition = nil, message = nil, &block
-      assert_yield :assert, condition, message, &block
+      assert_yield :assert, true, condition, message, &block
     end
 
     ##
@@ -272,7 +272,7 @@ module DIFECTS
     #   T!("computers do not doublethink") { 2 + 2 == 5 } # passes
     #
     def T! condition = nil, message = nil, &block
-      assert_yield :negate, condition, message, &block
+      assert_yield :negate, true, condition, message, &block
     end
 
     ##
@@ -297,7 +297,7 @@ module DIFECTS
     #   T?("computers do not doublethink") { 2 + 2 != 5 } # => true
     #
     def T? condition = nil, message = nil, &block
-      assert_yield :sample, condition, message, &block
+      assert_yield :sample, true, condition, message, &block
     end
 
     alias F T!
@@ -320,8 +320,44 @@ module DIFECTS
     #
     #   F?( "computers do not doublethink" ) { 2 + 2 == 5 } # => true
     #
-    def F? message = nil, &block
-      not T? message, &block
+    def F? condition = nil, message = nil, &block
+      assert_yield :sample, false, condition, message, &block
+    end
+
+    ##
+    # Asserts that the given condition or the
+    # result of the given block is nil.
+    #
+    # @param condition
+    #
+    #   The condition to be asserted.  A block
+    #   may be given in place of this parameter.
+    #
+    # @param message
+    #
+    #   Optional message to show in the test
+    #   execution report if this assertion fails.
+    #
+    # @example no message given
+    #
+    #   N { nil }  # passes
+    #   N { false } # fails
+    #   N { true } # fails
+    #
+    # @example message is given
+    #
+    #   T("computers do not doublethink") { 2 + 2 != 5 } # passes
+    #
+    def N condition = nil, message = nil, &block
+      assert_yield :assert, nil, condition, message, &block
+    end
+
+    def N! condition = nil, message = nil, &block
+      assert_yield :negate, nil, condition, message, &block
+    end
+
+    def N? condition = nil, message = nil, &block
+      assert_yield :sample, nil, condition, message, &block
     end
 
     ##
@@ -694,7 +730,7 @@ module DIFECTS
       @suite.tests << Suite::Test.new(description, block, sandbox)
     end
 
-    def assert_yield mode, condition = nil, message = nil, &block
+    def assert_yield mode, expect, condition = nil, message = nil, &block
       # first parameter is actually the message when block is given
       message = condition if block
 
@@ -717,10 +753,17 @@ module DIFECTS
 
       result = block ? call(block) : condition
 
+      verdict =
+        case expect
+        when nil then result == nil
+        when true then result != nil && result != false
+        when false then result == nil || result == false
+        end
+
       case mode
-      when :sample then return result ? true : false
-      when :assert then result ? passed.call : failed.call
-      when :negate then result ? failed.call : passed.call
+      when :sample then return verdict
+      when :assert then verdict ? passed.call : failed.call
+      when :negate then verdict ? failed.call : passed.call
       end
 
       result

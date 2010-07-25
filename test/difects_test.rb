@@ -65,6 +65,37 @@ D 'F?()' do
   end
 end
 
+D 'N()' do
+  N { nil }
+end
+
+D 'N!()' do
+  N! { true }
+  N! { false }
+  N! { Object.new }
+
+  D 'must return block value' do
+    inner = rand()
+    outer = N! { inner }
+
+    T { outer == inner }
+  end
+end
+
+D 'N?()' do
+  F { N? { true  } }
+  F { N? { false } }
+  T { N? { nil   } }
+
+  D 'must not return block value' do
+    inner = rand()
+    outer = N? { inner }
+
+    F { outer == inner }
+    T { outer == false }
+  end
+end
+
 D 'E()' do
   E(SyntaxError) { raise SyntaxError }
   E(SyntaxError, 'must raise SyntaxError') { raise SyntaxError }

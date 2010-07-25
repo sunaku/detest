@@ -6,9 +6,9 @@ composing tests.
 ### Features
 %#----------------------------------------------------------------------------
 
-* Adds only 7 mnemonic method names to your memory:
+* Adds only 8 mnemonic method names to your memory:
 
-  `D`escribe, `I`nform, `F`alse, `E`rror, `C`atch, `T`rue, and `S`hare.
+  `D`escribe, `I`nform, `F`alse, `N`il, `E`rror, `C`atch, `T`rue, and `S`hare.
 
 * Lets you debug assertion failures interactively.
 
