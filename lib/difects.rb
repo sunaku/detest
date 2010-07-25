@@ -995,7 +995,7 @@ module DIFECTS
               format % [('=>' if n == source_line), n, source[n-1].chomp]
             end.unshift "[#{region.inspect}] in #{source_file}"
 
-            pretty.extend FailureDetailsCodeListing
+            pretty.extend FailureDetails::CodeListing
           end
         )
       ]
@@ -1012,7 +1012,7 @@ module DIFECTS
           pair.push name.to_sym, value
         end
 
-        details[:vars] = Hash[*pairs].extend(FailureDetailsVariablesListing)
+        details[:vars] = Hash[*pairs].extend(FailureDetails::VariablesListing)
       end
 
       details.reject! {|k,v| v.nil? }
@@ -1067,37 +1067,39 @@ module DIFECTS
     end
 
     ##
-    # Logic to pretty print the code listing in a failure's details.
+    # Logic to pretty print the details of an assertion failure.
     #
-    module FailureDetailsCodeListing # @private
-      def to_yaml options = {}
-        #
-        # strip because to_yaml() will render the paragraph without escaping
-        # newlines ONLY IF the first and last character are non-whitespace!
-        #
-        join("\n").strip.to_yaml(options)
-      end
-
-      def pretty_print printer
-        margin = ' ' * printer.indent
-        printer.text [
-          first, self[1..-1].map {|line| margin + line }, margin
-        ].join(printer.newline)
-      end
-    end
-
-    module FailureDetailsVariablesListing # @private
-      def to_yaml options = {}
-        require 'pp'
-        require 'stringio'
-
-        pairs = []
-        each do |variable, value|
-          pretty = PP.pp(value, StringIO.new).string.chomp
-          pairs.push variable, "(#{value.class}) #{pretty}"
+    module FailureDetails # @private
+      module CodeListing
+        def to_yaml options = {}
+          #
+          # strip because to_yaml() will render the paragraph without escaping
+          # newlines ONLY IF the first and last character are non-whitespace!
+          #
+          join("\n").strip.to_yaml(options)
         end
 
-        Hash[*pairs].to_yaml(options)
+        def pretty_print printer
+          margin = ' ' * printer.indent
+          printer.text [
+            first, self[1..-1].map {|line| margin + line }, margin
+          ].join(printer.newline)
+        end
+      end
+
+      module VariablesListing
+        def to_yaml options = {}
+          require 'pp'
+          require 'stringio'
+
+          pairs = []
+          each do |variable, value|
+            pretty = PP.pp(value, StringIO.new).string.chomp
+            pairs.push variable, "(#{value.class}) #{pretty}"
+          end
+
+          Hash[*pairs].to_yaml(options)
+        end
       end
     end
 
