@@ -65,6 +65,36 @@ according to your preference.
   end
 
 %#----------------------------------------------------------------------------
+### Using hooks to perform before and after actions
+%#----------------------------------------------------------------------------
+
+%|example
+  D "outer test" do
+    D .<  { I "(outer hook) before each" }
+    D .>  { I "(outer hook) after each" }
+    D .<< { I "(outer hook) before all" }
+    D .>> { I "(outer hook) after all" }
+
+    D "inner test 1" do
+      D .<  { I "(inner hook) before each" }
+      D .>  { I "(inner hook) after each" }
+      D .<< { I "(inner hook) before all" }
+      D .>> { I "(inner hook) after all" }
+
+      D "inner test 1.1" do
+        I "hello world"
+      end
+    end
+
+    D "inner test 2" do
+      I "goodbye world"
+    end
+
+    D .<  { I "(outer hook) before each, again" }
+    D .>  { I "(outer hook) after each, again" }
+  end
+
+%#----------------------------------------------------------------------------
 ### Sharing code between tests
 %#----------------------------------------------------------------------------
 

@@ -19,21 +19,23 @@ contain nested tests (see **Insulation** below).
 %#----------------------------------------------------------------------------
 
 A **hook** is a scheduled point of entry into the test execution process.  The
-`D()` method provides several of them:
+following **hook methods** allow you to register a block of code to execute
+when a hook occurs:
 
-    D "outer test" do
-      D .<  { puts "before each nested test" }
-      D .>  { puts "after  each nested test" }
-      D .<< { puts "before all nested tests" }
-      D .>> { puts "after  all nested tests" }
+* `D.<()`:
+  Calls the given block *before each* child test.
 
-      D "inner test" do
-        # assertions and logic here
-      end
-    end
+* `D.>()`:
+  Calls the given block *after each* child test.
 
-A hook method can be called multiple times.  Every call to a hook method
-schedules additional logic to be executed during the hook:
+* `D.<<()`:
+  Calls the given block *before all* child tests.
+
+* `D.>>()`:
+  Calls the given block *after all* child tests.
+
+A hook method can be called multiple times.  Each additional call schedules
+more logic to be executed during the hook:
 
     D .< { puts "do something" }
     D .< { puts "do something more!" }
