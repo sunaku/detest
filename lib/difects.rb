@@ -1070,11 +1070,8 @@ module DIFECTS
 
       def pretty_print printer
         margin = ' ' * printer.indent
-        escape = map {|line| '# ' + line }
         printer.text [
-          escape.first,
-          escape[1..-1].map {|line| margin + line },
-          margin + 'nil'
+          first, self[1..-1].map {|line| margin + line }, margin
         ].join(printer.newline)
       end
     end
