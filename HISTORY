@@ -5,6 +5,28 @@
 This section contains release notes of current and past releases.
 
 %#----------------------------------------------------------------------------
+### Version 3.0.1 (2010-07-25)
+%#----------------------------------------------------------------------------
+
+This release fixes a bug in Ruby 1.8, refactors the code, and better documents
+test hooks in the manual.
+
+Bug fixes:
+
+  * Ruby 1.8 does not pass value to `Hash#delete_if()`.  All failure details
+    were being omitted, instead of just the unavailable ones, as a result.
+
+Housekeeping:
+
+  * Refactor variable values hash calculation and pretty printing logic.
+
+  * Put FailureDetails pretty-printing modules into their own namespace.
+
+  * Raise error if closest insulated test cannot be not found.
+
+  * Describe all test hooks and add example to manual, plus small revisions.
+
+%#----------------------------------------------------------------------------
 ### Version 3.0.0 (2010-07-24)
 %#----------------------------------------------------------------------------
 
