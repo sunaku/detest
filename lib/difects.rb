@@ -1013,7 +1013,7 @@ module DIFECTS
         end.extend(FailureDetails::VariablesListing)
       end
 
-      details.reject! {|k,v| v.nil? }
+      details.reject! {|key, value| (value || details[key]).nil? }
       @trace << details
 
       # show all failure details to the user
