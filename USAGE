@@ -8,7 +8,7 @@
 ## DESCRIPTION
 %#----------------------------------------------------------------------------
 
-Evaluates the given <FILE>s and also files matching the given <GLOB> patterns.
+Executes the given test <FILE>s and <GLOB> patterns that describe test files.
 
 The exit status of this command reflects the number of errors and assertion
 failures (up to a maximum of 255 to avoid 8-bit unsigned integer overflow).

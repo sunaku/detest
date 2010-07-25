@@ -21,9 +21,9 @@ is shown in failure reports (see **Failures** below) if they fail.
 * `C()`:
   assert that a symbol is thrown
 
-For the `T()` and `F()` methods, you may also pass the condition to be
-asserted as the first argument (instead of passing it as a block).  This might
-result in a less noisy more pleasing syntax, depending on your taste:
+For the `T()` and `F()` methods, you may alternatively pass the condition to
+be asserted as the first argument (instead of passing it as a block).  This
+might result in a more pleasing syntax, depending on your taste:
 
     D "Lottery" do
       winning_ticket = rand()

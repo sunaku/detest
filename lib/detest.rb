@@ -734,13 +734,14 @@ module Detest
       # first parameter is actually the message when block is given
       message = condition if block
 
-      message ||= (
-        prefix = block ? 'block must yield' : 'condition must be'
-        case mode
-        when :assert then "#{prefix} true (!nil && !false)"
-        when :negate then "#{prefix} false (nil || false)"
+      message ||= [
+        (block ? 'block must yield' : 'condition must be'),
+        case expect
+        when nil then 'nil'
+        when true then 'true (!nil && !false)'
+        when false then 'false (nil || false)'
         end
-      )
+      ].join(' ')
 
       passed = lambda do
         @stats[:pass] += 1
