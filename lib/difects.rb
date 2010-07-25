@@ -1005,14 +1005,12 @@ module DIFECTS
         details[:bind] = [source_file, binding_line].join(':')
 
         # variable values
-        names = eval('::Kernel.local_variables', binding, __FILE__, __LINE__)
+        variables = eval('::Kernel.local_variables', binding, __FILE__, __LINE__)
 
-        pairs = names.inject([]) do |pair, name|
-          value = eval(name.to_s, binding, __FILE__, __LINE__)
-          pair.push name.to_sym, value
-        end
-
-        details[:vars] = Hash[*pairs].extend(FailureDetails::VariablesListing)
+        details[:vars] = variables.inject(Hash.new) do |hash, variable|
+          hash[variable.to_sym] = eval(variable.to_s, binding, __FILE__, __LINE__)
+          hash
+        end.extend(FailureDetails::VariablesListing)
       end
 
       details.reject! {|k,v| v.nil? }
