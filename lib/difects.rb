@@ -584,7 +584,7 @@ module DIFECTS
         else
           # find the closest insulated parent test; this should always
           # succeed because root-level tests are insulated by default
-          test = @tests.reverse.find {|t| t.sandbox }
+          test = @tests.reverse.find {|t| t.sandbox } or raise IndexError
           test.sandbox.instance_eval(&block)
         end
 
