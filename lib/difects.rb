@@ -1090,13 +1090,11 @@ module DIFECTS
           require 'pp'
           require 'stringio'
 
-          pairs = []
-          each do |variable, value|
+          inject(Hash.new) do |hash, (variable, value)|
             pretty = PP.pp(value, StringIO.new).string.chomp
-            pairs.push variable, "(#{value.class}) #{pretty}"
-          end
-
-          Hash[*pairs].to_yaml(options)
+            hash[variable] = "(#{value.class}) #{pretty}"
+            hash
+          end.to_yaml(options)
         end
       end
     end
