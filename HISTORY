@@ -5,6 +5,28 @@
 This section contains release notes of current and past releases.
 
 %#----------------------------------------------------------------------------
+### Version 3.1.0 (2010-07-25)
+%#----------------------------------------------------------------------------
+
+This release adds `N()` methods for nil value assertions and renames the
+project from "DIFECTS" to "Detest" to avoid forming a habit of intentional
+misspellings.
+
+New features:
+
+  * Add `N()`, `N!()`, and `N?()` methods for asserting that a value is nil.
+    This idea comes from Gavin Sinclair's [Attest] assertion testing
+    library.
+
+Housekeeping:
+
+  * Rename project from "DIFECTS" to "Detest".
+
+  * Upgrade project to Inochi 4.0.0 infrastructure.
+
+  * Minor code refactoring and manual revisions.
+
+%#----------------------------------------------------------------------------
 ### Version 3.0.1 (2010-07-25)
 %#----------------------------------------------------------------------------
 
@@ -30,8 +52,9 @@ Housekeeping:
 ### Version 3.0.0 (2010-07-24)
 %#----------------------------------------------------------------------------
 
-This release renames the project to "DIFECTS", reduces cruft, improves the
-presentation and debuggability of assertion failures, and revises the manual.
+This release renames the project from "Dfect" to "DIFECTS", reduces cruft,
+improves the presentation and debuggability of assertion failures, and revises
+the manual.
 
 Thank you:
 

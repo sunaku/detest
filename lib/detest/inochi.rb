@@ -18,7 +18,7 @@ module Detest
   ##
   # Number of this release of this project.
   #
-  VERSION = '3.0.1'
+  VERSION = '3.1.0'
 
   ##
   # Date of this release of this project.
