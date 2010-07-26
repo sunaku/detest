@@ -47,7 +47,7 @@ write your tests using the familiar syntax of the testing library it emulates.
 
       % file, line = method.source_location
       % file = file.sub(Detest::INSTDIR, '').sub(%r(^/+), '')
-      % url = "#{github_url}/tree/master/#{file}#L#{line}"
+      % url = "#{code_repo_url}/tree/master/#{file}#L#{line}"
 
       * `<%= method.name %>`(<%=
         method.parameters.map do |type, name|

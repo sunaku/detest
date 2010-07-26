@@ -23,19 +23,19 @@ composing tests.
 %#----------------------------------------------------------------------------
 
 * Issue tracker (report bugs, request features, get help):
-  <<%= github_url %>/issues>
+  <<%= bug_track_url %>>
 
-* Source code (browse online or obtain with [Git](http://git-scm.com)):
-  <<%= github_url %>>
+* Source code (browse online or obtain with <%= code_repo_scm %>):
+  <<%= code_repo_url %>>
 
 * API documentation:
-  <<%= File.join(Detest::WEBSITE, 'api/') %>>
+  <<%= api_docs_url %>>
 
 * Announcements feed:
-  <<%= File.join(Detest::WEBSITE, 'ann.xml') %>>
+  <<%= ann_feed_url %>>
 
 * Official website:
-  <<%= Detest::WEBSITE %>>
+  <<%= proj_home_url %>>
 
 %#----------------------------------------------------------------------------
 ### Setup
