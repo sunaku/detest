@@ -3,6 +3,7 @@
 %#----------------------------------------------------------------------------
 
 [assert{ 2.0 }],
+[Attest],
 [Testy],
 [Verify]
 
@@ -11,6 +12,7 @@
 %#----------------------------------------------------------------------------
 
 [assert{ 2.0 }]: http://assert2.rubyforge.org
+[Attest]: http://gsinclair.github.com/attest.html
 [Inochi]: <%= Inochi::WEBSITE %>
 [Minitest]: http://blog.zenspider.com/minitest/
 [OrderedHash]: http://rubygems.org/gems/orderedhash
