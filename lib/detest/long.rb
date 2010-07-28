@@ -4,13 +4,14 @@ require 'detest'
 
 module Detest
   short_to_long = {
-    'D' => 'Describe',
     'T' => 'True',
     'F' => 'False',
+    'N' => 'Nil',
     'E' => 'Error',
     'C' => 'Catch',
-    'S' => 'Share',
     'I' => 'Inform',
+    'S' => 'Share',
+    'D' => 'Describe',
   }
 
   short_to_long.each do |src, dst|
