@@ -1,113 +1,176 @@
-%#----------------------------------------------------------------------------
-## TESTS
-%#----------------------------------------------------------------------------
+== TESTS
 
-The `D()` method creates a new **test**, which is analagous to the `describe`
-keyword in [RSpec] and the concept of a "test case" in [xUnit].  A test may
-contain nested tests (see **Insulation** below).
+=== Defining tests
 
-    D "outer test" do
-      # assertions and logic here
+The `D()` method creates a new *test*, which is analagous to the *describe*
+keyword in <<RSpec>> and also to the concept of a "test case" in <<xUnit>>.
 
-      D "inner test" do
-        # more assertions and logic here
-      end
-    end
+[source,ruby]
+------------------------------------------------------------------------------
+D "outer test" do
+  # assertions and logic here
 
-%#----------------------------------------------------------------------------
-### Hooks
-%#----------------------------------------------------------------------------
+  D "inner test" do
+    # more assertions and logic here
+  end
+end
+------------------------------------------------------------------------------
 
-A **hook** is a scheduled point of entry into the test execution process.  The
-following **hook methods** allow you to register a block of code to execute
-when a hook occurs:
+A test may contain nested tests, as illustrated above.
 
-* `D.<()`:
-  Calls the given block *before each* child test.
-
-* `D.>()`:
-  Calls the given block *after each* child test.
-
-* `D.<<()`:
-  Calls the given block *before all* child tests.
-
-* `D.>>()`:
-  Calls the given block *after all* child tests.
-
-A hook method can be called multiple times.  Each additional call schedules
-more logic to be executed during the hook:
-
-    D .< { puts "do something" }
-    D .< { puts "do something more!" }
-
-%#----------------------------------------------------------------------------
-### Insulation
-%#----------------------------------------------------------------------------
+=== Insulating tests
 
 The `D!()` method defines a new test that is explicitly insulated from the
 tests that contain it and also from the top-level Ruby environment.
 Root-level calls to the `D()` method are insulated by default.
 
-Inside an insulated test, you are free to mix-in (using the `extend` keyword,
-not the `include` keyword) any modules your test logic needs.  You can also
-define your own constants, methods, and classes.
+Inside an insulated test, you are free to mix-in (using the *extend*
+keyword, not the *include* keyword) any modules your test logic needs.  You
+can also define your own constants, methods, classes, and modules here.
 
-%#----------------------------------------------------------------------------
-### Sharing
-%#----------------------------------------------------------------------------
+.Insulated and uninsulated tests
+%|example
+  D "a root-level test" do
+    @outside = 1
+    T { defined? @outside }
+    T { @outside == 1 }
 
-* `S()`:
-  Mechanism for sharing code.  When called with a block, it shares the given
-  block (under a given identifier) for injection into other tests.  When
-  called without a block, it injects a previously shared block (under a given
-  identifier) into the environment where it is called.
+    D "an inner, non-insulated test" do
+      T { defined? @outside }
+      T { @outside == 1 }
+    end
 
-* `S!()`:
+    D! "an inner, insulated test" do
+      F { defined? @outside }
+      F { @outside == 1 }
+
+      @inside = 2
+      T { defined? @inside }
+      T { @inside == 2 }
+    end
+
+    F { defined? @inside }
+    F { @inside == 2 }
+  end
+
+=== Sharing tests
+
+[horizontal]
+
+`S()`::
+  Mechanism for sharing code.  It can be used in two ways:
+
+  1. When called with a block, it shares the given block (under a given
+     identifier) for injection into other tests.
+
+  2. When called without a block, it injects a previously shared block
+     (under a given identifier) into the environment where it is called.
+
+`S!()`::
   Combination of the two uses of the `S()` method: it lets you simultaneously
   share a block of code while injecting it into the environment where that
   method is called.
 
-* `S?()`:
+`S?()`::
   Checks whether any code has been shared under a given identifier.
 
-%#----------------------------------------------------------------------------
-### Information
-%#----------------------------------------------------------------------------
+.Sharing code between tests
+%|example
+  S :knowledge do
+    I 'Knowledge is power!'
+  end
 
-* `I()`:
+  D 'Healer' do
+    S :knowledge
+  end
+
+  D 'Warrior' do
+    S! :strength do
+      I 'Strength is power!'
+    end
+  end
+
+  D 'Wizard' do
+    S :knowledge
+    S :strength
+  end
+
+  D 'King' do
+    T { S? :knowledge }
+    T { S? :strength }
+    F { S? :power }
+    I 'Power is power!'
+  end
+
+=== Logging information
+
+[horizontal]
+
+`I()`::
   Mechanism for inserting arbitrary Ruby objects into the test execution
-  report.  You can think of this method as being a way to *inform* someone.
+  report.  You can think of this method as being a way _to inform_ someone.
 
-* `I!()`:
+`I!()`::
   Starts the interactive debugger at the location where it is called.
 
-%#----------------------------------------------------------------------------
-### Execution
-%#----------------------------------------------------------------------------
+.Logging information in the execution report
+%|example
+  D 'Wizard' do
+    I 'Preparing spell to defeat mortal foes...'
+  end
 
-Tests are executed in depth-first search (DFS) order.
+  D 'Magician' do
+    I 'Preparing rabbits to pull from hat...', rand(15)
+  end
 
-You can configure the test execution process using:
+  D 'Calculator' do
+    I Math::PI, [1, 2, 3, ['a', 'b', 'c']], {:foo => 'bar!'}
+  end
 
-    Detest.debug = your_choice_here
+=== Execution hooks
 
-You can execute all tests defined thus far using:
+A *hook* is a scheduled point of entry into the test execution process.  The
+following *hook methods* allow you to register a block of code to execute
+when a hook occurs:
 
-    Detest.start
+[horizontal]
+`D.<()`  :: Calls the given block _before each_ child test.
+`D.>()`  :: Calls the given block _after each_ child test.
+`D.<<()` :: Calls the given block _before all_ child tests.
+`D.>>()` :: Calls the given block _after all_ child tests.
 
-You can stop the execution at any time using:
+A hook method can be called multiple times.  Each additional call schedules
+more logic to be executed during the hook:
 
-    Detest.stop
+[source,ruby]
+------------------------------------------------------------------------------
+D .< { puts "do something" }
+D .< { puts "do something more!" }
+------------------------------------------------------------------------------
 
-You can view the results of execution using:
+.Using hooks to perform before and after actions
+%|example
+  D "outer test" do
+    D .<  { I "(outer hook) before each" }
+    D .>  { I "(outer hook) after each" }
+    D .<< { I "(outer hook) before all" }
+    D .>> { I "(outer hook) after all" }
 
-    puts Detest.trace.to_yaml
-    puts Detest.stats.to_yaml
+    D "inner test 1" do
+      D .<  { I "(inner hook) before each" }
+      D .>  { I "(inner hook) after each" }
+      D .<< { I "(inner hook) before all" }
+      D .>> { I "(inner hook) after all" }
 
-You can mix-in the `Detest` module into your program and execute all tests
-defined by your program before it terminates by simply adding the following
-line at the top of your program:
+      D "inner test 1.1" do
+        I "hello world"
+      end
+    end
 
-    require 'detest/auto'
+    D "inner test 2" do
+      I "goodbye world"
+    end
 
-See the API documentation for more information and examples.
+    D .<  { I "(outer hook) before each, again" }
+    D .>  { I "(outer hook) after each, again" }
+  end

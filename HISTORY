@@ -1,444 +1,422 @@
-%#----------------------------------------------------------------------------
-## HISTORY
-%#----------------------------------------------------------------------------
+== HISTORY
 
-This section contains release notes of current and past releases.
-
-%#----------------------------------------------------------------------------
-### Version 3.1.0 (2010-07-25)
-%#----------------------------------------------------------------------------
+=== Version 3.1.0 (2010-07-25)
 
 This release adds `N()` methods for nil value assertions and renames the
 project from "DIFECTS" to "Detest" to avoid forming a habit of intentional
 misspellings.
 
-New features:
+.New features
 
-  * Add `N()`, `N!()`, and `N?()` methods for asserting that a value is nil.
-    This idea comes from Gavin Sinclair's [Attest] assertion testing
-    library.
+* Add `N()`, `N!()`, and `N?()` methods for asserting that a value is nil.
+  This idea comes from Gavin Sinclair's <<Attest>> assertion testing
+  library.
 
-Housekeeping:
+.Housekeeping
 
-  * Rename project from "DIFECTS" to "Detest".
+* Rename project from "DIFECTS" to "Detest".
 
-  * Upgrade project to Inochi 4.0.0 infrastructure.
+* Upgrade project to Inochi 4.0.0 infrastructure.
 
-  * Minor code refactoring and manual revisions.
+* Minor code refactoring and manual revisions.
 
-%#----------------------------------------------------------------------------
-### Version 3.0.1 (2010-07-25)
-%#----------------------------------------------------------------------------
+=== Version 3.0.1 (2010-07-25)
 
 This release fixes a bug in Ruby 1.8, refactors the code, and better documents
 test hooks in the manual.
 
-Bug fixes:
+.Bug fixes
 
-  * Ruby 1.8 does not pass value to `Hash#delete_if()`.  All failure details
-    were being omitted, instead of just the unavailable ones, as a result.
+* Ruby 1.8 does not pass value to `Hash#delete_if()`.  All failure details
+  were being omitted, instead of just the unavailable ones, as a result.
 
-Housekeeping:
+.Housekeeping
 
-  * Refactor variable values hash calculation and pretty printing logic.
+* Refactor variable values hash calculation and pretty printing logic.
 
-  * Put FailureDetails pretty-printing modules into their own namespace.
+* Put FailureDetails pretty-printing modules into their own namespace.
 
-  * Raise error if closest insulated test cannot be not found.
+* Raise error if closest insulated test cannot be not found.
 
-  * Describe all test hooks and add example to manual, plus small revisions.
+* Describe all test hooks and add example to manual, plus small revisions.
 
-%#----------------------------------------------------------------------------
-### Version 3.0.0 (2010-07-24)
-%#----------------------------------------------------------------------------
+=== Version 3.0.0 (2010-07-24)
 
 This release renames the project from "Dfect" to "DIFECTS", reduces cruft,
 improves the presentation and debuggability of assertion failures, and revises
 the manual.
 
-Thank you:
+.Thank you
 
-  * Gavin Sinclair inspired me to work on this project again!
+* Gavin Sinclair inspired me to work on this project again!
 
-Incompatible changes:
+.Incompatible changes
 
-  * Rename project from "Dfect" to "DIFECTS", which stands for:
+* Rename project from "Dfect" to "DIFECTS", which stands for:
++
+**D**escribe, **I**nform, **F**alse, **E**rror, **C**atch, **T**rue, **S**hare
 
-    `D`escribe, `I`nform, `F`alse, `E`rror, `C`atch, `T`rue, `S`hare
+* Remove <<ruby-debug>> integration because it is only helpful if you run a
+  program inside it from the very start!  That is, you cannot start ruby-debug
+  in the middle of a program and expect it to know about the call stack that
+  lead up to that point in the program.  Instead, we now use IRB to inspect
+  program state at the point of failure only.
 
-  * Remove ruby-debug integration because it is only helpful if you run a
-    program inside it from the very start!  That is, you cannot start
-    ruby-debug in the middle of a program and expect it to know about the
-    call stack that lead up to that point in the program.  Instead, we now
-    use IRB to inspect program state at the point of failure only.
+* Remove `--quiet` option because user can pipe to /dev/null instead.
 
-  * Remove `--quiet` option because user can pipe to /dev/null instead.
+* Rename `run()` to `start()` to better complement `stop()`.  The `run()`
+  method no longer clears test results; use `reset()` for that.
 
-  * Rename `run()` to `start()` to better complement `stop()`.  The `run()`
-    method no longer clears test results; use `reset()` for that.
+* Rename `L()` to `I()` as in "inform" the user.
 
-  * Rename `L()` to `I()` as in "inform" the user.
+* Replace `options()` with `debug()`.
 
-  * Replace `options()` with `debug()`.
+* Replace `report()` with `trace()` and `stats()`.
 
-  * Replace `report()` with `trace()` and `stats()`.
+* Rename the `difects/full` library to `difects/long`.
 
-  * Rename the `difects/full` library to `difects/long`.
+* Do not report instance variables in assertion failures.
 
-  * Do not report instance variables in assertion failures.
+.New features
 
-New features:
+* Improve debuggability by tracking the bindings of all lines of code
+  executed leading up to the point of failure using Ruby's awesome
+  `set_trace_func` facility.
++
+This allows block-less assertions to be debugged with the same level of
+accuracy as normal block-given assertions:
++
+[source,ruby]
+------------------------------------------------------------------------------
+x = 1
+y = 3
+T { x == y }  # a block-given assertion
+T x == y      # a block-less assertion
+------------------------------------------------------------------------------
++
+In both cases, you will be able to inspect the local variables x and y!
 
-  * Improve debuggability by tracking the bindings of all lines of code
-    executed leading up to the point of failure using Ruby's
-    awesome `set_trace_func` facility.
+* Add `I!()` method to start the interactive debugger anywhere in your tests.
 
-    This allows block-less assertions to be debugged with the same level of
-    accuracy as normal block-given assertions:
+* Add `reset()` to manually clear previous test results.
 
-        x = 1
-        y = 3
-        T { x == y }  # a block-given assertion
-        T x == y      # a block-less assertion
+* Alias `test()` to `D()` in <<Test::Unit>> emulation layer.
 
-    In both cases, you will be able to inspect the local variables x and y!
+* Fallback to `pp()` if `to_yaml()` fails while reporting failures.
 
-  * Add `I!()` method to start the interactive debugger anywhere in your tests.
+* Use <<OrderedHash>> library in Ruby versions older than 1.9 for
+  consistent presentation of information in assertion failures.
 
-  * Add `reset()` to manually clear previous test results.
+* Show full failure details before starting debugger instead of omitting
+  the backtrace and local variables listing.
 
-  * Alias `test()` to `D()` in [Test::Unit] emulation layer.
+* Use PP to pretty-print variable values in failure details.
 
-  * Fallback to `pp()` if `to_yaml()` fails while reporting failures.
+* Omit unavailable information from failure details.
 
-  * Use [OrderedHash] library in Ruby versions older than 1.9 for
-    consistent presentation of information in assertion failures.
+* Put backtrace above code listing and variables in failure details.
 
-  * Show full failure details before starting debugger instead of omitting
-    the backtrace and local variables listing.
+* Prevent empty array leaf nodes in execution trace.
 
-  * Use PP to pretty-print variable values in failure details.
+.Bug fixes
 
-  * Omit unavailable information from failure details.
+* Make `DIFECTS` module's instance methods available as class methods.
 
-  * Put backtrace above code listing and variables in failure details.
+* Always display fail trace before entering debugger.
 
-  * Prevent empty array leaf nodes in execution trace.
+* Always clear test execution internals after `start()`.
 
-Bug fixes:
+* Prevent IRB re-initialization errors when starting debugger.
 
-  * Make `DIFECTS` module's instance methods available as class methods.
+.Housekeeping
 
-  * Always display fail trace before entering debugger.
+* Clarify how to mix-in modules inside insulated tests in the manual.
+  Thanks to Gavin Sinclair for reporting this issue.
 
-  * Always clear test execution internals after `start()`.
+* Document methods (with hyperlinks to the location in the source code
+  where they are defined) provided by emulation layers in manual.
 
-  * Prevent IRB re-initialization errors when starting debugger.
+* Talk about passing condition as first argument to `T` and `F` assertions
+  and provide a code example in the manual.
 
-Housekeeping:
+* Clean up the code and revise the manual.  Yay!
 
-  * Clarify how to mix-in modules inside insulated tests in the manual.
-
-    Thanks to Gavin Sinclair for reporting this issue.
-
-  * Document methods (with hyperlinks to the location in the source code
-    where they are defined) provided by emulation layers in manual.
-
-  * Talk about passing condition as first argument to `T` and `F` assertions
-    and provide a code example in the manual.
-
-  * Clean up the code and revise the manual.  Yay!
-
-%#----------------------------------------------------------------------------
-### Version 2.2.0 (2010-04-28)
-%#----------------------------------------------------------------------------
+=== Version 2.2.0 (2010-04-28)
 
 This release adds a UNIX manual page and a sub-library for full method names.
 
-New features:
+.New features
 
-  * Add `dfect/full` sub-library that provides full name aliases to Dfect's
-    abbreviated vocabulary:
+* Add `dfect/full` sub-library that provides full name aliases to Dfect's
+  abbreviated vocabulary:
++
+**D**escribe, **T**rue, **F**alse, **E**rror, **C**atch, **S**hare, **L**og
 
-    `D`escribe, `T`rue, `F`alse, `E`rror, `C`atch, `S`hare, and `L`og.
+* Run `dfect --help` to see the UNIX manual page!
 
-  * Run `dfect --help` to see the UNIX manual page!
+.Housekeeping
 
-Housekeeping:
+* Upgrade to Inochi 3.0.0 and revise the help manual.
 
-  * Upgrade to Inochi 3.0.0 and revise the help manual.
-
-%#----------------------------------------------------------------------------
-### Version 2.1.0 (2010-03-31)
-%#----------------------------------------------------------------------------
+=== Version 2.1.0 (2010-03-31)
 
 This release adds a command-line test runner and performs some minor
 housekeeping.
 
-New features:
+.New features
 
-  * Add `bin/dfect` executable as command-line interface to this library.
+* Add `bin/dfect` executable as command-line interface to this library.
 
-Housekeeping:
+.Housekeeping
 
-  * Do not `require 'rubygems'` before loading the "ruby-debug" library.
+* Do not `require 'rubygems'` before loading the "ruby-debug" library.
 
-  * Upgrade to Inochi 2.0.0-rc2 for managing this project.
+* Upgrade to Inochi 2.0.0-rc2 for managing this project.
 
-%#----------------------------------------------------------------------------
-### Version 2.0.0 (2010-03-21)
-%#----------------------------------------------------------------------------
+=== Version 2.0.0 (2010-03-21)
 
 This release adds the ability to insulate tests from each other, share code
 between them, makes the order of parameters consistent in the API, improves
 user interactivity, fixes some bugs, and revises the user manual.
 
-Incompatible changes:
+.Incompatible changes
 
-  * Root-level calls to the `Dfect::D()`
-    method are automatically insulated now.
+* Root-level calls to the `Dfect::D()`
+  method are automatically insulated now.
 
-  * The `Dfect::E()` methods now expects its optional message
-    parameter to be the *last parameter* in the parameter list.
+* The `Dfect::E()` methods now expects its optional message
+  parameter to be the _last parameter_ in the parameter list.
 
-  * The `Dfect::C()` methods now expect their first parameter to
-    be a symbol instead of the optional message to be shown in
-    case of assertion failure.
+* The `Dfect::C()` methods now expect their first parameter to
+  be a symbol instead of the optional message to be shown in
+  case of assertion failure.
 
-  * The `Dfect::R()` has been renamed to `Dfect::L()`,
-    which is a mnemonic for "Logging".
+* The `Dfect::R()` has been renamed to `Dfect::L()`,
+  which is a mnemonic for "Logging".
 
-  * Shorten names of hash keys in the execution trace for brevity
-    and rename `:raise` key in report statistics to `:error`.
+* Shorten names of hash keys in the execution trace for brevity
+  and rename `:raise` key in report statistics to `:error`.
 
-  * Only the most helpful subset of the failure details is shown before
-    placing the user into a debugger because they can query the omitted
-    information (on demand) inside the debugger.
+* Only the most helpful subset of the failure details is shown before
+  placing the user into a debugger because they can query the omitted
+  information (on demand) inside the debugger.
 
-  * The execution trace is only shown if all tests passed in `Dfect::run()`.
+* The execution trace is only shown if all tests passed in `Dfect::run()`.
 
-  * The `:debug` option is now set to Ruby's `$DEBUG` global by default.
+* The `:debug` option is now set to Ruby's `$DEBUG` global by default.
 
-New features:
+.New features
 
-  * Print failures as they occur instead of waiting until the end.
+* Print failures as they occur instead of waiting until the end.
 
-  * Allow passing condition as argument to true/false assertions instead
-    of requiring the condition to be passed as a code block, and also fall
-    back to the binding of inner-most enclosing test or hook when
-    debugging or constructing a failure report for an assertion that was
-    not given a block.
+* Allow passing condition as argument to true/false assertions instead
+  of requiring the condition to be passed as a code block, and also fall
+  back to the binding of inner-most enclosing test or hook when
+  debugging or constructing a failure report for an assertion that was
+  not given a block.
++
+This allows you to reduce "line noise" in your tests:
++
+[source,ruby]
+------------------------------------------------------------------------------
+D "Lottery" do
+  winning_ticket = rand()
 
-    This allows you to reduce "line noise" in your tests:
+  D "My chances of winning" do
+    my_ticket = rand()
+    F my_ticket == winning_ticket, "I won?!  Dream on."
+  end
+end
+------------------------------------------------------------------------------
 
-        D "Lottery" do
-          winning_ticket = rand()
+* Add `Dfect::S()` methods for sharing code between tests.
 
-          D "My chances of winning" do
-            my_ticket = rand()
-            F my_ticket == winning_ticket, "I won?!  Dream on."
-          end
-        end
+* Add `Dfect::D!()` method to explicitly insulate a test from other
+  tests, the top-level Ruby environment, and the code being tested.
 
-  * Add `Dfect::S()` methods for sharing code between tests.
+* Add `Dfect::info()` method which returns the details of
+  the failure that is currently being debugged by the user.
 
-  * Add `Dfect::D!()` method to explicitly insulate a test from other
-    tests, the top-level Ruby environment, and the code being tested.
+* Add instance variables to the `:vars` section of a failure report.
 
-  * Add `Dfect::info()` method which returns the details of
-    the failure that is currently being debugged by the user.
+* Add `setup!()` and `teardown!()` methods for before-all and
+  after-all hooks in the dfect/unit emulation library.
 
-  * Add instance variables to the `:vars` section of a failure report.
+* Add test execution time to statistics hash (under the `:time` key).
 
-  * Add `setup!()` and `teardown!()` methods for before-all and
-    after-all hooks in the dfect/unit emulation library.
+.Bug fixes
 
-  * Add test execution time to statistics hash (under the `:time` key).
+* Do not print any output when `:quiet` option is active.
 
-Bug fixes:
+* Allow passing multiple strings/objects to `Dfect::D()` like in RSpec.
 
-  * Do not print any output when `:quiet` option is active.
+* Make before and after hook methods mixin-able like assertions.
 
-  * Allow passing multiple strings/objects to `Dfect::D()` like in RSpec.
+* Do not assume that `Module#to_s` is the same as `Module#name`.
 
-  * Make before and after hook methods mixin-able like assertions.
+.Housekeeping
 
-  * Do not assume that `Module#to_s` is the same as `Module#name`.
+* Upgrade to Inochi 2.0.0-rc1 for managing this project.
 
-Housekeeping:
+* Make emulation libraries modify Dfect module instead of Kernel.
 
-  * Upgrade to Inochi 2.0.0-rc1 for managing this project.
+* Do not pollute the user's output with our `Class#to_yaml` workaround.
 
-  * Make emulation libraries modify Dfect module instead of Kernel.
+* Remove "Motivation" section from user manual.  It was too fanatic!
 
-  * Do not pollute the user's output with our `Class#to_yaml` workaround.
-
-  * Remove "Motivation" section from user manual.  It was too fanatic!
-
-%#----------------------------------------------------------------------------
-### Version 1.1.0 (2009-10-27)
-%#----------------------------------------------------------------------------
+=== Version 1.1.0 (2009-10-27)
 
 This release adds a new method for emitting status messages and does some
 internal housekeeping.
 
-Thank you:
+.Thank you
 
-  * Iñaki Baz Castillo used Dfect and suggested new features.
+* Iñaki Baz Castillo used Dfect and suggested new features.
 
-New features:
+.New features
 
-  * Add `Dfect::S()` method for adding status messages to the
-    execution report.  This feature was [requested
-    by](http://github.com/sunaku/dfect/issues/1) Iñaki Baz Castillo.
+* Add `Dfect::S()` method for adding status messages to the execution report.
+  http://github.com/sunaku/dfect/issues/1[This feature was requested] by Iñaki
+  Baz Castillo.
 
-Housekeeping:
+.Housekeeping
 
-  * Remove unused require of 'delegate' standard library in 'dfect/spec'
-    RSpec emulation layer.
+* Remove unused require of `delegate` standard library in `dfect/spec`
+  RSpec emulation layer.
 
-  * Mention emulation layers for popular testing libraries.
+* Mention emulation layers for popular testing libraries.
 
-  * Mention that assertions take an optional message parameter.
+* Mention that assertions take an optional message parameter.
 
-  * Replace sample unit test with Dfect test suite.
+* Replace sample unit test with Dfect test suite.
 
-  * Upgrade user manual to ERBook 9.0.0.
+* Upgrade user manual to ERBook 9.0.0.
 
-%#----------------------------------------------------------------------------
-### Version 1.0.1 (2009-10-07)
-%#----------------------------------------------------------------------------
+=== Version 1.0.1 (2009-10-07)
 
-This release fixes a bug in the [Test::Unit] emulation library and revises the
-user manual.
+This release fixes a bug in the <<Test::Unit>> emulation library and revises
+the user manual.
 
-Bug fixes:
+.Bug fixes
 
-  * The parameters for the `assert_equal()` method in the
-    dfect/unit library were in the wrong order.
+* The parameters for the `assert_equal()` method in the
+  dfect/unit library were in the wrong order.
 
-Housekeeping:
+.Housekeeping
 
-  * Revise user manual to better fit jQuery UI tabs.
+* Revise user manual to better fit jQuery UI tabs.
 
-  * Justify the use of `eval()` in emulation libraries.
+* Justify the use of `eval()` in emulation libraries.
 
-  * Use simpler Copyright reminder at the top of every file.
+* Use simpler Copyright reminder at the top of every file.
 
-  * Make SLOC count in user manual reflect the *core* library only.
+* Make SLOC count in user manual reflect the _core_ library only.
 
-  * Mark code spans with `{:lang=ruby}` instead of HTML `<code/>` tags.
+* Mark code spans with `{:lang=ruby}` instead of HTML `<code/>` tags.
 
-  * Open source is for fun, so [be nice](
-    http://loiclemeur.com/english/2009/03/never-criticize-your-competitors.html
-    ) and speak of "related works" instead of "competitors".
+* Open source is for fun, so
+  http://loiclemeur.com/english/2009/03/never-criticize-your-competitors.html[be
+  nice] and speak of "related works" instead of "competitors".
 
-%#----------------------------------------------------------------------------
-### Version 1.0.0 (2009-05-03)
-%#----------------------------------------------------------------------------
+=== Version 1.0.0 (2009-05-03)
 
 This release improves default choices, adds emulation layers to mimic other
 testing libraries, and fixes some bugs.
 
-Incompatible changes:
+.Incompatible changes
 
-  * The `:debug` option is now enabled by default and is no longer linked to
-    the value of `$DEBUG`.
+* The `:debug` option is now enabled by default and is no longer linked to
+  the value of `$DEBUG`.
 
-  * `Dfect.run()` now appends to previous results by default.
+* `Dfect.run()` now appends to previous results by default.  This behavior
+  can be disabled by passing `false` to the method.
 
-    This behavior can be disabled by passing `false` to the method.
+.New features
 
-New features:
+* Add emulation layers to mimic other testing libraries:
++
+[horizontal]
+`dfect/unit` :: <<Test::Unit>> emulation layer
+`dfect/mini` :: <<Minitest>> emulation layer
+`dfect/spec` :: <<RSpec>> emulation layer
 
-  * Add emulation layers to mimic other testing libraries:
-    * dfect/unit --- [Test::Unit]
-    * dfect/mini --- [Minitest]
-    * dfect/spec --- [RSpec]
+.Bug fixes
 
-Bug fixes:
+* Do not blindly replace `Class#to_yaml`; it might be fixed someday.
 
-  * Do not blindly replace `Class#to_yaml`; it might be fixed someday.
+.Housekeeping
 
-Housekeeping:
+* Add "Motivation" section in user manual to promote interactive
+  debugging.
 
-  * Add "Motivation" section in user manual to promote interactive
-    debugging.
+* Add brief History of this project's inception.
 
-  * Add brief History of this project's inception.
+* Remove redundant assertions for F!() and T!() methods in test suite.
 
-  * Remove redundant assertions for F!() and T!() methods in test suite.
+* Add copyright notice at the top of every file.
 
-  * Add copyright notice at the top of every file.
-
-%#----------------------------------------------------------------------------
-### Version 0.1.0 (2009-04-28)
-%#----------------------------------------------------------------------------
+=== Version 0.1.0 (2009-04-28)
 
 This release adds new variations to assertion methods, fixes several bugs,
 and improves test coverage.
 
-Thank you:
+.Thank you
 
-  * François Beausoleil contributed patches for both code *and* tests! :-)
+* François Beausoleil contributed patches for both code _and_ tests! :-)
 
-New features:
+.New features
 
-  * Added negation (m!) and sampling (m?) variations to normal assertion
-    methods.  These new methods implement assertion functionality missing so
-    far (previously we could not assert that a given exception was NOT thrown)
-    and thereby allow us to fully test Dfect using itself.
+* Added negation (m!) and sampling (m?) variations to normal assertion
+  methods.  These new methods implement assertion functionality missing so
+  far (previously we could not assert that a given exception was NOT thrown)
+  and thereby allow us to fully test Dfect using itself.
 
-  * Added documentation on how to insulate tests from the global Ruby
-    namespace.
+* Added documentation on how to insulate tests from the global Ruby
+  namespace.
 
-Bug fixes:
+.Bug fixes
 
-  * The `E()` method did not consider the case where a block does not raise
-    anything as a failure. ---*François Beausoleil*
+* The `E()` method did not consider the case where a block does not raise
+  anything as a failure. Thanks to François Beausoleil for reporting this.
 
-  * When creating a report about an assertion failure, an exception would be
-    thrown if any local variables pointed to an empty array.
+* When creating a report about an assertion failure, an exception would be
+  thrown if any local variables pointed to an empty array.
 
-  * The `Dfect::<()` method broke the inheritance-checking behavior of the <
-    class method.
+* The `Dfect::<()` method broke the inheritance-checking behavior of the <
+  class method.  I added a bypass to the originial behavior so that `RCov::XX`
+  can properly generate a report about code that uses Dfect.
 
-    Added a bypass to the originial behavior so that `RCov::XX` can properly
-    generate a report about code that uses Dfect.
+* Added workaround for YAML error that occurs when serializing a class object:
 
-  * Added workaround for YAML error when serializing a class object:
+  TypeError: can't dump anonymous class Class
 
-        TypeError: can't dump anonymous class Class
+.Housekeeping
 
-Housekeeping:
+* Filled the big holes in test coverage.  Everything except the runtime
+  debugging logic is now covered by the unit tests.
 
-  * Filled the big holes in test coverage.  Everything except the runtime
-    debugging logic is now covered by the unit tests.
+=== Version 0.0.0 (2009-04-13)
 
-%#----------------------------------------------------------------------------
-### Version 0.0.0 (2009-04-13)
-%#----------------------------------------------------------------------------
-
-For the longest time, I took [Test::Unit] and [RSpec] for granted.  They were
-the epitomy of modern Ruby practice; the insurmountable status quo;
+For the longest time, I took <<Test::Unit>> and <<RSpec>> for granted.  They
+were the epitomy of modern Ruby practice; the insurmountable status quo;
 immortalized in books, conferences, and blogs alike.
 
-Why would *anyone* think of using anything remotely different, let alone be
+Why would _anyone_ think of using anything remotely different, let alone be
 foolish enough to write an alternative testing library when these are clearly
-*good enough*?
+"good enough"?
 
 Recent experiments in assertion testing libraries smashed my world view:
 
-* [assert{ 2.0 }]
-* [Testy]
-* [Verify]
+* <<assert2>>
+* <<Testy>>
+* <<Verify>>
 
-The status quo was certainly *not* "good enough", as I had so blindly
-believed all these years.  In fact, they were *verbose* behemoths that chose
+The status quo was certainly _not_ "good enough", as I had so blindly
+believed all these years.  In fact, they were _verbose_ behemoths that chose
 to encode endless permutations of conjecture into methods.
 
-Empowered by this revelation and inspired by [Sean O'Halpin's musing](
-http://www.ruby-forum.com/topic/183354#801895 ) on alternative names for
-assertion methods, I rose to challenge the status quo.
+Empowered by this revelation and inspired by
+http://www.ruby-forum.com/topic/183354#801895[Sean O'Halpin's musing] on
+alternative names for assertion methods, I rose to challenge the status quo.
 
 And so I present to you the first public release of "Dfect".

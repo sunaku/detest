@@ -1,0 +1,48 @@
+== SYNOPSIS
+
+*detest* ['OPTIONS'] ('FILE'|'GLOB')...
+
+=== Command
+
+Loads the given 'FILE' paths and paths matched by the given 'GLOB' patterns
+into Ruby, then executes all tests defined therein, and finally terminates
+with an exit status reflecting the number of errors and assertion failures (up
+to a maximum of 255 to avoid 8-bit unsigned integer overflow) that occurred.
+
+=== Options
+
+*-d*, *--debug*::
+  Launch interactive debugger upon assertion failures.
+
+*-h*, *--help*::
+  Display this manual and exit.
+
+*-v*, *--version*::
+  Print version number and exit.
+
+=== Examples
+
+Execute the `foo_test.rb` and `bar_test.rb` files in the current directory:
+
+------------------------------------------------------------------------------
+detest foo_test.rb bar_test.rb
+------------------------------------------------------------------------------
+
+Execute all `*_test.rb` files inside the `test/` directory:
+
+------------------------------------------------------------------------------
+detest 'test/*_test.rb'
+------------------------------------------------------------------------------
+
+Execute all `*_test.rb` files inside or beneath the `test/` directory:
+
+------------------------------------------------------------------------------
+detest 'test/**/*_test.rb'
+------------------------------------------------------------------------------
+
+Execute all `foo_test.rb` and `bar_test.rb` files inside or beneath the
+`test/` directory:
+
+------------------------------------------------------------------------------
+detest 'test/**/{foo,bar}_test.rb'
+------------------------------------------------------------------------------

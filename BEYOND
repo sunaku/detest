@@ -1,26 +1,22 @@
-%#----------------------------------------------------------------------------
-## SEE ALSO
-%#----------------------------------------------------------------------------
+== SEE ALSO
 
-[assert{ 2.0 }],
-[Attest],
-[Testy],
-[Verify]
+<<Attest>>, <<assert2>>, <<Testy>>, <<Verify>>
 
-%#----------------------------------------------------------------------------
-%# Markdown link references
-%#----------------------------------------------------------------------------
+[sect2]
+=== References
 
-[assert{ 2.0 }]: http://assert2.rubyforge.org
-[Attest]: http://gsinclair.github.com/attest.html
-[Inochi]: <%= Inochi::WEBSITE %>
-[Minitest]: http://blog.zenspider.com/minitest/
-[OrderedHash]: http://rubygems.org/gems/orderedhash
-[RSpec]: http://rspec.info
-[ruby-debug]: http://github.com/mark-moseley/ruby-debug
-[RubyGems]: http://rubygems.org
-[Ruby]: http://ruby-lang.org
-[Test::Unit]: http://ruby-doc.org/stdlib/libdoc/test/unit/rdoc/classes/Test/Unit.html
-[Testy]: http://github.com/ahoward/testy/tree/master
-[Verify]: http://www.ruby-forum.com/topic/183354
-[xUnit]: http://en.wikipedia.org/wiki/XUnit
+[horizontal]
+
+[[assert2]] assert2:: http://assert2.rubyforge.org
+[[Attest]] Attest:: http://gsinclair.github.com/attest.html
+[[Inochi]] Inochi:: <%= Inochi::WEBSITE %>
+[[Minitest]] Minitest:: http://blog.zenspider.com/minitest/
+[[OrderedHash]] OrderedHash:: http://rubygems.org/gems/orderedhash
+[[RSpec]] RSpec:: http://rspec.info
+[[ruby-debug]] ruby-debug:: http://github.com/mark-moseley/ruby-debug
+[[RubyGems]] RubyGems:: http://rubygems.org
+[[Ruby]] Ruby:: http://ruby-lang.org
+[[Test::Unit]] Test::Unit:: http://ruby-doc.org/stdlib/libdoc/test/unit/rdoc/classes/Test/Unit.html
+[[Testy]] Testy:: http://github.com/ahoward/testy/tree/master
+[[Verify]] Verify:: http://www.ruby-forum.com/topic/183354
+[[xUnit]] xUnit:: http://en.wikipedia.org/wiki/XUnit

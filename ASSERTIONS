@@ -1,132 +1,103 @@
-%#----------------------------------------------------------------------------
-## ASSERTIONS
-%#----------------------------------------------------------------------------
+== ASSERTIONS
+
+=== Writing assertions
 
 The following methods accept a block parameter and assert something about the
 result of executing that block.  They also accept an optional message, which
-is shown in failure reports (see **Failures** below) if they fail.
+is shown in <<failures, their failure reports>> if they fail.
 
-* `T()`:
-  assert true (not `nil` and not `false`)
-
-* `F()`:
-  assert not true (`nil` or `false`)
-
-* `N()`:
-  assert that the value is `nil`
-
-* `E()`:
-  assert that an execption is raised
-
-* `C()`:
-  assert that a symbol is thrown
+[horizontal]
+`T()` :: assert true (not `nil` and not `false`)
+`F()` :: assert not true (`nil` or `false`)
+`N()` :: assert that the value is `nil`
+`E()` :: assert that an execption is raised
+`C()` :: assert that a symbol is thrown
 
 For the `T()` and `F()` methods, you may alternatively pass the condition to
 be asserted as the first argument (instead of passing it as a block).  This
 might result in a more pleasing syntax, depending on your taste:
 
-    D "Lottery" do
-      winning_ticket = rand()
+[source,ruby]
+------------------------------------------------------------------------------
+D "Lottery" do
+  winning_ticket = rand()
 
-      D "My chances of winning" do
-        my_ticket = rand()
+  D "My chances of winning" do
+    my_ticket = rand()
 
-        # passing the condition as a block:
-        F("I won?!  Dream on.") { my_ticket == winning_ticket }
+    #
+    # Option 1: passing the condition as a block:
+    #
+    F("I won?!  Dream on.") { my_ticket == winning_ticket }
 
-        # passing the condition as an argument:
-        F my_ticket == winning_ticket, "I won?!  Dream on."
+    #
+    # Option 2: passing the condition as an argument:
+    #
+    F my_ticket == winning_ticket, "I won?!  Dream on."
 
-      end
-    end
+  end
+end
+------------------------------------------------------------------------------
 
-%#----------------------------------------------------------------------------
-### Negation
-%#----------------------------------------------------------------------------
+=== Negating assertions
 
-The following methods are the *opposite* of normal assertions.
+The following methods are the _opposite_ of normal assertions.
 
-* `T!()`:
-  same as `F()`
+[horizontal]
+`T!()` :: same as `F()`
+`F!()` :: same as `T()`
+`N!()` :: assert that value is not `nil`
+`E!()` :: assert that an exception is _not_ raised
+`C!()` :: assert that a symbol is _not_ thrown
 
-* `F!()`:
-  same as `T()`
+=== Sampling assertions
 
-* `N!()`:
-  assert that value is not `nil`
-
-* `E!()`:
-  assert that an exception is *not* raised
-
-* `C!()`:
-  assert that a symbol is *not* thrown
-
-%#----------------------------------------------------------------------------
-### Sampling
-%#----------------------------------------------------------------------------
-
-The following methods let you *check the outcome* of an assertion without
+The following methods let you _check the outcome_ of an assertion without
 recording a success or failure in the test execution report.
 
-* `T?()`:
-  returns true if `T()` passes; false otherwise
+[horizontal]
+`T?()` :: returns true if `T()` passes; false otherwise
+`F?()` :: returns true if `F()` passes; false otherwise
+`N?()` :: returns true if `N()` passes; false otherwise
+`E?()` :: returns true if `E()` passes; false otherwise
+`C?()` :: returns true if `C()` passes; false otherwise
 
-* `F?()`:
-  returns true if `F()` passes; false otherwise
-
-* `N?()`:
-  returns true if `N()` passes; false otherwise
-
-* `E?()`:
-  returns true if `E()` passes; false otherwise
-
-* `C?()`:
-  returns true if `C()` passes; false otherwise
-
-%#----------------------------------------------------------------------------
-### Failures
-%#----------------------------------------------------------------------------
+=== [[failures]] Assertion failure reports
 
 Assertions failures are reported in the following manner:
 
-    - fail: block must yield true (!nil && !false)
-      call:
-      - test/simple.rb:17
-      - test/simple.rb:3
-      code: |-
-        [12..22] in test/simple.rb
-           12
-           13     D "with more nested tests" do
-           14       x = 5
-           15
-           16       T { x > 2 }   # passes
-        => 17       F { x > 2 }   # fails
-           18       E { x.hello } # passes
-           19     end
-           20   end
-           21
-           22   # equivalent of before(:each) or setup()
-      bind: test/simple.rb:17
-      vars:
-        x: (Fixnum) 5
-        y: (Fixnum) 83
+------------------------------------------------------------------------------
+- fail: block must yield true (!nil && !false)
+  call:
+  - test/simple.rb:17
+  - test/simple.rb:3
+  code: |-
+    [12..22] in test/simple.rb
+       12
+       13     D "with more nested tests" do
+       14       x = 5
+       15
+       16       T { x > 2 }   # passes
+    => 17       F { x > 2 }   # fails
+       18       E { x.hello } # passes
+       19     end
+       20   end
+       21
+       22   # equivalent of before(:each) or setup()
+  bind: test/simple.rb:17
+  vars:
+    x: (Fixnum) 5
+    y: (Fixnum) 83
+------------------------------------------------------------------------------
 
 Failure reports are composed of the following sections:
 
-* `:fail`:
-  Description of the assertion failure.
-
-* `:call`:
-  Stack trace leading to the point of failure.
-
-* `:code`:
-  Source code surrounding the point of failure.
-
-* `:bind`:
-  Location where local variables (in the "vars" section) were extracted.
-
-* `:vars`:
-  Local variables visible at the point of failure.
+[horizontal]
+`:fail` :: Description of the assertion failure.
+`:call` :: Stack trace leading to the point of failure.
+`:code` :: Source code surrounding the point of failure.
+`:bind` :: Source location of values in `:vars` section.
+`:vars` :: Local variables visible at the point of failure.
 
 After the failure is reported, you will be placed into a debugger to
 investigate the failure if the `Detest.debug` option is enabled.

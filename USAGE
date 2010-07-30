@@ -1,27 +1,78 @@
-%#----------------------------------------------------------------------------
-## SYNOPSIS
-%#----------------------------------------------------------------------------
+== USAGE
 
-`detest` [<OPTIONS>] (<FILE>|<GLOB>) ...
+Begin by loading the Detest library into your program:
 
-%#----------------------------------------------------------------------------
-## DESCRIPTION
-%#----------------------------------------------------------------------------
+[source,ruby]
+------------------------------------------------------------------------------
+require 'rubygems' # might not be necessary; see HACKING
+require 'detest'
+------------------------------------------------------------------------------
 
-Executes the given test <FILE>s and <GLOB> patterns that describe test files.
+You can now call methods on the `Detest` module directly:
 
-The exit status of this command reflects the number of errors and assertion
-failures (up to a maximum of 255 to avoid 8-bit unsigned integer overflow).
+[source,ruby]
+------------------------------------------------------------------------------
+Detest.D 'hello' do  # D() is a class method
+  puts 'world'
+end
+------------------------------------------------------------------------------
 
-%#----------------------------------------------------------------------------
-## OPTIONS
-%#----------------------------------------------------------------------------
+or mix-in the module and call its methods implicitly:
 
-* `-d`, `--debug`:
-  Launch interactive debugger upon assertion failures.
+[source,ruby]
+------------------------------------------------------------------------------
+include Detest      # mix-in the Detest module
 
-* `-h`, `--help`:
-  Display this manual and exit.
+D 'hello' do        # D() is an instance method
+  puts 'world'
+end
+------------------------------------------------------------------------------
 
-* `-v`, `--version`:
-  Print version number and exit.
+You can configure the test execution process using:
+
+[source,ruby]
+------------------------------------------------------------------------------
+Detest.debug = true # or false
+------------------------------------------------------------------------------
+
+You can execute all tests defined thus far, in depth-first search (DFS) order,
+using:
+
+[source,ruby]
+------------------------------------------------------------------------------
+Detest.start
+------------------------------------------------------------------------------
+
+You can stop the execution at any time using:
+
+[source,ruby]
+------------------------------------------------------------------------------
+Detest.stop
+------------------------------------------------------------------------------
+
+You can view the results of execution using:
+
+[source,ruby]
+------------------------------------------------------------------------------
+puts Detest.trace.to_yaml
+puts Detest.stats.to_yaml
+------------------------------------------------------------------------------
+
+You can clear the results of execution using:
+
+[source,ruby]
+------------------------------------------------------------------------------
+Detest.reset
+------------------------------------------------------------------------------
+
+You can mix-in the `Detest` module into your program and execute all tests
+defined by your program before it terminates by simply adding the following
+line at the top of your program:
+
+[source,ruby]
+------------------------------------------------------------------------------
+require 'detest/auto'
+------------------------------------------------------------------------------
+
+See the <%= @api_docs_url %>[API documentation] for more information and
+examples.

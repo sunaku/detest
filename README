@@ -1,14 +1,21 @@
-Detest is an assertion testing library for [Ruby] that emphasizes a simple
-assertion vocabulary, instant debuggability of failures, and flexibility in
-composing tests.
+== DESCRIPTION
 
-%#----------------------------------------------------------------------------
-### Features
-%#----------------------------------------------------------------------------
+Detest is an assertion testing library for <<Ruby, the Ruby programming
+language>>.  It features a simple assertion vocabulary, instant debuggability
+of failures, and flexibility in composing tests.
 
-* Adds only 8 mnemonic method names to your memory:
+=== Features
 
-  `T`rue, `F`alse, `N`il, `E`rror, `C`atch, `I`nform, `S`hare, `D`escribe
+* Only 8 mnemonic method names to remember:
++
+**T**rue,
+**F**alse,
+**N**il,
+**E**rror,
+**C**atch,
+**S**hare,
+**I**nform,
+**D**escribe
 
 * Lets you debug assertion failures interactively.
 
@@ -18,43 +25,19 @@ composing tests.
 
 * Implemented in <%= `sloccount lib/detest.rb`[/^\d+/] %> lines of pure Ruby.
 
-%#----------------------------------------------------------------------------
-### Resources
-%#----------------------------------------------------------------------------
+=== Resources
 
-* Issue tracker (report bugs, request features, get help):
-  <<%= bug_track_url %>>
+Project website::
+<%= @proj_home_url = Detest::WEBSITE %>
 
-* Source code (browse online or obtain with <%= code_repo_scm %>):
-  <<%= code_repo_url %>>
+Announcements feed::
+<%= @ann_feed_url = File.join(@proj_home_url, 'ann.xml') %>
 
-* API documentation:
-  <<%= api_docs_url %>>
+API documentation::
+<%= @api_docs_url = File.join(@proj_home_url, 'api/') %>
 
-* Announcements feed:
-  <<%= ann_feed_url %>>
+Source code (browse online, download, or checkout)::
+<%= @code_repo_url = 'http://github.com/sunaku/detest' %>
 
-* Official website:
-  <<%= proj_home_url %>>
-
-%#----------------------------------------------------------------------------
-### Setup
-%#----------------------------------------------------------------------------
-
-Prerequisites:
-
-  * [Ruby] 1.8.6 or newer.
-
-  * [RubyGems] 1.3.6 or newer.
-
-Installing:
-
-    gem install detest
-
-Upgrading:
-
-    gem update detest
-
-Removing:
-
-    gem uninstall detest
+Issue tracker (report bugs, request features, get help)::
+<%= @bug_track_url = File.join(@code_repo_url, 'issues') %>

@@ -3,16 +3,8 @@
 require 'detest'
 
 if ARGV.delete('-h') or ARGV.delete('--help')
-  # try to display UNIX version of help manual
-  man_path = File.join(Detest::INSTDIR, 'man')
-  unless system 'man', '-M', man_path, '-a', 'detest'
-    # try to display HTML version of help manual
-    man_html = man_path + '.html'
-    unless %w[$BROWSER open start].any? {|b| system "#{b} #{man_html}" }
-      # no luck; direct user to project website
-      puts "See #{Detest::WEBSITE}"
-    end
-  end
+  system 'man', '-M', File.join(Detest::INSTDIR, 'man'), 'detest' or
+  warn "Could not display the help manual.\nSee #{Detest::WEBSITE} instead."
   exit
 elsif ARGV.delete('-v') or ARGV.delete('--version')
   puts Detest::VERSION

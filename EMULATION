@@ -1,29 +1,26 @@
-%#----------------------------------------------------------------------------
-## EMULATION
-%#----------------------------------------------------------------------------
+== EMULATION
 
 Detest can emulate several popular testing libraries:
 
 <%
   emulation_layers = {
-    'detest/spec' => '[RSpec]',
-    'detest/unit' => '[Test::Unit]',
-    'detest/mini' => '[Minitest]',
+    'detest/spec' => '<<RSpec>>',
+    'detest/unit' => '<<Test::Unit>>',
+    'detest/mini' => '<<Minitest>>',
     'detest/long' => 'Readability',
   }
 %>
 
+[horizontal]
 % emulation_layers.each do |layer, title|
-
-  * <%= layer %>:
-    <%= title %> emulation layer
+  <%= layer %>:: <%= title %> emulation layer
 
 Simply require one of these emulation layers into your test suite and you can
 write your tests using the familiar syntax of the testing library it emulates.
 
-%#----------------------------------------------------------------------------
-%# list the methods provided by the various emulation layers
-%#----------------------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////////
+// list all methods provided by the various emulation layers
+//////////////////////////////////////////////////////////////////////////////
 
 % require 'detest'
 % before = Detest.instance_methods(false)
@@ -35,23 +32,23 @@ write your tests using the familiar syntax of the testing library it emulates.
 
   % unless before == after
 
-    %#------------------------------------------------------------------------
-    ### <%= layer %>
-    %#------------------------------------------------------------------------
+    === <%= layer %>
 
     This library emulates <%= title %> by adding the following methods to the
     `Detest` module.
+
+    [horizontal]
 
     % (after - before).sort.each do |method_name|
       % method = sandbox.method(method_name)
 
       % file, line = method.source_location
       % file = file.sub(Detest::INSTDIR, '').sub(%r(^/+), '')
-      % url = "#{code_repo_url}/tree/master/#{file}#L#{line}"
+      % url = "#{@code_repo_url}/tree/master/#{file}#L#{line}"
 
-      * `<%= method.name %>`(<%=
+      <%= method.name %>(<%=
         method.parameters.map do |type, name|
-          name = "_#{name}_" # italicize in markdown
+          name = "__#{name}__" # unconstrained italics in AsciiDoc
           case type
           when :opt   then name + '=nil'
           when :rest  then '*' + name
@@ -59,7 +56,7 @@ write your tests using the familiar syntax of the testing library it emulates.
           else name
           end
         end.join(', ')
-      %>):
-        This method is defined at [<%= file %>:<%= line %>](<%= url %>).
+      %>):: <%= url %>[<%= file %>:<%= line %>]
+
 
     % before = after
