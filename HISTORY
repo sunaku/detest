@@ -1,5 +1,17 @@
 == HISTORY
 
+=== Version 3.1.1 (2010-08-08)
+
+This release adds forgotten nil assertions and updates the help manual.
+
+.Bug fixes
+
+* Forgot to add nil assertion methods in the `detest/long` library.
+
+.Housekeeping
+
+* Upgrade to Inochi 5.0.0; the help manual is now written in AsciiDoc.
+
 === Version 3.1.0 (2010-07-25)
 
 This release adds `N()` methods for nil value assertions and renames the
