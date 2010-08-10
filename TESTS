@@ -23,12 +23,13 @@ A test may contain nested tests, as illustrated above.
 
 <%= method_api_docs 'D!', 'The `D!()` method' %> defines a new test that is
 explicitly insulated from the tests that contain it and also from the
-top-level Ruby environment.  Root-level calls to the `D()` method are
-insulated by default.
+top-level Ruby environment.
 
 Inside an insulated test, you are free to mix-in (using the *extend* keyword,
 not the *include* keyword) any modules your test logic needs.  You can also
 define your own constants, methods, classes, and modules here.
+
+NOTE: Root-level calls to the `D()` method are insulated by default.
 
 .Insulated and uninsulated tests
 %|example
