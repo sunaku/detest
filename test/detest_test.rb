@@ -129,6 +129,14 @@ D 'E()' do
       raise SyntaxError
     end
   end
+
+  D 'returns the exception that was raised' do
+    inner = rand().to_s
+    outer = E { raise inner }
+
+    T { outer.kind_of? StandardError }
+    T { outer.message == inner }
+  end
 end
 
 D 'E!()' do
