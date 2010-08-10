@@ -2,7 +2,7 @@
   ##
   # Creates an example listing from the code in the given block.
   #
-  def example &block
+  def example_test_run &block
     Ember::Template.wrap_content_block(block) do |content|
       code = "require 'detest/auto'\n\n#{content.join}"
       [

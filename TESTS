@@ -32,7 +32,7 @@ define your own constants, methods, classes, and modules here.
 NOTE: Root-level calls to the `D()` method are insulated by default.
 
 .Insulated and uninsulated tests
-%|example
+%|example_test_run
   D "a root-level test" do
     @outside = 1
     T { defined? @outside }
@@ -75,7 +75,7 @@ while injecting it into the environment where that method is called.
 been shared under a given identifier.
 
 .Sharing code between tests
-%|example
+%|example_test_run
   S :knowledge do
     I 'Knowledge is power!'
   end
@@ -112,9 +112,8 @@ method as being a way _to inform_ someone.
 debugger at the location where it is called. You can think of this
 method as being a way _to investigate_ the state of your program.
 
-
 .Logging information in the execution report
-%|example
+%|example_test_run
   D 'Wizard' do
     I 'Preparing spell to defeat mortal foes...'
   end
@@ -149,7 +148,7 @@ D .< { puts "do something more!" }
 ------------------------------------------------------------------------------
 
 .Using hooks to perform before and after actions
-%|example
+%|example_test_run
   D "outer test" do
     D .<  { I "(outer hook) before each" }
     D .>  { I "(outer hook) after each" }
