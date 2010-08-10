@@ -19,24 +19,16 @@ might result in a more pleasing syntax, depending on your taste:
 
 [source,ruby]
 ------------------------------------------------------------------------------
-D "Lottery" do
-  winning_ticket = rand()
+my_ticket = rand()
+winning_ticket = rand()
 
-  D "My chances of winning" do
-    my_ticket = rand()
+# passing the condition as a block:
+T("I won?!  Dream on.") { my_ticket != winning_ticket }
+F("I won?!  Dream on.") { my_ticket == winning_ticket }
 
-    #
-    # Option 1: passing the condition as a block:
-    #
-    F("I won?!  Dream on.") { my_ticket == winning_ticket }
-
-    #
-    # Option 2: passing the condition as an argument:
-    #
-    F my_ticket == winning_ticket, "I won?!  Dream on."
-
-  end
-end
+# passing the condition as an argument:
+T my_ticket != winning_ticket, "I won?!  Dream on."
+F my_ticket == winning_ticket, "I won?!  Dream on."
 ------------------------------------------------------------------------------
 
 === Negating assertions
