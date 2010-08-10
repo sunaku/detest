@@ -7,11 +7,11 @@ result of executing that block.  They also accept an optional message, which
 is shown in <<failures, their failure reports>> if they fail.
 
 [horizontal]
-`T()` :: assert true (not `nil` and not `false`)
-`F()` :: assert not true (`nil` or `false`)
-`N()` :: assert that the value is `nil`
-`E()` :: assert that an execption is raised
-`C()` :: assert that a symbol is thrown
+`T()` :: assert true (not `nil` and not `false`) -- <%= method_api_docs 'T' %>
+`F()` :: assert not true (`nil` or `false`)      -- <%= method_api_docs 'F' %>
+`N()` :: assert that the value is `nil`          -- <%= method_api_docs 'N' %>
+`E()` :: assert that an execption is raised      -- <%= method_api_docs 'E' %>
+`C()` :: assert that a symbol is thrown          -- <%= method_api_docs 'C' %>
 
 For the `T()` and `F()` methods, you may alternatively pass the condition to
 be asserted as the first argument (instead of passing it as a block).  This
@@ -36,11 +36,11 @@ F my_ticket == winning_ticket, "I won?!  Dream on."
 The following methods are the _opposite_ of normal assertions.
 
 [horizontal]
-`T!()` :: same as `F()`
-`F!()` :: same as `T()`
-`N!()` :: assert that value is not `nil`
-`E!()` :: assert that an exception is _not_ raised
-`C!()` :: assert that a symbol is _not_ thrown
+`T!()` :: same as `F()`                             -- <%= method_api_docs 'T!' %>
+`F!()` :: same as `T()`                             -- <%= method_api_docs 'F!' %>
+`N!()` :: assert that value is not `nil`            -- <%= method_api_docs 'N!' %>
+`E!()` :: assert that an exception is _not_ raised  -- <%= method_api_docs 'E!' %>
+`C!()` :: assert that a symbol is _not_ thrown      -- <%= method_api_docs 'C!' %>
 
 === Sampling assertions
 
@@ -48,11 +48,11 @@ The following methods let you _check the outcome_ of an assertion without
 recording a success or failure in the test execution report.
 
 [horizontal]
-`T?()` :: returns true if `T()` passes; false otherwise
-`F?()` :: returns true if `F()` passes; false otherwise
-`N?()` :: returns true if `N()` passes; false otherwise
-`E?()` :: returns true if `E()` passes; false otherwise
-`C?()` :: returns true if `C()` passes; false otherwise
+`T?()` :: returns true if `T()` passes; false otherwise -- <%= method_api_docs 'T?' %>
+`F?()` :: returns true if `F()` passes; false otherwise -- <%= method_api_docs 'F?' %>
+`N?()` :: returns true if `N()` passes; false otherwise -- <%= method_api_docs 'N?' %>
+`E?()` :: returns true if `E()` passes; false otherwise -- <%= method_api_docs 'E?' %>
+`C?()` :: returns true if `C()` passes; false otherwise -- <%= method_api_docs 'C?' %>
 
 === [[failures]] Assertion failure reports
 

@@ -31,6 +31,14 @@
       ].join("\n")
     end
   end
+
+  ##
+  # Returns a link to the given core method on the Dfect module.
+  #
+  def method_api_docs name, text = 'API documentation'
+    require 'cgi'
+    "#{@api_docs_url}/Detest.html##{CGI.escape name}-class_method[#{text}]"
+  end
 %>
 %+ 'SYNOPSIS'
 %+ 'README'

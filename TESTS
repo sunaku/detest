@@ -2,8 +2,9 @@
 
 === Defining tests
 
-The `D()` method creates a new *test*, which is analagous to the *describe*
-keyword in <<RSpec>> and also to the concept of a "test case" in <<xUnit>>.
+<%= method_api_docs 'D', 'The `D()` method' %> creates a new *test*, which is
+analagous to the *describe* keyword in <<RSpec>> and also to the concept of a
+"test case" in <<xUnit>>.
 
 [source,ruby]
 ------------------------------------------------------------------------------
@@ -20,13 +21,14 @@ A test may contain nested tests, as illustrated above.
 
 === Insulating tests
 
-The `D!()` method defines a new test that is explicitly insulated from the
-tests that contain it and also from the top-level Ruby environment.
-Root-level calls to the `D()` method are insulated by default.
+<%= method_api_docs 'D!', 'The `D!()` method' %> defines a new test that is
+explicitly insulated from the tests that contain it and also from the
+top-level Ruby environment.  Root-level calls to the `D()` method are
+insulated by default.
 
-Inside an insulated test, you are free to mix-in (using the *extend*
-keyword, not the *include* keyword) any modules your test logic needs.  You
-can also define your own constants, methods, classes, and modules here.
+Inside an insulated test, you are free to mix-in (using the *extend* keyword,
+not the *include* keyword) any modules your test logic needs.  You can also
+define your own constants, methods, classes, and modules here.
 
 .Insulated and uninsulated tests
 %|example
@@ -55,24 +57,21 @@ can also define your own constants, methods, classes, and modules here.
 
 === Sharing tests
 
-[horizontal]
+<%= method_api_docs 'S', 'The `S()` method' %> is a mechanism for sharing
+code.  It can be used in two ways:
 
-`S()`::
-  Mechanism for sharing code.  It can be used in two ways:
+1. When called with a block, it shares the given block (under a given
+   identifier) for injection into other tests.
 
-  1. When called with a block, it shares the given block (under a given
-     identifier) for injection into other tests.
+2. When called without a block, it injects a previously shared block
+   (under a given identifier) into the environment where it is called.
 
-  2. When called without a block, it injects a previously shared block
-     (under a given identifier) into the environment where it is called.
+<%= method_api_docs 'S!', 'The `S!()` method' %> is a combination of the two
+uses of the `S()` method: it lets you simultaneously share a block of code
+while injecting it into the environment where that method is called.
 
-`S!()`::
-  Combination of the two uses of the `S()` method: it lets you simultaneously
-  share a block of code while injecting it into the environment where that
-  method is called.
-
-`S?()`::
-  Checks whether any code has been shared under a given identifier.
+<%= method_api_docs 'S?', 'The `S?()` method' %> checks whether any code has
+been shared under a given identifier.
 
 .Sharing code between tests
 %|example
@@ -104,14 +103,14 @@ can also define your own constants, methods, classes, and modules here.
 
 === Logging information
 
-[horizontal]
+<%= method_api_docs 'I', 'The `I()` method' %> is a mechanism for inserting
+arbitrary Ruby objects into the test execution report.  You can think of this
+method as being a way _to inform_ someone.
 
-`I()`::
-  Mechanism for inserting arbitrary Ruby objects into the test execution
-  report.  You can think of this method as being a way _to inform_ someone.
+<%= method_api_docs 'I!', 'The `I!()` method' %> starts the interactive
+debugger at the location where it is called. You can think of this
+method as being a way _to investigate_ the state of your program.
 
-`I!()`::
-  Starts the interactive debugger at the location where it is called.
 
 .Logging information in the execution report
 %|example
@@ -134,10 +133,10 @@ following *hook methods* allow you to register a block of code to execute
 when a hook occurs:
 
 [horizontal]
-`D.<()`  :: Calls the given block _before each_ child test.
-`D.>()`  :: Calls the given block _after each_ child test.
-`D.<<()` :: Calls the given block _before all_ child tests.
-`D.>>()` :: Calls the given block _after all_ child tests.
+`D.<()`  :: calls the given block _before each_ child test -- <%= method_api_docs '<' %>
+`D.>()`  :: calls the given block _after each_ child test  -- <%= method_api_docs '>' %>
+`D.<<()` :: calls the given block _before all_ child tests -- <%= method_api_docs '<<' %>
+`D.>>()` :: calls the given block _after all_ child tests  -- <%= method_api_docs '>>' %>
 
 A hook method can be called multiple times.  Each additional call schedules
 more logic to be executed during the hook:
