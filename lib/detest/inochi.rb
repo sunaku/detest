@@ -18,12 +18,12 @@ module Detest
   ##
   # Number of this release of this project.
   #
-  VERSION = '3.1.1'
+  VERSION = '3.1.2'
 
   ##
   # Date of this release of this project.
   #
-  RELDATE = '2010-08-08'
+  RELDATE = '2010-08-10'
 
   ##
   # Description of this release of this project.
@@ -74,7 +74,7 @@ module Detest
   #   }
   #
   DEVTIME = {
-    'inochi' => [ '>= 5.0.0', '< 6' ],
+    'inochi' => [ '>= 5.0.1', '< 6' ],
   }
 
   # establish gem version dependencies

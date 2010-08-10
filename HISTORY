@@ -1,5 +1,22 @@
 == HISTORY
 
+=== Version 3.1.2 (2010-08-10)
+
+This release adds links to API documentation beside methods mentioned in the
+help manual and restores metadata that was missing in the gem release package.
+
+.Housekeeping
+
+* Upgrade to Inochi 5.0.1 to fix metadata generation in gemspec.
+
+* Introduce assertions before tests in help manual.
+
+* Make use of AsciiDoc admonitions and icon images.
+
+* Add links into API documentation for core methods.
+
+* Add test case to ensure that `E()` returns the exception that was raised.
+
 === Version 3.1.1 (2010-08-08)
 
 This release adds forgotten nil assertions and updates the help manual.
