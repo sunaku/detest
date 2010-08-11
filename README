@@ -1,12 +1,12 @@
 == DESCRIPTION
 
-Detest is an assertion testing library for <<Ruby, the Ruby programming
-language>>.  It features a simple assertion vocabulary, instant debuggability
-of failures, and flexibility in composing tests.
+Detest is an assertion testing library for <<Ruby>> that features a simple
+assertion vocabulary, instant debuggability of failures, and flexibility in
+composing tests.
 
 === Features
 
-* Only 8 mnemonic method names to remember:
+* Only 8 mnemonic method names for you to remember:
 +
 **T**rue,
 **F**alse,

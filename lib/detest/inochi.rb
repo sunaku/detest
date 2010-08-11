@@ -74,7 +74,7 @@ module Detest
   #   }
   #
   DEVTIME = {
-    'inochi' => [ '>= 5.0.1', '< 6' ],
+    'inochi' => [ '>= 5.0.2', '< 6' ],
   }
 
   # establish gem version dependencies
