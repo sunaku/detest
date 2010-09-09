@@ -76,7 +76,7 @@ module Detest
 
       def #{prefix}_operator object, operator, operand, message = nil
         message ||= 'object must #{action}support operator with operand'
-        T#{polarity} { object.__send__ operator, operand }
+        T#{polarity}(message) { object.__send__(operator, operand) }
       end
 
       def #{prefix}_raise *args, &block
