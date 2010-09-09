@@ -92,9 +92,9 @@ module Detest
         C#{polarity}(message, symbol, &block)
       end
 
-      def #{prefix}_send object, query, *args
-        response = object.__send__(query, *args)
-        T#{polarity} { response }
+      def #{prefix}_send send_array, message = nil
+        object, query, *args = send_array
+        T#{polarity}(message) { object.__send__(query, *args) }
       end
     }, file, line
   end
