@@ -959,9 +959,7 @@ module Detest
         raise ArgumentError unless block_given?
 
         set_trace_func lambda {|event, file, line, id, binding, klass|
-          unless file =~ INTERNALS
-            self[file][line] = binding
-          end
+          self[file][line] = binding unless file =~ INTERNALS
         }
 
         yield
