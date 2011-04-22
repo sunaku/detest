@@ -2,11 +2,11 @@
 
 gemspec = Gem::Specification.new do |s|
   s.name = %q{detest}
-  s.version = "3.1.2"
+  s.version = "3.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Suraj N. Kurapati"]
-  s.date = %q{2010-08-10}
+  s.date = %q{2011-04-22}
   s.description = %q{Detest is an assertion testing library for [Ruby] that features a simple assertion vocabulary, instant debuggability of failures, and flexibility in composing tests.}
   s.executables = ["detest"]
   s.files = ["bin/detest", "lib/detest", "lib/detest/unit.rb", "lib/detest/inochi.rb", "lib/detest/long.rb", "lib/detest/auto.rb", "lib/detest/spec.rb", "lib/detest/mini.rb", "lib/detest.rb", "LICENSE", "man/man1/detest.1"]
