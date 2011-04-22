@@ -8,6 +8,7 @@
 [horizontal]
 [[[assert2]]]:: http://assert2.rubyforge.org
 [[[Attest]]]:: http://gsinclair.github.com/attest.html
+[[[Bundler]]]:: http://gembundler.com
 [[[Inochi]]]:: <%= Inochi::WEBSITE %>
 [[[Minitest]]]:: http://blog.zenspider.com/minitest/
 [[[OrderedHash]]]:: http://rubygems.org/gems/orderedhash
